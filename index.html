@@ -6,6 +6,14 @@
 <meta name="theme-color" content="#0a0c12" />
 <title>500 Maneiras de se Decepcionar</title>
 
+<!-- PWA: manifest + ícones (Rodada 4) -->
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="500MD" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -2403,6 +2411,146 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 .profile-pwd-toggle:hover { color: var(--text-primary); }
 .profile-pwd-fields { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
 .profile-pwd-fields[hidden] { display: none; }
+
+/* ==========================================================
+   Rodada 3.6 — Esqueci a senha
+   ========================================================== */
+.link-btn {
+  background: transparent;
+  border: none;
+  padding: 4px 0;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(var(--accent-rgb), 0.35);
+  transition: var(--transition-fast);
+  align-self: flex-start;
+}
+.link-btn:hover {
+  color: var(--accent-purple-bright);
+  text-decoration-color: var(--accent-purple-bright);
+}
+.link-btn:focus-visible { outline: 2px solid var(--accent-purple); outline-offset: 2px; border-radius: 2px; }
+
+.modal-notice {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  padding: 10px 14px;
+  background: rgba(var(--accent-rgb), 0.08);
+  border-left: 3px solid var(--accent-purple);
+  border-radius: var(--radius-xs);
+}
+.modal-notice strong { color: var(--text-primary); font-weight: 600; }
+
+.fp-success {
+  text-align: center;
+  padding: 4px 4px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.fp-success__icon {
+  margin: 0 auto 4px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-purple-bright);
+  background: rgba(var(--accent-rgb), 0.08);
+}
+.fp-success__icon svg { width: 26px; height: 26px; }
+.fp-success__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+.fp-success__body {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+.fp-success__email {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+/* ==========================================================
+   Rodada 4 — PWA (botão instalar + indicador de offline)
+   ========================================================== */
+.install-btn {
+  display: none;  /* só aparece se beforeinstallprompt disparar */
+  align-items: center;
+  gap: 8px;
+  margin: 22px auto 0;
+  padding: 9px 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-purple-bright);
+  background: rgba(var(--accent-rgb), 0.08);
+  border: 1px solid rgba(var(--accent-rgb), 0.4);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.install-btn.is-visible { display: inline-flex; }
+.install-btn:hover {
+  background: rgba(var(--accent-rgb), 0.16);
+  border-color: var(--accent-purple);
+  transform: translateY(-1px);
+}
+.install-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.offline-banner {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1500;
+  padding: 8px 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--accent-purple);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-md), 0 0 14px rgba(var(--accent-rgb), 0.25);
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  animation: offline-in 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.offline-banner[hidden] { display: none; }
+.offline-banner::before {
+  content: "";
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent-purple-bright);
+  animation: offline-pulse 1.8s ease-in-out infinite;
+}
+@keyframes offline-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.35; transform: scale(0.85); }
+}
+@keyframes offline-in {
+  from { opacity: 0; transform: translate(-50%, -10px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
 </style>
 </head>
 
@@ -2484,8 +2632,17 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
         <span class="btn-label">Entrar</span>
       </button>
 
+      <button type="button" class="link-btn" id="forgot-password-link">Esqueci a senha</button>
+
       <div id="login-error" class="error-message" aria-live="polite"></div>
     </form>
+
+    <button type="button" class="install-btn" id="install-btn" aria-label="Instalar app">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Instalar app</span>
+    </button>
 
     <div class="login-footer">Cada booster, uma decepção</div>
   </div>
@@ -2778,6 +2935,79 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   </div>
 </div>
 
+<!-- Modal: Esqueci a senha (pede email pra mandar o link) -->
+<div class="modal-backdrop" id="forgot-password-modal" hidden role="dialog" aria-modal="true" aria-labelledby="fp-title">
+  <div class="modal">
+    <header class="modal__header">
+      <h2 id="fp-title">Esqueci a senha</h2>
+      <button type="button" class="modal__close" id="fp-close" aria-label="Fechar">×</button>
+    </header>
+    <form id="forgot-password-form" class="modal__body" novalidate>
+      <div id="fp-step-input">
+        <div class="field-group">
+          <label for="fp-email">Seu email</label>
+          <input id="fp-email" name="email" type="email" required autocomplete="email" placeholder="seu@email.com" />
+        </div>
+        <p class="modal-notice">
+          O email pode demorar uns minutos pra chegar e <strong>vai cair no spam na primeira vez</strong> (Gmail e Outlook são chatos). Marca como "não é spam" e os próximos chegam normais.
+        </p>
+        <div id="fp-error" class="error-message" aria-live="polite"></div>
+      </div>
+      <div id="fp-step-success" hidden>
+        <div class="fp-success">
+          <div class="fp-success__icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 8l8 6 8-6M4 8v8a2 2 0 002 2h12a2 2 0 002-2V8M4 8l2-2h12l2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="fp-success__title">Se esse email tem cadastro,<br>um link de recuperação tá a caminho.</div>
+          <div class="fp-success__body">
+            Mandei pra <span class="fp-success__email" id="fp-success-email"></span>.<br>
+            Olha a caixa de entrada — <strong>e a de spam também</strong>, principalmente da primeira vez.
+          </div>
+        </div>
+      </div>
+    </form>
+    <footer class="modal__footer">
+      <div class="modal__footer-spacer"></div>
+      <button type="button" class="btn-secondary" id="fp-cancel">Cancelar</button>
+      <button type="submit" form="forgot-password-form" class="btn-primary btn-primary--compact" id="fp-submit" style="display:inline-flex;">
+        <span class="btn-label">Enviar link</span>
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- Modal: Redefinir senha (abre quando o amigo volta pelo link do email) -->
+<div class="modal-backdrop" id="reset-password-modal" hidden role="dialog" aria-modal="true" aria-labelledby="rp-title">
+  <div class="modal modal--onboarding">
+    <header class="modal__header">
+      <h2 id="rp-title">Defina uma nova senha</h2>
+    </header>
+    <form id="reset-password-form" class="modal__body" novalidate>
+      <p class="onb-intro">Você tá quase de volta. É só definir uma senha nova pra entrar.</p>
+      <div class="field-group">
+        <label for="rp-password">Nova senha</label>
+        <input id="rp-password" name="password" type="password" required minlength="6" autocomplete="new-password" placeholder="Mínimo 6 caracteres" />
+      </div>
+      <div class="field-group">
+        <label for="rp-password-confirm">Confirma a nova senha</label>
+        <input id="rp-password-confirm" name="password_confirm" type="password" required minlength="6" autocomplete="new-password" />
+      </div>
+      <div id="rp-error" class="error-message" aria-live="polite"></div>
+    </form>
+    <footer class="modal__footer">
+      <div class="modal__footer-spacer"></div>
+      <button type="submit" form="reset-password-form" class="btn-primary btn-primary--compact" id="rp-submit" style="display:inline-flex;">
+        <span class="btn-label">Definir e entrar</span>
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- Indicador de offline (Rodada 4) -->
+<div class="offline-banner" id="offline-banner" hidden role="status" aria-live="polite">Você está offline</div>
+
 <!-- Toast stack -->
 <div class="toast-stack" id="toast-stack"></div>
 
@@ -2996,11 +3226,19 @@ function entrarComoDeslogado() {
   if ($modal && !$modal.hidden) closeModal();
   const _onb = $('#onboarding-modal'); if (_onb) _onb.hidden = true;
   const _prof = $('#profile-modal'); if (_prof) _prof.hidden = true;
+  const _fp = $('#forgot-password-modal'); if (_fp) _fp.hidden = true;
+  const _rp = $('#reset-password-modal'); if (_rp) _rp.hidden = true;
+  recoveryMode = false;
   showScreen('login');
 }
 
 sb.auth.onAuthStateChange((event, session) => {
   console.log('[500md] auth event:', event, !!session);
+  if (event === 'PASSWORD_RECOVERY' && session?.user) {
+    showResetPasswordModal();
+    hideBoot();
+    return;
+  }
   if (session?.user) {
     entrarComoLogado(session.user);
   } else {
@@ -3304,6 +3542,130 @@ $('#profile-modal')?.addEventListener('click', (e) => {
 });
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && !$('#profile-modal').hidden) closeProfileModal();
+});
+
+// ==========================================================
+// Esqueci a senha (Rodada 3.6)
+// ==========================================================
+let recoveryMode = false;
+
+function openForgotPasswordModal() {
+  const m = $('#forgot-password-modal');
+  if (!m) return;
+  // tenta pré-preencher com o email que já está no login
+  const loginEmailVal = $('#login-email')?.value?.trim();
+  $('#fp-email').value = loginEmailVal || '';
+  $('#fp-error').textContent = '';
+  $('#fp-step-input').hidden = false;
+  $('#fp-step-success').hidden = true;
+  $('#fp-submit').hidden = false;
+  $('#fp-cancel').textContent = 'Cancelar';
+  m.hidden = false;
+  setTimeout(() => $('#fp-email')?.focus(), 100);
+}
+
+function closeForgotPasswordModal() {
+  const m = $('#forgot-password-modal');
+  if (m) m.hidden = true;
+}
+
+function setForgotPasswordLoading(loading) {
+  const btn = $('#fp-submit');
+  $('#fp-email').disabled = loading;
+  if (btn) {
+    btn.disabled = loading;
+    btn.querySelector('.btn-label').textContent = loading ? 'Enviando…' : 'Enviar link';
+  }
+}
+
+async function submitForgotPassword(e) {
+  e.preventDefault();
+  const email = $('#fp-email').value.trim();
+  const err = $('#fp-error');
+  err.textContent = '';
+  if (!email || !email.includes('@')) {
+    err.textContent = 'Coloca um email válido.';
+    return;
+  }
+  setForgotPasswordLoading(true);
+  try {
+    const redirectTo = window.location.origin + window.location.pathname;
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo });
+    if (error) throw error;
+    // Mostramos sucesso sem revelar se o email tem cadastro (boa prática de segurança)
+    $('#fp-success-email').textContent = email;
+    $('#fp-step-input').hidden = true;
+    $('#fp-step-success').hidden = false;
+    $('#fp-submit').hidden = true;
+    $('#fp-cancel').textContent = 'Fechar';
+  } catch (ex) {
+    console.warn('[500md] forgot password:', ex);
+    err.textContent = ex.message || 'Erro ao enviar. Tenta de novo.';
+  } finally {
+    setForgotPasswordLoading(false);
+  }
+}
+
+// ---------- Redefinir senha (volta do link do email) ----------
+function showResetPasswordModal() {
+  recoveryMode = true;
+  const m = $('#reset-password-modal');
+  if (!m) return;
+  $('#rp-password').value = '';
+  $('#rp-password-confirm').value = '';
+  $('#rp-error').textContent = '';
+  m.hidden = false;
+  setTimeout(() => $('#rp-password')?.focus(), 100);
+}
+
+function setResetPasswordLoading(loading) {
+  const btn = $('#rp-submit');
+  $('#rp-password').disabled = loading;
+  $('#rp-password-confirm').disabled = loading;
+  if (btn) {
+    btn.disabled = loading;
+    btn.querySelector('.btn-label').textContent = loading ? 'Salvando…' : 'Definir e entrar';
+  }
+}
+
+async function submitResetPassword(e) {
+  e.preventDefault();
+  const pwd  = $('#rp-password').value;
+  const conf = $('#rp-password-confirm').value;
+  const err  = $('#rp-error');
+  err.textContent = '';
+  if (pwd.length < 6) { err.textContent = 'A senha precisa de pelo menos 6 caracteres.'; return; }
+  if (pwd !== conf)   { err.textContent = 'As senhas não conferem.'; return; }
+  setResetPasswordLoading(true);
+  try {
+    const { error } = await sb.auth.updateUser({ password: pwd });
+    if (error) throw error;
+    recoveryMode = false;
+    $('#reset-password-modal').hidden = true;
+    // Limpa o token de recuperação que o Supabase deixou na URL
+    try { window.history.replaceState({}, document.title, window.location.pathname); } catch (_) {}
+    showToast('Senha redefinida. Bem-vindo de volta!');
+    // O updateUser dispara USER_UPDATED — entrarComoLogado roda normalmente e mostra o app
+  } catch (ex) {
+    console.warn('[500md] reset password:', ex);
+    err.textContent = ex.message || 'Erro ao salvar. Tenta de novo.';
+  } finally {
+    setResetPasswordLoading(false);
+  }
+}
+
+// Wire-up
+$('#forgot-password-link')?.addEventListener('click', openForgotPasswordModal);
+$('#fp-close')?.addEventListener('click', closeForgotPasswordModal);
+$('#fp-cancel')?.addEventListener('click', closeForgotPasswordModal);
+$('#forgot-password-form')?.addEventListener('submit', submitForgotPassword);
+$('#forgot-password-modal')?.addEventListener('click', (e) => {
+  if (e.target === $('#forgot-password-modal')) closeForgotPasswordModal();
+});
+$('#reset-password-form')?.addEventListener('submit', submitResetPassword);
+document.addEventListener('keydown', (e) => {
+  const fp = $('#forgot-password-modal');
+  if (e.key === 'Escape' && fp && !fp.hidden) closeForgotPasswordModal();
 });
 
 // ----------------------------------------------------------
@@ -4296,6 +4658,65 @@ $$('input[name="status"]').forEach(r => {
   } finally {
     hideBoot();
   }
+})();
+
+// ==========================================================
+// PWA (Rodada 4) — service worker, instalar, indicador de offline
+// ==========================================================
+(function pwaSetup() {
+  // 1) Registra o service worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then((reg) => console.log('[500md] SW registrado, scope:', reg.scope))
+        .catch((e) => console.warn('[500md] SW falhou:', e));
+    });
+  }
+
+  // 2) Prompt de instalação (Chrome/Edge/Android)
+  let deferredPrompt = null;
+  const installBtn = $('#install-btn');
+
+  // Esconde o botão se o app já está em modo standalone (instalado)
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                       window.navigator.standalone === true;
+  if (isStandalone && installBtn) installBtn.classList.remove('is-visible');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (installBtn && !isStandalone) installBtn.classList.add('is-visible');
+  });
+
+  installBtn?.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    installBtn.classList.remove('is-visible');
+    const promptEvent = deferredPrompt;
+    deferredPrompt = null;
+    try {
+      await promptEvent.prompt();
+      const { outcome } = await promptEvent.userChoice;
+      console.log('[500md] install:', outcome);
+    } catch (err) {
+      console.warn('[500md] install prompt:', err);
+    }
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    if (installBtn) installBtn.classList.remove('is-visible');
+    showToast('App instalado.');
+  });
+
+  // 3) Indicador de offline
+  const offlineBanner = $('#offline-banner');
+  function setOfflineUI(isOffline) {
+    if (!offlineBanner) return;
+    offlineBanner.hidden = !isOffline;
+  }
+  setOfflineUI(!navigator.onLine);
+  window.addEventListener('online',  () => setOfflineUI(false));
+  window.addEventListener('offline', () => setOfflineUI(true));
 })();
 </script>
 
