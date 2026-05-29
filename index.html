@@ -1,0 +1,4303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0c12" />
+<title>500 Maneiras de se Decepcionar</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+<!-- Tema: aplica antes da pintura pra evitar flash -->
+<script>
+(function() {
+  try {
+    const saved = localStorage.getItem('500md.theme');
+    if (saved === 'cresselia') {
+      document.documentElement.setAttribute('data-theme', 'cresselia');
+      const m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.setAttribute('content', '#fbf3ed');
+    }
+  } catch (_) {}
+})();
+</script>
+
+<style>
+/* ==========================================================
+   500MD — Design System Darkrai
+   ========================================================== */
+:root {
+  /* Fundos — preto noite Newmoon Island */
+  --bg-deep:        #0a0c12;
+  --bg-primary:     #11141c;
+  --bg-card:        #181c26;
+  --bg-card-hover:  #1f2431;
+  --bg-input:       #0e1118;
+  --bg-elevated:    #222838;
+
+  /* Bordas */
+  --border:         #2a3040;
+  --border-hover:   #3e4660;
+  --border-focus:   #5fbed4;
+
+  /* Texto — cream da mane branca do Darkrai */
+  --text-primary:   #dcd9d2;
+  --text-secondary: #969188;
+  --text-muted:     #5d5950;
+
+  /* Acentos — Darkrai canônico
+     PRIMARY: azul-olho (#5fbed4) | SECONDARY: vermelho-colar (#a83a35) | SUCCESS: cream-mane */
+  --accent-purple:        #5fbed4;
+  --accent-purple-bright: #7fd4ea;
+  --accent-purple-deep:   #2d7a9a;
+  --accent-purple-dim:    rgba(var(--accent-rgb), 0.14);
+  --accent-red:           #a83a35;
+  --accent-red-dim:       rgba(var(--accent-red-rgb), 0.14);
+  --accent-green:         #c8b890;
+  --accent-green-dim:     rgba(var(--accent-green-rgb), 0.14);
+
+  /* Sombras */
+  --shadow-sm:   0 2px 12px rgba(var(--bg-shadow-rgb), 0.5);
+  --shadow-md:   0 4px 24px rgba(var(--bg-shadow-rgb), 0.6);
+  --shadow-lg:   0 8px 48px rgba(var(--bg-shadow-rgb), 0.7);
+  --shadow-glow: 0 0 24px rgba(var(--accent-rgb), 0.25);
+
+  /* Geometria */
+  --radius:      12px;
+  --radius-sm:   8px;
+  --radius-xs:   6px;
+  --radius-pill: 999px;
+
+  /* Tipografia */
+  --font-display: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+
+  /* Transições — propositalmente lentas pra efeito onírico */
+  --transition:      all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.2s ease;
+
+  /* RGB tuples (para uso em rgba) — permitem temas alternativos */
+  --accent-rgb:        95, 190, 212;
+  --accent-bright-rgb: 127, 212, 234;
+  --accent-deep-rgb:   45, 122, 154;
+  --accent-red-rgb:    168, 58, 53;
+  --accent-green-rgb:  200, 184, 144;
+
+  /* Tuples para overlays/sombras (temáveis) */
+  --bg-overlay-rgb:      10, 12, 18;
+  --bg-overlay-mid-rgb:  17, 20, 28;
+  --bg-overlay-elev-rgb: 24, 28, 38;
+  --bg-shadow-rgb:        0, 0, 0;
+  --bg-tendril-rgb:      15, 8, 12;
+
+  /* Stops de gradiente em texto (números grandes "500", contador) */
+  --num-grad-start: #ecebe5;
+  --num-grad-mid:   #b5b3aa;
+  --num-grad-end:   var(--accent-purple);
+
+  /* Tint sutil no topo do card (substitui o roxo hardcoded) */
+  --card-top-tint: rgba(255, 255, 255, 0.04);
+}
+
+/* ==========================================================
+   Tema Cresselia — amanhecer luar (claro)
+   ========================================================== */
+[data-theme="cresselia"] {
+  /* Fundos — creme amanhecer (cream do corpo) */
+  --bg-deep:        #fbf3ed;
+  --bg-primary:     #fdf8f3;
+  --bg-card:        #ffffff;
+  --bg-card-hover:  #faf0e7;
+  --bg-input:       #fdf6ef;
+  --bg-elevated:    #ffffff;
+
+  /* Bordas — dourado tenro (cream-gold body shadow) */
+  --border:         #e8d5b8;
+  --border-hover:   #d4bc92;
+  --border-focus:   #b85e80;
+
+  /* Texto — rose-mauve, NUNCA preto ou plum escuro */
+  --text-primary:   #7a4763;
+  --text-secondary: #a08596;
+  --text-muted:     #b8a3b0;
+
+  /* Acentos — Cresselia canônica
+     PRIMARY: rosa-fita (#dba8c5) | SECONDARY: rosa-joia (#b85e80)
+     SUCCESS: azul-peito (#a8d0db) | WARN/ERROR: rosa-joia profundo (#a04265) */
+  --accent-purple:        #dba8c5;
+  --accent-purple-bright: #ebc4d6;
+  --accent-purple-deep:   #b85e80;
+  --accent-purple-dim:    rgba(219, 168, 197, 0.18);
+  --accent-red:           #a04265;
+  --accent-red-dim:       rgba(160, 66, 101, 0.12);
+  --accent-green:         #a8d0db;
+  --accent-green-dim:     rgba(168, 208, 219, 0.18);
+
+  /* RGB tuples — sobrescreve para Cresselia */
+  --accent-rgb:        219, 168, 197;
+  --accent-bright-rgb: 235, 196, 214;
+  --accent-deep-rgb:   184, 94, 128;
+  --accent-red-rgb:    160, 66, 101;
+  --accent-green-rgb:  168, 208, 219;
+
+  /* Overlays no tema claro */
+  --bg-overlay-rgb:      253, 246, 239;
+  --bg-overlay-mid-rgb:  255, 255, 255;
+  --bg-overlay-elev-rgb: 253, 246, 239;
+  --bg-shadow-rgb:       180, 145, 130;
+  --bg-tendril-rgb:      232, 200, 175;
+
+  /* Gradientes de texto: LIGHT → MID → ROSE-JOIA (top claro, bottom rosa-joia)
+     Mantém família rosa do começo ao fim, sem plum/preto */
+  --num-grad-start: #f5d8e3;   /* rosa-fita-claro (topo, próximo do cream) */
+  --num-grad-mid:   #d99bb5;   /* rosa-fita */
+  --num-grad-end:   #b85e80;   /* rosa-joia (contraste pro fundo cream) */
+
+  /* Sombras suaves */
+  --shadow-sm:   0 2px 12px rgba(120, 90, 80, 0.08);
+  --shadow-md:   0 4px 24px rgba(120, 90, 80, 0.10);
+  --shadow-lg:   0 8px 48px rgba(120, 90, 80, 0.14);
+  --shadow-glow: 0 0 24px rgba(219, 168, 197, 0.4);
+
+  /* Tint do topo do card no tema claro: rosa sutil em vez do roxo escuro */
+  --card-top-tint: rgba(var(--accent-rgb), 0.10);
+}
+
+/* Cresselia: camadas atmosféricas se adaptam (sol dourado em vez de olho vermelho) */
+[data-theme="cresselia"] .bg-tendrils { opacity: 0.20; }
+[data-theme="cresselia"] .bg-eye {
+  background: #e0c47d;
+  box-shadow: 0 0 18px rgba(224, 196, 125, 0.9), 0 0 36px rgba(224, 196, 125, 0.4);
+  opacity: 0.85;
+}
+[data-theme="cresselia"] .bg-vignette {
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(217, 157, 186, 0.08) 100%);
+}
+[data-theme="cresselia"] .bg-noise { opacity: 0.025; mix-blend-mode: multiply; }
+[data-theme="cresselia"] .bg-stars span {
+  background: #e0c47d;
+  box-shadow: 0 0 10px rgba(224, 196, 125, 0.6);
+  opacity: 0.5;
+}
+
+/* Botão de tema (ícone de lua/sol no header) */
+.theme-toggle-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.theme-toggle {
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 6px;
+  margin: -6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: var(--transition-fast);
+}
+.theme-toggle:hover {
+  background: rgba(var(--accent-rgb), 0.1);
+}
+.theme-toggle svg {
+  width: 22px;
+  height: 22px;
+  color: var(--accent-purple-bright);
+  filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.5));
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.6s ease;
+}
+[data-theme="cresselia"] .theme-toggle svg {
+  transform: scaleX(-1);
+  color: var(--accent-purple-bright);
+  filter: drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.6)) drop-shadow(0 0 4px rgba(224, 196, 125, 0.4));
+}
+
+/* Hint de primeiro acesso: anel pulsante + tooltip */
+.theme-toggle-wrap.hint-active .theme-toggle::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-purple);
+  pointer-events: none;
+  animation: theme-hint-pulse 1.8s ease-in-out infinite;
+}
+@keyframes theme-hint-pulse {
+  0%   { transform: scale(1);   opacity: 0.85; }
+  100% { transform: scale(1.6); opacity: 0;    }
+}
+.theme-hint {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 0;
+  padding: 10px 30px 10px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--accent-purple);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+  white-space: nowrap;
+  max-width: calc(100vw - 32px);
+  box-shadow: var(--shadow-md), 0 0 18px rgba(var(--accent-rgb), 0.35);
+  z-index: 50;
+  animation: theme-hint-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.theme-hint::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 22px;
+  width: 10px;
+  height: 10px;
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--accent-purple);
+  border-left: 1px solid var(--accent-purple);
+  transform: rotate(45deg);
+}
+.theme-hint .hint-dismiss {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.theme-hint .hint-dismiss:hover { color: var(--text-primary); }
+.theme-hint[hidden] { display: none; }
+@keyframes theme-hint-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 480px) {
+  .theme-hint { font-size: 10px; padding: 8px 28px 8px 12px; }
+}
+
+/* Overlay de holofote enquanto o hint está ativo:
+   escurece o corpo da página e mantém o header acima pra destacar o toggle. */
+.theme-spotlight {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 80;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+body.theme-hint-active .theme-spotlight {
+  opacity: 1;
+  pointer-events: auto;
+}
+body.theme-hint-active .app-header {
+  position: relative;
+  z-index: 100;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  background-color: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Transição sincronizada de cores durante troca de tema (450ms uniformes) */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition:
+    background-color 0.5s ease,
+    color           0.5s ease,
+    border-color    0.5s ease,
+    fill            0.5s ease,
+    stroke          0.5s ease,
+    box-shadow      0.5s ease,
+    filter          0.5s ease !important;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ==========================================================
+   Camadas atmosféricas
+   ========================================================== */
+
+/* Camada base — fundo profundo */
+.bg-base {
+  position: fixed;
+  inset: 0;
+  z-index: -5;
+  background: var(--bg-primary);
+  pointer-events: none;
+}
+
+/* Camada 1 — gradientes radiais "névoa de pesadelo" */
+.bg-mist {
+  position: fixed;
+  inset: 0;
+  z-index: -4;
+  background:
+    radial-gradient(ellipse 60% 50% at 18% 12%, rgba(var(--accent-rgb), 0.22), transparent 55%),
+    radial-gradient(ellipse 70% 60% at 82% 78%, rgba(var(--accent-deep-rgb), 0.18), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 50% 105%, rgba(var(--accent-red-rgb), 0.08), transparent 65%);
+  pointer-events: none;
+  animation: mist-drift 32s ease-in-out infinite alternate;
+}
+
+@keyframes mist-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(-1.5%, 1%, 0) scale(1.03); }
+  100% { transform: translate3d(1.5%, -1%, 0) scale(1.05); }
+}
+
+/* Camada 2 — wisps difusos que respiram */
+.bg-wisps {
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  pointer-events: none;
+  overflow: hidden;
+}
+.bg-wisps span {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  mix-blend-mode: screen;
+}
+.bg-wisps span:nth-child(1) {
+  width: 480px; height: 480px;
+  top: -120px; left: -120px;
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.35), transparent 70%);
+  animation: wisp-a 22s ease-in-out infinite alternate;
+}
+.bg-wisps span:nth-child(2) {
+  width: 520px; height: 520px;
+  bottom: -160px; right: -140px;
+  background: radial-gradient(circle, rgba(var(--accent-deep-rgb), 0.32), transparent 70%);
+  animation: wisp-b 28s ease-in-out infinite alternate;
+}
+.bg-wisps span:nth-child(3) {
+  width: 360px; height: 360px;
+  top: 40%; left: 60%;
+  background: radial-gradient(circle, rgba(var(--accent-bright-rgb), 0.18), transparent 70%);
+  animation: wisp-c 36s ease-in-out infinite alternate;
+}
+@keyframes wisp-a {
+  0%   { transform: translate(0, 0) scale(1); opacity: 0.5; }
+  100% { transform: translate(80px, 60px) scale(1.15); opacity: 0.7; }
+}
+@keyframes wisp-b {
+  0%   { transform: translate(0, 0) scale(1); opacity: 0.55; }
+  100% { transform: translate(-90px, -50px) scale(1.1); opacity: 0.75; }
+}
+@keyframes wisp-c {
+  0%   { transform: translate(0, 0) scale(1); opacity: 0.35; }
+  100% { transform: translate(-60px, 70px) scale(1.2); opacity: 0.55; }
+}
+
+/* Camada 3 — estrelas dim espalhadas */
+.bg-stars {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+.bg-stars span {
+  position: absolute;
+  width: 2px; height: 2px;
+  border-radius: 50%;
+  background: var(--accent-purple-bright);
+  box-shadow: 0 0 8px rgba(var(--accent-bright-rgb), 0.7);
+  opacity: 0.35;
+  animation: star-pulse 6s ease-in-out infinite alternate;
+}
+.bg-stars span:nth-child(1) { top: 12%; left: 18%; animation-delay: 0s; }
+.bg-stars span:nth-child(2) { top: 22%; left: 78%; animation-delay: 1.4s; }
+.bg-stars span:nth-child(3) { top: 68%; left: 14%; animation-delay: 2.8s; width: 1.5px; height: 1.5px; opacity: 0.25; }
+.bg-stars span:nth-child(4) { top: 82%; left: 72%; animation-delay: 4.2s; }
+.bg-stars span:nth-child(5) { top: 38%; left: 48%; animation-delay: 3.5s; width: 1.5px; height: 1.5px; opacity: 0.22; }
+@keyframes star-pulse {
+  0%   { opacity: 0.15; }
+  100% { opacity: 0.55; }
+}
+
+/* Camada 4 — vinheta nas bordas (foca o centro) */
+.bg-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(var(--bg-overlay-rgb), 0.7) 100%);
+}
+
+/* Camada 4b — tendrils nos cantos (sombra rastejando) */
+.bg-tendrils {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle 360px at 0% 0%, rgba(var(--bg-shadow-rgb), 0.55), transparent 70%),
+    radial-gradient(circle 360px at 100% 0%, rgba(var(--bg-shadow-rgb), 0.5), transparent 70%),
+    radial-gradient(circle 400px at 0% 100%, rgba(var(--bg-tendril-rgb), 0.6), transparent 70%),
+    radial-gradient(circle 400px at 100% 100%, rgba(var(--bg-tendril-rgb), 0.6), transparent 70%);
+  animation: tendrils-creep 9s ease-in-out infinite alternate;
+}
+@keyframes tendrils-creep {
+  0%   { opacity: 0.7; transform: scale(1); }
+  100% { opacity: 1;   transform: scale(1.04); }
+}
+
+/* Camada 4c — wisps fantasmagoréicos subindo (fumaça de pesadelo) */
+.bg-smoke {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.bg-smoke span {
+  position: absolute;
+  bottom: -120px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.55), transparent 70%);
+  filter: blur(6px);
+  opacity: 0;
+  animation: smoke-rise linear infinite;
+}
+.bg-smoke span:nth-child(1)  { left: 8%;  width: 12px; height: 12px; animation-duration: 18s; animation-delay: 0s;   }
+.bg-smoke span:nth-child(2)  { left: 18%; width: 8px;  height: 8px;  animation-duration: 22s; animation-delay: 4s;   }
+.bg-smoke span:nth-child(3)  { left: 30%; width: 14px; height: 14px; animation-duration: 26s; animation-delay: 8s;   }
+.bg-smoke span:nth-child(4)  { left: 44%; width: 10px; height: 10px; animation-duration: 20s; animation-delay: 2s;   }
+.bg-smoke span:nth-child(5)  { left: 58%; width: 12px; height: 12px; animation-duration: 24s; animation-delay: 11s;  }
+.bg-smoke span:nth-child(6)  { left: 70%; width: 8px;  height: 8px;  animation-duration: 19s; animation-delay: 6s;   }
+.bg-smoke span:nth-child(7)  { left: 82%; width: 14px; height: 14px; animation-duration: 28s; animation-delay: 14s;  }
+.bg-smoke span:nth-child(8)  { left: 92%; width: 10px; height: 10px; animation-duration: 23s; animation-delay: 9s;   }
+@keyframes smoke-rise {
+  0%   { transform: translateY(0)      translateX(0)    scale(0.8); opacity: 0; }
+  10%  { opacity: 0.6; }
+  50%  { transform: translateY(-50vh)  translateX(20px) scale(1.4); opacity: 0.5; }
+  90%  { opacity: 0.2; }
+  100% { transform: translateY(-105vh) translateX(-15px) scale(1.8); opacity: 0; }
+}
+
+/* Camada 4d — olho vermelho distante (Darkrai vigiando) */
+.bg-eye {
+  position: fixed;
+  top: 14%;
+  right: 11%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-red);
+  box-shadow:
+    0 0 12px rgba(var(--accent-red-rgb), 0.9),
+    0 0 28px rgba(var(--accent-red-rgb), 0.4);
+  pointer-events: none;
+  z-index: -1;
+  animation: eye-blink 6.5s ease-in-out infinite;
+  opacity: 0.7;
+}
+@keyframes eye-blink {
+  0%, 88%, 100% { opacity: 0.6; transform: scale(1); }
+  90%           { opacity: 0;   transform: scale(0.4); }
+  92%           { opacity: 0.6; transform: scale(1); }
+  93%           { opacity: 0;   transform: scale(0.4); }
+  95%, 99%      { opacity: 0.85; transform: scale(1.1); }
+}
+
+/* Camada 4e — shimmer ocasional (presença roxa pulsando) */
+.bg-shimmer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 90% 70% at 50% 50%, rgba(var(--accent-rgb), 0.12), transparent 50%);
+  opacity: 0;
+  animation: shimmer-pulse 14s ease-in-out infinite;
+}
+@keyframes shimmer-pulse {
+  0%, 70%, 100% { opacity: 0; }
+  80%           { opacity: 0.9; }
+  85%           { opacity: 0.4; }
+  88%           { opacity: 0.7; }
+}
+
+/* Camada 5 — ruído sutil sobreposto (textura grão) */
+.bg-noise {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.9'/></svg>");
+}
+
+/* ==========================================================
+   Tipografia
+   ========================================================== */
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.01em; }
+.mono { font-family: var(--font-mono); font-feature-settings: "tnum"; }
+
+/* ==========================================================
+   Loader — Lua minguante (Newmoon Island)
+   ========================================================== */
+.moon-loader {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  position: relative;
+}
+.moon-loader svg {
+  width: 100%;
+  height: 100%;
+  animation: moon-spin 3.5s linear infinite;
+  filter: drop-shadow(0 0 6px rgba(var(--accent-rgb), 0.5));
+}
+@keyframes moon-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ==========================================================
+   Tela de boot (antes de saber se está logado)
+   ========================================================== */
+#boot-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--bg-deep);
+  z-index: 100;
+  transition: opacity 0.6s ease;
+}
+#boot-screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+#boot-screen .boot-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ==========================================================
+   Telas (login / app)
+   ========================================================== */
+.screen { display: none; }
+.screen.active { display: flex; flex-direction: column; flex: 1; }
+
+/* ==========================================================
+   Tela LOGIN
+   ========================================================== */
+#login-screen {
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  min-height: 100dvh;
+  position: relative;
+}
+
+/* Aura difusa por trás do card */
+.login-aura {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.22), transparent 60%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+  animation: aura-breathe 7s ease-in-out infinite alternate;
+}
+@keyframes aura-breathe {
+  0%   { opacity: 0.65; transform: scale(1); }
+  100% { opacity: 0.95; transform: scale(1.08); }
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  padding: 40px 32px 32px;
+  background:
+    linear-gradient(180deg, var(--card-top-tint), transparent 35%),
+    var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow:
+    0 8px 48px rgba(var(--bg-shadow-rgb), 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.015) inset,
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  overflow: hidden;
+}
+
+/* Aura viajante percorrendo a borda do card */
+.login-card::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: var(--radius);
+  padding: 1px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 320deg,
+    rgba(var(--accent-bright-rgb), 0.7) 350deg,
+    rgba(var(--accent-bright-rgb), 0.0) 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.85;
+  animation: aura-travel 8s linear infinite;
+}
+@keyframes aura-travel {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Ornamento no topo do card — filete fino com ponto central */
+.login-card::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-purple-bright), transparent);
+  opacity: 0.6;
+}
+
+.login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+}
+
+/* Ícone de eclipse com halos */
+.eclipse {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.eclipse:hover {
+  transform: scale(1.06);
+}
+.eclipse:hover svg {
+  filter: drop-shadow(0 0 28px rgba(var(--accent-rgb), 0.95)) drop-shadow(0 0 10px rgba(var(--accent-red-rgb), 0.4));
+}
+[data-theme="cresselia"] .eclipse svg {
+  transform: scaleX(-1);
+}
+.eclipse::before,
+.eclipse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--accent-rgb), 0.25);
+  animation: halo-pulse 4s ease-in-out infinite;
+}
+.eclipse::after {
+  inset: -16px;
+  border-color: rgba(var(--accent-rgb), 0.12);
+  animation-delay: 1.5s;
+}
+.eclipse svg {
+  width: 100%;
+  height: 100%;
+  color: var(--accent-purple-bright);
+  filter: drop-shadow(0 0 22px rgba(var(--accent-rgb), 0.8)) drop-shadow(0 0 6px rgba(var(--accent-red-rgb), 0.3));
+  position: relative;
+  z-index: 1;
+}
+@keyframes halo-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%      { opacity: 0.9; transform: scale(1.05); }
+}
+/* Hierarquia do título: "500" + subtítulo em caps */
+.login-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.login-title .num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 42px;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  color: var(--text-primary);
+  background: linear-gradient(180deg, var(--num-grad-start), var(--num-grad-mid) 60%, var(--num-grad-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 18px rgba(var(--accent-rgb), 0.2));
+}
+.login-title .rule {
+  width: 56px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-purple), transparent);
+  margin-top: 4px;
+}
+.login-title .sub {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding: 0 4px;
+  text-indent: 0.3em;
+}
+
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.field label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-left: 2px;
+}
+.field input {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 15px;
+  outline: none;
+  transition: var(--transition);
+}
+.field input::placeholder {
+  color: var(--text-muted);
+}
+.field input:hover { border-color: var(--border-hover); }
+.field input:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.12);
+}
+.field input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Botão primário */
+.btn-primary {
+  width: 100%;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 20px;
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-deep));
+  border: 1px solid rgba(var(--accent-bright-rgb), 0.4);
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.btn-primary:hover:not(:disabled) {
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
+}
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Botão ghost */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 14px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.btn-ghost:hover {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+  background: var(--bg-card-hover);
+}
+
+/* Erro inline */
+.error-message {
+  min-height: 18px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent-red);
+  text-align: center;
+  padding: 0 4px;
+  letter-spacing: 0.01em;
+}
+.error-message.shake {
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-3px); }
+  40%, 60% { transform: translateX(3px); }
+}
+
+.login-footer {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-align: center;
+  padding-top: 4px;
+  position: relative;
+  text-indent: 0.28em;
+}
+.login-footer::before,
+.login-footer::after {
+  content: "·";
+  color: var(--accent-purple);
+  margin: 0 10px;
+  opacity: 0.7;
+}
+
+/* ==========================================================
+   Tela APP (pós-login — placeholder Rodada 0)
+   ========================================================== */
+#app-screen {
+  padding: 0;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(var(--bg-overlay-mid-rgb), 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.app-header .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+.app-header .brand svg {
+  width: 22px;
+  height: 22px;
+  color: var(--accent-purple-bright);
+  filter: drop-shadow(0 0 8px rgba(var(--accent-rgb), 0.5));
+}
+.app-header .brand .brand-full { display: none; }
+@media (min-width: 480px) {
+  .app-header .brand .brand-short { display: none; }
+  .app-header .brand .brand-full { display: inline; }
+}
+
+.user-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Wrapper de header direita: gasto + user-tag */
+.header-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Indicador de total gasto no header */
+.spent-indicator {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+  padding-right: 14px;
+  border-right: 1px solid var(--border);
+  line-height: 1;
+}
+.spent-indicator .lbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-indent: 0.22em;
+}
+.spent-indicator .val {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--accent-purple-bright);
+  text-shadow: 0 0 10px rgba(var(--accent-rgb), 0.35);
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  .header-right { gap: 10px; }
+  .spent-indicator { padding-right: 10px; gap: 0; }
+  .spent-indicator .lbl { display: none; }
+  .spent-indicator .val { font-size: 12px; }
+  .user-tag .user-name { display: none; }
+}
+.user-tag .avatar-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-purple);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.4);
+}
+.user-tag .user-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 20px 100px;
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+@media (min-width: 768px) {
+  .app-body { padding: 36px 32px 60px; }
+}
+
+/* ==========================================================
+   Tabs (desktop) + Bottom nav (mobile)
+   ========================================================== */
+.tabs-bar {
+  display: none;
+  gap: 4px;
+  background: rgba(var(--bg-overlay-elev-rgb), 0.5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 4px;
+}
+@media (min-width: 768px) {
+  .tabs-bar { display: inline-flex; }
+}
+.tab-btn {
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.tab-btn:hover:not(:disabled) {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-deep));
+  color: #fff;
+  box-shadow: 0 0 16px rgba(var(--accent-rgb), 0.35);
+}
+.tab-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.tab-btn .soon {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  padding: 2px 6px;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-xs);
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 8px;
+  align-items: end;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, transparent, rgba(var(--bg-overlay-rgb), 0.85) 30%, var(--bg-deep) 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+@media (min-width: 768px) {
+  .bottom-nav { display: none; }
+}
+.nav-btn {
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 8px;
+  min-height: 56px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.nav-btn svg { width: 22px; height: 22px; }
+.nav-btn.active { color: var(--accent-purple-bright); }
+.nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.nav-btn--fab {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-deep));
+  color: #fff;
+  box-shadow:
+    0 6px 24px rgba(var(--accent-rgb), 0.45),
+    0 0 0 1px rgba(var(--accent-bright-rgb), 0.5) inset;
+  margin-bottom: 4px;
+}
+.nav-btn--fab svg { width: 26px; height: 26px; }
+.nav-btn--fab:active { transform: scale(0.96); }
+
+/* ==========================================================
+   Tab content
+   ========================================================== */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.tab-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.tab-toolbar__head h2 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.tab-toolbar__head p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.btn-primary--compact {
+  width: auto;
+  height: 40px;
+  padding: 0 18px;
+  font-size: 13px;
+  flex-shrink: 0;
+  display: none;
+}
+@media (min-width: 768px) {
+  .btn-primary--compact { display: inline-flex; }
+  .tab-toolbar__head h2 { font-size: 26px; }
+}
+.btn-primary--compact svg { width: 16px; height: 16px; }
+
+/* ==========================================================
+   Meta Counter (hero — quanto falta pros 500)
+   ========================================================== */
+.meta-counter {
+  position: relative;
+  margin-bottom: 20px;
+  padding: 18px 22px 16px;
+  background:
+    radial-gradient(ellipse 80% 100% at 50% 0%, rgba(var(--accent-rgb), 0.10), transparent 65%),
+    var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 22px;
+  row-gap: 6px;
+}
+@media (max-width: 540px) {
+  .meta-counter {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 16px 18px 14px;
+  }
+}
+
+/* filete decorativo no topo (mesmo do login-card) */
+.meta-counter::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 25%;
+  right: 25%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-purple-bright), transparent);
+  opacity: 0.55;
+}
+
+.meta-counter__label {
+  grid-column: 1;
+  grid-row: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-indent: 0.24em;
+  white-space: nowrap;
+}
+.meta-counter__label::before,
+.meta-counter__label::after {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 1px;
+  background: var(--border-hover);
+}
+@media (max-width: 540px) {
+  .meta-counter__label { grid-column: 1; grid-row: 1; justify-content: center; }
+}
+
+.meta-counter__value {
+  grid-column: 1;
+  grid-row: 2;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(38px, 7vw, 54px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  background: linear-gradient(180deg, var(--num-grad-start) 0%, var(--num-grad-mid) 55%, var(--num-grad-end) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 14px rgba(var(--accent-rgb), 0.22));
+  transition: filter 0.6s ease;
+  white-space: nowrap;
+}
+@media (max-width: 540px) {
+  .meta-counter__value { grid-row: 2; text-align: center; }
+}
+.meta-counter__value .sign {
+  font-size: 0.42em;
+  vertical-align: 0.2em;
+  margin-right: 0.06em;
+  -webkit-text-fill-color: var(--accent-purple-bright);
+  background: none;
+  filter: drop-shadow(0 0 12px rgba(var(--accent-bright-rgb), 0.4));
+}
+
+.meta-counter__progress {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+@media (max-width: 540px) {
+  .meta-counter__progress { grid-column: 1; grid-row: 3; margin-top: 6px; }
+}
+.progress-track {
+  position: relative;
+  height: 5px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--accent-purple-deep), var(--accent-purple-bright));
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 14px rgba(var(--accent-bright-rgb), 0.45);
+  transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease;
+  position: relative;
+}
+/* shimmer movimentando no fill */
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+  animation: progress-shimmer 3.5s linear infinite;
+}
+@keyframes progress-shimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(200%); }
+}
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+.progress-meta .pct { color: var(--accent-purple-bright); }
+
+/* Estado: atingido (=500) */
+.meta-counter[data-state="achieved"] .meta-counter__value {
+  background: linear-gradient(180deg, var(--num-grad-start) 0%, var(--num-grad-mid) 50%, var(--accent-green) 100%);
+  -webkit-background-clip: text;
+  filter: drop-shadow(0 0 28px rgba(var(--accent-green-rgb), 0.4));
+}
+.meta-counter[data-state="achieved"] .progress-fill {
+  background: linear-gradient(90deg, var(--accent-green), #aef0bb);
+  box-shadow: 0 0 16px rgba(var(--accent-green-rgb), 0.5);
+}
+.meta-counter[data-state="achieved"] .progress-meta .pct { color: var(--accent-green); }
+.meta-counter[data-state="achieved"] {
+  background:
+    radial-gradient(ellipse 80% 100% at 50% 0%, rgba(var(--accent-green-rgb), 0.12), transparent 65%),
+    var(--bg-card);
+}
+.meta-counter[data-state="achieved"]::before {
+  background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+}
+
+/* Estado: excedido (>500) */
+.meta-counter[data-state="exceeded"] .meta-counter__value {
+  background: linear-gradient(180deg, var(--num-grad-start) 0%, var(--num-grad-mid) 60%, var(--accent-red) 100%);
+  -webkit-background-clip: text;
+  filter: drop-shadow(0 0 28px rgba(var(--accent-red-rgb), 0.35));
+}
+.meta-counter[data-state="exceeded"] .meta-counter__value .sign {
+  -webkit-text-fill-color: var(--accent-red);
+}
+.meta-counter[data-state="exceeded"] .progress-fill {
+  background: linear-gradient(90deg, var(--accent-purple), var(--accent-red));
+  box-shadow: 0 0 18px rgba(var(--accent-red-rgb), 0.4);
+}
+.meta-counter[data-state="exceeded"] .progress-meta .pct { color: var(--accent-red); }
+.meta-counter[data-state="exceeded"] {
+  background:
+    radial-gradient(ellipse 80% 100% at 50% 0%, rgba(var(--accent-red-rgb), 0.10), transparent 65%),
+    var(--bg-card);
+}
+.meta-counter[data-state="exceeded"]::before {
+  background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
+  opacity: 0.5;
+}
+
+@media (max-width: 540px) {
+  .meta-counter[data-state="pending"],
+  .meta-counter[data-state="achieved"],
+  .meta-counter[data-state="exceeded"] { padding: 14px 18px 12px; }
+}
+
+/* ==========================================================
+   Lista de boosters
+   ========================================================== */
+.booster-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.booster-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.booster-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent-purple);
+  opacity: 0;
+  transition: var(--transition);
+}
+.booster-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+.booster-card:hover::before { opacity: 0.8; }
+.booster-card:focus-visible {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.18);
+}
+
+.booster-card__date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 54px;
+  padding: 6px 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-mono);
+  line-height: 1.1;
+}
+.booster-card__date .dm { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.booster-card__date .y  { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+.booster-card__main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.booster-card__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.booster-card__sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.booster-card__amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  text-align: right;
+  font-family: var(--font-mono);
+}
+.booster-card__amount .qty {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.booster-card__amount .qty .lbl { font-size: 9px; color: var(--text-muted); margin-left: 4px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 400; }
+.booster-card__amount .value {
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+/* Status badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  white-space: nowrap;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+.status-badge::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+}
+.status-badge--encomendado {
+  color: var(--accent-purple-bright);
+  border: 1px solid rgba(var(--accent-rgb), 0.4);
+  background: var(--accent-purple-dim);
+}
+.status-badge--recebido {
+  color: var(--accent-green);
+  border: 1px solid rgba(var(--accent-green-rgb), 0.4);
+  background: var(--accent-green-dim);
+}
+.status-badge--aberto {
+  color: #fff;
+  border: 1px solid var(--accent-purple-bright);
+  background: linear-gradient(135deg, var(--accent-purple), var(--accent-purple-deep));
+  box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.3);
+}
+.status-badge--aberto::before {
+  background: #fff;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+}
+
+/* Wrapper de badges (status + fora-da-meta) */
+.booster-card__badges {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+/* Badge "Fora da meta" — aberto antes do encontro */
+.out-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--accent-red);
+  border: 1px solid rgba(var(--accent-red-rgb), 0.4);
+  background: var(--accent-red-dim);
+  white-space: nowrap;
+}
+.out-badge::before {
+  content: "—";
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/* Card com booster fora da meta: leve dessaturação */
+.booster-card--out { opacity: 0.78; }
+.booster-card--out:hover { opacity: 1; }
+.booster-card--out .booster-card__amount .qty,
+.booster-card--out .booster-card__title { color: var(--text-secondary); }
+
+/* Mobile: re-layout do card em 2 linhas */
+@media (max-width: 540px) {
+  .booster-card {
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    row-gap: 8px;
+  }
+  .booster-card__amount {
+    grid-column: 2;
+    grid-row: 2;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+  .booster-card__date { grid-row: 1 / span 2; }
+}
+
+/* ==========================================================
+   Empty state
+   ========================================================== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 14px;
+  padding: 60px 24px;
+  color: var(--text-secondary);
+}
+.empty-state .es-icon {
+  width: 56px;
+  height: 56px;
+  color: var(--accent-purple);
+  opacity: 0.6;
+  filter: drop-shadow(0 0 14px rgba(var(--accent-rgb), 0.4));
+}
+.empty-state h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 6px;
+}
+.empty-state p {
+  font-size: 13px;
+  max-width: 32ch;
+  line-height: 1.55;
+}
+.empty-state .es-cta { margin-top: 10px; }
+
+/* ==========================================================
+   Modal
+   ========================================================== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--bg-overlay-rgb), 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 0;
+  animation: fade-in 0.25s ease;
+}
+.modal-backdrop[hidden] { display: none; }
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal {
+  width: 100%;
+  max-width: 520px;
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: modal-rise 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@media (min-width: 600px) {
+  .modal {
+    max-height: 90dvh;
+    border-radius: var(--radius);
+    margin: 24px;
+  }
+}
+@media (max-width: 599px) {
+  .modal { height: 100dvh; }
+}
+@keyframes modal-rise {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.modal__header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.modal__close {
+  appearance: none;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+.modal__close:hover { color: var(--text-primary); background: var(--bg-card-hover); }
+
+.modal__body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.modal__footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 24px calc(16px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border);
+  background: rgba(var(--bg-overlay-elev-rgb), 0.4);
+  flex-shrink: 0;
+}
+.modal__footer-spacer { flex: 1; }
+
+/* Form fields no modal */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.field-group > label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-left: 2px;
+}
+.field-group input[type="text"],
+.field-group input[type="number"],
+.field-group input[type="date"],
+.field-group input[type="password"],
+.field-group input[type="email"],
+.field-group textarea {
+  width: 100%;
+  padding: 0 14px;
+  height: 44px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 14px;
+  outline: none;
+  transition: var(--transition-fast);
+}
+.field-group textarea {
+  height: auto;
+  min-height: 72px;
+  padding: 12px 14px;
+  resize: vertical;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.field-group input[type="date"] {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color-scheme: dark;
+}
+.field-group input::placeholder,
+.field-group textarea::placeholder { color: var(--text-muted); }
+.field-group input:hover,
+.field-group textarea:hover { border-color: var(--border-hover); }
+.field-group input:focus,
+.field-group textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.12);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+@media (max-width: 480px) {
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+/* Radio status */
+.radio-group {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.radio-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 10px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  text-align: center;
+}
+.radio-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.radio-option:hover {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+}
+.radio-option:has(input:checked) {
+  border-color: var(--accent-purple);
+  background: var(--accent-purple-dim);
+  color: var(--accent-purple-bright);
+  box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.25);
+}
+
+/* Botões secundário e perigo */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 16px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.btn-secondary:hover:not(:disabled) {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+  background: var(--bg-card-hover);
+}
+.btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 14px;
+  background: transparent;
+  border: 1px solid rgba(var(--accent-red-rgb), 0.5);
+  border-radius: var(--radius-sm);
+  color: var(--accent-red);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.btn-danger:hover:not(:disabled) {
+  background: var(--accent-red-dim);
+  border-color: var(--accent-red);
+  box-shadow: 0 0 14px rgba(var(--accent-red-rgb), 0.25);
+}
+.btn-danger.confirming {
+  background: var(--accent-red);
+  color: #fff;
+  border-color: var(--accent-red);
+  box-shadow: 0 0 16px rgba(var(--accent-red-rgb), 0.5);
+}
+.btn-danger[hidden],
+.btn-secondary[hidden],
+.btn-primary[hidden],
+.btn-primary--compact[hidden] { display: none !important; }
+
+.btn-primary--compact .btn-label,
+.btn-primary--compact { gap: 6px; }
+
+/* Botoes do modal: variantes compactas em mobile */
+@media (max-width: 480px) {
+  .modal__footer { padding: 14px 16px calc(14px + env(safe-area-inset-bottom)); }
+  .btn-secondary, .btn-danger { padding: 0 12px; font-size: 12.5px; }
+}
+
+/* ==========================================================
+   Toast (mensagens leves)
+   ========================================================== */
+.toast-stack {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  padding: 10px 16px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  animation: toast-in 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both, toast-out 0.4s ease 2.6s forwards;
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes toast-out {
+  to { opacity: 0; transform: translateY(8px); }
+}
+
+/* ==========================================================
+   Responsivo
+   ========================================================== */
+@media (max-width: 380px) {
+  .login-card { padding: 36px 22px 28px; }
+  .login-title .num { font-size: 36px; }
+  .login-title .sub { font-size: 10px; letter-spacing: 0.25em; }
+  .login-aura { width: 380px; height: 380px; }
+  .eclipse { width: 60px; height: 60px; }
+}
+
+/* Reduz movimentação para quem pediu */
+@media (prefers-reduced-motion: reduce) {
+  .bg-mist, .bg-wisps span, .login-aura, .bg-stars span,
+  .eclipse::before, .eclipse::after, .bg-tendrils, .bg-smoke span,
+  .bg-eye, .bg-shimmer, .login-card::after {
+    animation: none !important;
+  }
+}
+/* ==========================================================
+   Dashboard "Meu" (Rodada 2) — usa só tokens temáveis
+   ========================================================== */
+.dash {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+/* rótulo de seção (mesmo idioma visual do meta-counter__label) */
+.dash-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.dash-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border-hover);
+  opacity: 0.7;
+}
+
+/* tiles de estatística */
+.dash-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+@media (max-width: 540px) {
+  .dash-stats { grid-template-columns: 1fr; }
+}
+.dash-stat {
+  position: relative;
+  background:
+    radial-gradient(ellipse 90% 100% at 50% 0%, rgba(var(--accent-rgb), 0.07), transparent 70%),
+    var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px 15px;
+  overflow: hidden;
+  transition: var(--transition-fast);
+}
+.dash-stat:hover { border-color: var(--border-hover); }
+.dash-stat__label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.dash-stat__value {
+  margin-top: 7px;
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum";
+  font-size: clamp(20px, 4.5vw, 25px);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.dash-stat__value .unit {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+.dash-stat__sub {
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+
+/* painel genérico (card) */
+.dash-panel {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px 17px;
+  overflow: hidden;
+}
+
+/* chips de status */
+.dash-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.dash-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 8px 13px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+}
+.dash-chip__n {
+  font-size: 15px;
+  font-weight: 600;
+  font-feature-settings: "tnum";
+}
+.dash-chip__l {
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.dash-chip--encomendado { border-color: rgba(var(--accent-rgb), 0.4); background: var(--accent-purple-dim); }
+.dash-chip--encomendado .dash-chip__n { color: var(--accent-purple-bright); }
+.dash-chip--recebido { border-color: rgba(var(--accent-green-rgb), 0.4); background: var(--accent-green-dim); }
+.dash-chip--recebido .dash-chip__n { color: var(--accent-green); }
+.dash-chip--aberto { border-color: rgba(var(--accent-rgb), 0.55); background: rgba(var(--accent-rgb), 0.2); }
+.dash-chip--aberto .dash-chip__n { color: var(--accent-purple-bright); }
+
+/* lista por coleção */
+.dash-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.dash-col__row { display: flex; flex-direction: column; gap: 6px; }
+.dash-col__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.dash-col__name {
+  font-size: 13px;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dash-col__nums {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-feature-settings: "tnum";
+  color: var(--text-secondary);
+  letter-spacing: 0.03em;
+}
+.dash-col__nums strong { color: var(--accent-purple-bright); font-weight: 600; }
+.dash-bar {
+  height: 4px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.dash-bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-purple-deep), var(--accent-purple-bright));
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 10px rgba(var(--accent-bright-rgb), 0.35);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* gráfico de evolução (SVG leve, sem dependência) */
+.dash-evo__chart {
+  margin-top: 2px;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+}
+.dash-spark {
+  display: block;
+  width: 100%;
+  height: 92px;
+}
+.dash-spark .area { fill: var(--accent-purple-dim); stroke: none; }
+.dash-spark .line {
+  fill: none;
+  stroke: var(--accent-purple);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.dash-evo__caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+.dash-proj {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+.dash-proj strong { color: var(--accent-purple-bright); font-weight: 600; }
+/* ==========================================================
+   Aba "Grupo" — leaderboard ao vivo (Rodada 3)
+   ========================================================== */
+.grupo-refresh { padding: 7px; border-radius: 50%; }
+.grupo-refresh svg { width: 18px; height: 18px; display: block; }
+.grupo-refresh.spinning svg { animation: grupo-spin 0.8s linear infinite; }
+@keyframes grupo-spin { to { transform: rotate(360deg); } }
+
+.grupo-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 180px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+.grupo-loading::before {
+  content: "";
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent-purple-bright);
+  animation: grupo-spin 0.8s linear infinite;
+}
+
+.grupo { display: flex; flex-direction: column; gap: 14px; }
+
+/* total agregado do grupo */
+.grupo-total {
+  position: relative;
+  padding: 18px 22px 16px;
+  background:
+    radial-gradient(ellipse 80% 100% at 50% 0%, rgba(var(--accent-rgb), 0.10), transparent 65%),
+    var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.grupo-total::before {
+  content: "";
+  position: absolute;
+  top: -1px; left: 25%; right: 25%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-purple-bright), transparent);
+  opacity: 0.55;
+}
+.grupo-total__label {
+  font-family: var(--font-mono);
+  font-size: 9.5px; font-weight: 500;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: var(--text-muted);
+}
+.grupo-total__value {
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(30px, 6vw, 42px);
+  line-height: 1; letter-spacing: -0.02em;
+  background: linear-gradient(180deg, var(--num-grad-start) 0%, var(--num-grad-mid) 55%, var(--num-grad-end) 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 14px rgba(var(--accent-rgb), 0.22));
+}
+.grupo-total__value .of { font-size: 0.5em; -webkit-text-fill-color: var(--text-secondary); color: var(--text-secondary); font-weight: 600; }
+.grupo-total__sub { margin-top: 4px; font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; color: var(--text-secondary); }
+.grupo-total__progress { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+
+/* ranking */
+.rank-list { display: flex; flex-direction: column; gap: 8px; }
+.rank-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px 26px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+}
+.rank-row:hover { border-color: var(--border-hover); transform: translateY(-1px); }
+.rank-row__pos { font-family: var(--font-mono); font-size: 13px; font-weight: 600; color: var(--text-muted); text-align: center; }
+.rank-row--lead .rank-row__pos { color: var(--accent-purple-bright); }
+.rank-row__avatar { width: 26px; height: 26px; border-radius: 50%; border: 1px solid rgba(var(--accent-rgb), 0.3); }
+.rank-row__center { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.rank-row__name { font-size: 13.5px; color: var(--text-primary); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rank-row__name .me-tag {
+  margin-left: 7px; font-family: var(--font-mono);
+  font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--accent-purple-bright);
+  border: 1px solid rgba(var(--accent-rgb), 0.4);
+  border-radius: var(--radius-pill); padding: 2px 7px; vertical-align: middle;
+}
+.rank-row__nums { font-family: var(--font-mono); font-feature-settings: "tnum"; font-size: 12px; color: var(--text-secondary); text-align: right; white-space: nowrap; }
+.rank-row__nums strong { color: var(--text-primary); font-weight: 600; }
+.rank-row__nums .pct { display: block; font-size: 10px; color: var(--accent-purple-bright); margin-top: 2px; }
+.rank-row--me {
+  border-color: rgba(var(--accent-rgb), 0.5);
+  background:
+    radial-gradient(ellipse 70% 120% at 0% 50%, rgba(var(--accent-rgb), 0.10), transparent 60%),
+    var(--bg-card);
+}
+.rank-row.flash { animation: rank-flash 1.6s ease; }
+@keyframes rank-flash {
+  0%   { box-shadow: 0 0 0 0 rgba(var(--accent-bright-rgb), 0); border-color: var(--accent-purple-bright); }
+  25%  { box-shadow: 0 0 18px 2px rgba(var(--accent-bright-rgb), 0.45); border-color: var(--accent-purple-bright); }
+  100% { box-shadow: 0 0 0 0 rgba(var(--accent-bright-rgb), 0); }
+}
+
+/* gráfico comparativo (Chart.js sob demanda) */
+.grupo-chart__canvas { position: relative; height: 240px; margin-top: 4px; }
+@media (max-width: 540px) { .grupo-chart__canvas { height: 200px; } }
+/* ==========================================================
+   Rodada 3.5 — Onboarding + edição de perfil
+   ========================================================== */
+
+/* User-tag clicável (avatar + nome viram botão pra abrir perfil) */
+.user-tag-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px 6px 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font: inherit;
+  color: inherit;
+}
+.user-tag-btn:hover { background: var(--bg-card); border-color: var(--border); }
+.user-tag-btn:focus-visible { outline: 2px solid var(--accent-purple); outline-offset: 2px; }
+
+/* Paleta curada de cores de avatar */
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 4px;
+}
+@media (max-width: 540px) { .color-grid { grid-template-columns: repeat(5, 1fr); gap: 8px; } }
+.color-swatch {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  min-height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  cursor: pointer;
+  padding: 0;
+  transition: var(--transition-fast);
+  position: relative;
+}
+.color-swatch:hover { transform: scale(1.08); border-color: var(--border-hover); }
+.color-swatch.is-selected {
+  border-color: var(--text-primary);
+  box-shadow: 0 0 0 3px var(--bg-elevated), 0 0 0 5px var(--accent-purple), 0 0 14px rgba(var(--accent-bright-rgb), 0.45);
+  transform: scale(1.05);
+}
+.color-swatch.is-selected::after {
+  content: "";
+  position: absolute;
+  inset: 30%;
+  background: var(--text-primary);
+  border-radius: 50%;
+  opacity: 0.2;
+}
+
+/* Onboarding: modal sem botão de fechar, levemente acentuado */
+.modal--onboarding .modal__header { border-bottom: 1px solid rgba(var(--accent-rgb), 0.3); }
+.modal--onboarding .modal__header h2 {
+  background: linear-gradient(180deg, var(--num-grad-start) 0%, var(--num-grad-mid) 70%, var(--num-grad-end) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.onb-intro {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+/* Seção colapsável "Trocar senha" dentro do perfil */
+.profile-password-section {
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.profile-pwd-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.profile-pwd-toggle .caret { transition: transform 0.25s ease; font-size: 12px; }
+.profile-pwd-toggle.is-open .caret { transform: rotate(180deg); }
+.profile-pwd-toggle:hover { color: var(--text-primary); }
+.profile-pwd-fields { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
+.profile-pwd-fields[hidden] { display: none; }
+</style>
+</head>
+
+<body>
+
+<!-- Camadas atmosféricas (ordem importa: do mais profundo ao mais raso) -->
+<div class="bg-base"></div>
+<div class="bg-mist"></div>
+<div class="bg-wisps"><span></span><span></span><span></span></div>
+<div class="bg-stars"><span></span><span></span><span></span><span></span><span></span></div>
+<div class="bg-shimmer"></div>
+<div class="bg-tendrils"></div>
+<div class="bg-smoke">
+  <span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span>
+</div>
+<div class="bg-eye"></div>
+<div class="bg-vignette"></div>
+<div class="bg-noise"></div>
+
+<!-- Tela de boot (mostra enquanto checamos sessão) -->
+<div id="boot-screen">
+  <div class="moon-loader">
+    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22 16 A8 8 0 1 1 14 8 A6 6 0 1 0 22 16 Z" fill="currentColor" style="color: var(--accent-purple-bright);"/>
+    </svg>
+  </div>
+  <div class="boot-label">Invocando pesadelos…</div>
+</div>
+
+<!-- ============================================
+     Tela: LOGIN
+============================================ -->
+<section id="login-screen" class="screen">
+  <div class="login-aura"></div>
+  <div class="login-card">
+
+    <div class="login-header">
+      <!-- Ícone eclipse (lua minguante com halos) — também alterna o tema -->
+      <button type="button" class="eclipse" id="eclipse-toggle" aria-label="Alternar tema (Darkrai / Cresselia)" title="Alternar tema">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M33 24 A12 12 0 1 1 21 12 A9 9 0 1 0 33 24 Z" fill="currentColor"/>
+        </svg>
+      </button>
+      <div class="login-title">
+        <div class="num">500</div>
+        <div class="rule"></div>
+        <div class="sub">Maneiras de se decepcionar</div>
+      </div>
+    </div>
+
+    <form id="login-form" class="login-form" autocomplete="on">
+      <div class="field">
+        <label for="login-email">Email</label>
+        <input
+          id="login-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          inputmode="email"
+          placeholder="voce@exemplo.com"
+          required
+        />
+      </div>
+
+      <div class="field">
+        <label for="login-password">Senha</label>
+        <input
+          id="login-password"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          placeholder="••••••••"
+          required
+        />
+      </div>
+
+      <button type="submit" id="login-submit" class="btn-primary">
+        <span class="btn-label">Entrar</span>
+      </button>
+
+      <div id="login-error" class="error-message" aria-live="polite"></div>
+    </form>
+
+    <div class="login-footer">Cada booster, uma decepção</div>
+  </div>
+</section>
+
+<!-- ============================================
+     Tela: APP (placeholder Rodada 0)
+============================================ -->
+<section id="app-screen" class="screen">
+
+  <header class="app-header">
+    <div class="brand">
+      <div class="theme-toggle-wrap" id="theme-toggle-wrap">
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Alternar tema (Darkrai / Cresselia)" title="Alternar tema">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M22 16 A8 8 0 1 1 14 8 A6 6 0 1 0 22 16 Z" fill="currentColor"/>
+          </svg>
+        </button>
+        <div class="theme-hint" id="theme-hint" hidden role="tooltip">
+          <span>Clique aqui pra trocar o tema</span>
+          <button type="button" class="hint-dismiss" aria-label="Dispensar">×</button>
+        </div>
+      </div>
+      <span class="brand-short">500MD</span>
+      <span class="brand-full">500 Maneiras de se decepcionar</span>
+    </div>
+
+    <nav class="tabs-bar" role="tablist">
+      <button type="button" class="tab-btn active" data-tab="meu" role="tab" aria-selected="true">Usuário</button>
+      <button type="button" class="tab-btn" data-tab="grupo" role="tab" aria-selected="false">Grupo</button>
+    </nav>
+
+    <div class="header-right">
+      <div class="spent-indicator" id="spent-indicator" aria-live="polite">
+        <span class="lbl">Gasto</span>
+        <span class="val" id="spent-value" style="color: rgb(224, 110, 110)">R$ 0,00</span>
+      </div>
+      <div class="user-tag">
+        <button type="button" class="user-tag-btn" id="user-tag-btn" aria-label="Editar perfil">
+          <div class="avatar-dot" id="user-avatar"></div>
+          <span class="user-name mono" id="user-display-name">…</span>
+        </button>
+        <button type="button" class="btn-ghost" id="logout-btn" aria-label="Sair">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-body">
+
+    <!-- Tab: MEU -->
+    <section id="tab-meu" class="tab-content active" role="tabpanel">
+      <header class="tab-toolbar">
+        <div class="tab-toolbar__head">
+          <h2>Meu diário</h2>
+          <p>Cada compra registrada, uma decepção contabilizada.</p>
+        </div>
+        <button type="button" class="btn-primary btn-primary--compact" id="btn-add-desktop">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="btn-label">Nova compra</span>
+        </button>
+      </header>
+
+      <section class="meta-counter" id="meta-counter" data-state="pending" aria-live="polite"></section>
+
+      <section id="dash" class="dash" aria-live="polite" hidden></section>
+
+      <div id="booster-list-container" aria-live="polite"></div>
+    </section>
+
+    <!-- Tab: GRUPO (Rodada 3) -->
+    <section id="tab-grupo" class="tab-content" role="tabpanel">
+      <header class="tab-toolbar">
+        <div class="tab-toolbar__head">
+          <h2>O grupo</h2>
+          <p>Todo mundo se afundando junto, rumo aos 500 de cada um.</p>
+        </div>
+        <button type="button" class="btn-ghost grupo-refresh" id="grupo-refresh" aria-label="Atualizar">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M20 11a8 8 0 1 0-.6 4M20 5v6h-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </header>
+      <div id="grupo-content" aria-live="polite"></div>
+    </section>
+
+  </main>
+
+  <!-- Bottom nav (mobile) -->
+  <nav class="bottom-nav" role="tablist" aria-label="Navegação principal">
+    <button type="button" class="nav-btn active" data-tab="meu" aria-label="Meu">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span>Meu</span>
+    </button>
+    <button type="button" class="nav-btn nav-btn--fab" id="btn-add-mobile" aria-label="Nova compra">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <button type="button" class="nav-btn" data-tab="grupo" aria-label="Grupo">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="9" cy="10" r="3" stroke="currentColor" stroke-width="1.6"/>
+        <circle cx="17" cy="10" r="2.4" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M3 19c0-3 2.5-5 6-5s6 2 6 5M14.5 19c0-2.4 1.8-4 4.5-4s4.5 1.6 4.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span>Grupo</span>
+    </button>
+  </nav>
+
+</section>
+
+<!-- ============================================
+     Modal: Nova compra / Editar compra
+============================================ -->
+<div class="modal-backdrop" id="booster-modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <header class="modal__header">
+      <h2 id="modal-title">Nova compra</h2>
+      <button type="button" class="modal__close" id="modal-close" aria-label="Fechar">×</button>
+    </header>
+
+    <form id="booster-form" class="modal__body" novalidate>
+      <div class="field-group">
+        <label for="f-produto">Produto</label>
+        <input id="f-produto" name="produto" type="text" required maxlength="120"
+               placeholder="Booster Box Paradox Rift" autocomplete="off" />
+      </div>
+
+      <div class="field-group">
+        <label for="f-colecao">Coleção</label>
+        <input id="f-colecao" name="colecao" type="text" required maxlength="80"
+               placeholder="Paradox Rift" autocomplete="off" list="colecoes-list" />
+        <datalist id="colecoes-list"></datalist>
+      </div>
+
+      <div class="form-grid">
+        <div class="field-group">
+          <label for="f-quantidade">Quantidade</label>
+          <input id="f-quantidade" name="quantidade" type="number" required
+                 min="1" step="1" inputmode="numeric" placeholder="36" />
+        </div>
+        <div class="field-group">
+          <label for="f-valor">Valor total</label>
+          <input id="f-valor" name="valor_total" type="text" required
+                 inputmode="decimal" placeholder="R$ 0,00" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field-group">
+          <label for="f-data-compra">Data da compra</label>
+          <input id="f-data-compra" name="data_compra" type="date" required />
+        </div>
+        <div class="field-group">
+          <label for="f-data-receb">Data de recebimento</label>
+          <input id="f-data-receb" name="data_recebimento" type="date" />
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>Status</label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="status" value="encomendado" checked />
+            <span>Encomendado</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="status" value="recebido" />
+            <span>Recebido</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="status" value="aberto" />
+            <span>Aberto</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="f-notas">Notas (opcional)</label>
+        <textarea id="f-notas" name="notas" rows="3" maxlength="500"
+                  placeholder="Observações livres…"></textarea>
+      </div>
+
+      <div id="form-error" class="error-message" aria-live="polite"></div>
+    </form>
+
+    <footer class="modal__footer">
+      <button type="button" class="btn-danger" id="btn-delete" hidden>Excluir</button>
+      <div class="modal__footer-spacer"></div>
+      <button type="button" class="btn-secondary" id="btn-cancel">Cancelar</button>
+      <button type="submit" form="booster-form" class="btn-primary btn-primary--compact" id="btn-save" style="display:inline-flex;">
+        <span class="btn-label">Salvar</span>
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- Overlay de holofote (Rodada 3.5) -->
+<div class="theme-spotlight" id="theme-spotlight"></div>
+
+<!-- Modal de Onboarding (primeira entrada) -->
+<div class="modal-backdrop" id="onboarding-modal" hidden role="dialog" aria-modal="true" aria-labelledby="onb-title">
+  <div class="modal modal--onboarding">
+    <header class="modal__header">
+      <h2 id="onb-title">Bem-vindo ao grupo</h2>
+    </header>
+    <form id="onboarding-form" class="modal__body" novalidate>
+      <p class="onb-intro">Antes de começar a se decepcionar, vamos te personalizar no grupo.</p>
+
+      <div class="field-group">
+        <label for="onb-password">Defina uma senha</label>
+        <input id="onb-password" name="password" type="password" required minlength="6"
+               autocomplete="new-password" placeholder="Mínimo 6 caracteres" />
+      </div>
+
+      <div class="field-group">
+        <label for="onb-display-name">Apelido</label>
+        <input id="onb-display-name" name="display_name" type="text" required maxlength="40"
+               autocomplete="off" placeholder="Como te chamam?" />
+      </div>
+
+      <div class="field-group">
+        <label>Cor de avatar</label>
+        <div class="color-grid" id="onb-color-grid" role="radiogroup" aria-label="Escolha uma cor"></div>
+      </div>
+
+      <div id="onb-error" class="error-message" aria-live="polite"></div>
+    </form>
+    <footer class="modal__footer">
+      <div class="modal__footer-spacer"></div>
+      <button type="submit" form="onboarding-form" class="btn-primary btn-primary--compact" id="onb-submit" style="display:inline-flex;">
+        <span class="btn-label">Entrar no grupo</span>
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- Modal de Editar Perfil -->
+<div class="modal-backdrop" id="profile-modal" hidden role="dialog" aria-modal="true" aria-labelledby="profile-title">
+  <div class="modal">
+    <header class="modal__header">
+      <h2 id="profile-title">Editar perfil</h2>
+      <button type="button" class="modal__close" id="profile-close" aria-label="Fechar">×</button>
+    </header>
+    <form id="profile-form" class="modal__body" novalidate>
+      <div class="field-group">
+        <label for="prof-display-name">Apelido</label>
+        <input id="prof-display-name" name="display_name" type="text" required maxlength="40" autocomplete="off" />
+      </div>
+
+      <div class="field-group">
+        <label>Cor de avatar</label>
+        <div class="color-grid" id="prof-color-grid" role="radiogroup" aria-label="Escolha uma cor"></div>
+      </div>
+
+      <div class="field-group">
+        <label for="prof-meta">Meta pessoal (em boosters)</label>
+        <input id="prof-meta" name="meta_total" type="number" required min="1" max="100000" step="1" inputmode="numeric" placeholder="500" />
+      </div>
+
+      <div class="profile-password-section">
+        <button type="button" class="btn-ghost profile-pwd-toggle" id="prof-pwd-toggle" aria-expanded="false">
+          <span>Trocar senha</span>
+          <span class="caret">▾</span>
+        </button>
+        <div class="profile-pwd-fields" id="prof-pwd-fields" hidden>
+          <div class="field-group">
+            <label for="prof-pwd-current">Senha atual</label>
+            <input id="prof-pwd-current" name="current_password" type="password" autocomplete="current-password" />
+          </div>
+          <div class="field-group">
+            <label for="prof-pwd-new">Nova senha</label>
+            <input id="prof-pwd-new" name="new_password" type="password" minlength="6" autocomplete="new-password" placeholder="Mínimo 6 caracteres" />
+          </div>
+        </div>
+      </div>
+
+      <div id="profile-error" class="error-message" aria-live="polite"></div>
+    </form>
+    <footer class="modal__footer">
+      <div class="modal__footer-spacer"></div>
+      <button type="button" class="btn-secondary" id="profile-cancel">Cancelar</button>
+      <button type="submit" form="profile-form" class="btn-primary btn-primary--compact" id="profile-save" style="display:inline-flex;">
+        <span class="btn-label">Salvar</span>
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- Toast stack -->
+<div class="toast-stack" id="toast-stack"></div>
+
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+<script>
+'use strict';
+
+/* ==========================================================
+   500MD — Lógica principal (Rodada 0)
+   ========================================================== */
+
+// ----------------------------------------------------------
+// CREDENCIAIS SUPABASE
+// ----------------------------------------------------------
+const SUPABASE_URL      = 'https://eyubpryhpcycgbchltjs.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5dWJwcnlocGN5Y2diY2hsdGpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4OTY4NjMsImV4cCI6MjA5NTQ3Mjg2M30.vCH8eyNm_tVxkfdSSkkPVKFrZVKDg_96oOIO4G8leQw';
+
+// ----------------------------------------------------------
+// Cliente Supabase
+// ----------------------------------------------------------
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: false,
+    storageKey: '500md.auth'
+  }
+});
+
+// ----------------------------------------------------------
+// Helpers genéricos
+// ----------------------------------------------------------
+const $  = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+function _dataISO(date = new Date()) {
+  const d = date instanceof Date ? date : new Date(date);
+  return d.toISOString().slice(0, 10);
+}
+
+function showToast(msg) {
+  const stack = $('#toast-stack');
+  if (!stack) return;
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  stack.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+
+function showScreen(name) {
+  $$('.screen').forEach((s) => s.classList.remove('active'));
+  const target = $('#' + name + '-screen');
+  if (target) target.classList.add('active');
+}
+
+function hideBoot() {
+  const boot = $('#boot-screen');
+  boot.classList.add('hidden');
+  setTimeout(() => { boot.style.display = 'none'; }, 700);
+}
+
+// ----------------------------------------------------------
+// Tradução de erros do Supabase Auth
+// ----------------------------------------------------------
+function traduzirErroAuth(err) {
+  if (!err) return 'Erro desconhecido.';
+  const msg = (err.message || String(err)).toLowerCase();
+  if (msg.includes('invalid login') || msg.includes('invalid credentials')) {
+    return 'Email ou senha incorretos.';
+  }
+  if (msg.includes('email not confirmed')) {
+    return 'Email ainda não confirmado.';
+  }
+  if (msg.includes('network') || msg.includes('fetch')) {
+    return 'Sem conexão com o servidor.';
+  }
+  if (msg.includes('rate limit') || msg.includes('too many')) {
+    return 'Muitas tentativas. Aguarde um momento.';
+  }
+  return err.message || 'Erro ao entrar.';
+}
+
+// ----------------------------------------------------------
+// Estado da sessão
+// ----------------------------------------------------------
+let currentUser    = null;
+let currentProfile = null;
+
+async function carregarProfile(userId) {
+  const { data, error } = await sb
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .single();
+  if (error) {
+    console.warn('[500md] erro ao carregar profile:', error);
+    return null;
+  }
+  return data;
+}
+
+function aplicarPerfilNaUI(profile, user) {
+  if (!profile) return;
+  const nameEl   = $('#user-display-name');
+  const avatarEl = $('#user-avatar');
+  if (nameEl)   nameEl.textContent = profile.display_name || (user?.email ?? '…');
+  if (avatarEl) avatarEl.style.background = profile.avatar_color || 'var(--accent-purple)';
+  if (avatarEl) avatarEl.style.boxShadow  = `0 0 12px ${profile.avatar_color || 'rgba(var(--accent-rgb), 0.4)'}66`;
+}
+
+// ----------------------------------------------------------
+// LOGIN
+// ----------------------------------------------------------
+const loginForm     = $('#login-form');
+const loginEmail    = $('#login-email');
+const loginPassword = $('#login-password');
+const loginSubmit   = $('#login-submit');
+const loginError    = $('#login-error');
+
+function setLoginLoading(isLoading) {
+  loginEmail.disabled    = isLoading;
+  loginPassword.disabled = isLoading;
+  loginSubmit.disabled   = isLoading;
+  loginSubmit.querySelector('.btn-label').textContent = isLoading ? 'Entrando…' : 'Entrar';
+}
+
+function setLoginError(msg) {
+  loginError.textContent = msg || '';
+  if (msg) {
+    loginError.classList.remove('shake');
+    // reflow para reiniciar animação
+    void loginError.offsetWidth;
+    loginError.classList.add('shake');
+  }
+}
+
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  setLoginError('');
+
+  const email    = loginEmail.value.trim();
+  const password = loginPassword.value;
+
+  if (!email || !password) {
+    setLoginError('Preencha email e senha.');
+    return;
+  }
+
+  setLoginLoading(true);
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+    // Sucesso — o onAuthStateChange cuida de mostrar a tela do app
+    loginPassword.value = '';
+  } catch (err) {
+    console.warn('[500md] login falhou:', err);
+    setLoginError(traduzirErroAuth(err));
+  } finally {
+    setLoginLoading(false);
+  }
+});
+
+// ----------------------------------------------------------
+// LOGOUT
+// ----------------------------------------------------------
+$('#logout-btn').addEventListener('click', async () => {
+  try {
+    await sb.auth.signOut();
+    showToast('Até a próxima decepção.');
+  } catch (err) {
+    console.warn('[500md] logout falhou:', err);
+    showToast('Erro ao sair.');
+  }
+});
+
+// ----------------------------------------------------------
+// Bootstrap — checar sessão existente
+// ----------------------------------------------------------
+async function entrarComoLogado(user) {
+  const mesmoUsuario = currentUser?.id === user.id;
+  currentUser = user;
+  if (mesmoUsuario) return;  // sessão renovada/aba reativada — não recarrega nada
+  // Mostra o app imediatamente; perfil e boosters carregam em background.
+  showScreen('app');
+  switchTab('meu');
+  // Mostra o hint do toggle de tema (só no primeiro acesso)
+  setTimeout(maybeShowThemeHint, 900);
+  carregarProfile(user.id)
+    .then((p) => {
+      currentProfile = p;
+      aplicarPerfilNaUI(p, user);
+      renderMetaCounter();
+      renderDashboard();
+      if (p && p.onboarding_completed === false) showOnboarding(p);
+    })
+    .catch((e) => console.warn('[500md] profile:', e));
+  carregarBoosters().catch((e) => console.warn('[500md] boosters:', e));
+}
+
+function entrarComoDeslogado() {
+  currentUser    = null;
+  currentProfile = null;
+  boostersCache  = [];
+  if ($boosterList) $boosterList.innerHTML = '';
+  const _dash = $('#dash');
+  if (_dash) { _dash.hidden = true; _dash.innerHTML = ''; }
+  teardownGrupoRealtime();
+  grupoLoaded = false;
+  grupoCache  = { profiles: [], boosters: [] };
+  if (grupoChart) { try { grupoChart.destroy(); } catch (_) {} grupoChart = null; }
+  const _gc = $('#grupo-content');
+  if (_gc) _gc.innerHTML = '';
+  if ($modal && !$modal.hidden) closeModal();
+  const _onb = $('#onboarding-modal'); if (_onb) _onb.hidden = true;
+  const _prof = $('#profile-modal'); if (_prof) _prof.hidden = true;
+  showScreen('login');
+}
+
+sb.auth.onAuthStateChange((event, session) => {
+  console.log('[500md] auth event:', event, !!session);
+  if (session?.user) {
+    entrarComoLogado(session.user);
+  } else {
+    entrarComoDeslogado();
+    setLoginError('');
+  }
+  hideBoot();
+});
+
+// Safety net: se algo travar no auth, esconde o boot depois de 4s
+setTimeout(() => hideBoot(), 4000);
+
+// ----------------------------------------------------------
+// Tema (Darkrai / Cresselia)
+// ----------------------------------------------------------
+const THEME_KEY = '500md.theme';
+function aplicarTema(tema) {
+  const t = (tema === 'cresselia') ? 'cresselia' : 'darkrai';
+  // Ativa transição sincronizada (só durante a troca)
+  const root = document.documentElement;
+  root.classList.add('theme-switching');
+  if (t === 'darkrai') {
+    root.removeAttribute('data-theme');
+  } else {
+    root.setAttribute('data-theme', t);
+  }
+  // Atualiza theme-color do navegador (barra de status mobile)
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', t === 'cresselia' ? '#fbf3ed' : '#0a0c12');
+  try { localStorage.setItem(THEME_KEY, t); } catch (_) {}
+  // Remove a classe após a transição pra não atrapalhar hovers
+  setTimeout(() => { root.classList.remove('theme-switching'); refreshGrupoChartTheme(); }, 550);
+}
+function temaAtual() {
+  return document.documentElement.getAttribute('data-theme') === 'cresselia' ? 'cresselia' : 'darkrai';
+}
+// Aplica tema salvo ANTES do app inicializar (evita flash)
+(function bootTheme() {
+  let saved = null;
+  try { saved = localStorage.getItem(THEME_KEY); } catch (_) {}
+  aplicarTema(saved || 'darkrai');
+})();
+// Wire up toggle
+const $themeToggle = $('#theme-toggle');
+if ($themeToggle) {
+  $themeToggle.addEventListener('click', () => {
+    const next = temaAtual() === 'darkrai' ? 'cresselia' : 'darkrai';
+    aplicarTema(next);
+    showToast(next === 'cresselia' ? 'Cresselia desperta.' : 'Darkrai retorna.');
+    dismissThemeHint();
+  });
+}
+// Toggle também via ícone de eclipse na tela de login
+const $eclipseToggle = $('#eclipse-toggle');
+if ($eclipseToggle) {
+  $eclipseToggle.addEventListener('click', () => {
+    const next = temaAtual() === 'darkrai' ? 'cresselia' : 'darkrai';
+    aplicarTema(next);
+    showToast(next === 'cresselia' ? 'Cresselia desperta.' : 'Darkrai retorna.');
+  });
+}
+
+// ----------------------------------------------------------
+// Hint de primeiro acesso pro toggle de tema
+// ----------------------------------------------------------
+const THEME_HINT_KEY = '500md.themeHintSeen';
+let themeHintTimer = null;
+function maybeShowThemeHint() {
+  let seen = null;
+  try { seen = localStorage.getItem(THEME_HINT_KEY); } catch (_) {}
+  if (seen) return;
+  const wrap = $('#theme-toggle-wrap');
+  const hint = $('#theme-hint');
+  if (!wrap || !hint) return;
+  wrap.classList.add('hint-active');
+  hint.hidden = false;
+  document.body.classList.add('theme-hint-active');
+  themeHintTimer = setTimeout(dismissThemeHint, 12000);
+  hint.querySelector('.hint-dismiss')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dismissThemeHint();
+  });
+}
+function dismissThemeHint() {
+  if (themeHintTimer) { clearTimeout(themeHintTimer); themeHintTimer = null; }
+  const wrap = $('#theme-toggle-wrap');
+  const hint = $('#theme-hint');
+  if (wrap) wrap.classList.remove('hint-active');
+  if (hint) hint.hidden = true;
+  document.body.classList.remove('theme-hint-active');
+  try { localStorage.setItem(THEME_HINT_KEY, '1'); } catch (_) {}
+}
+
+// ==========================================================
+// PERFIL: onboarding (primeira entrada) + edição (Rodada 3.5)
+// ==========================================================
+const PROFILE_COLORS = [
+  '#9a5cc8', '#5fbed4', '#5fb878', '#e07a3a', '#dba8c5',
+  '#e0c47d', '#c64a64', '#7a8fc8', '#5a8c7a', '#d49aa0',
+];
+
+function buildColorGrid(container, selectedColor) {
+  if (!container) return;
+  const sel = (typeof selectedColor === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(selectedColor.trim()))
+    ? selectedColor.trim() : PROFILE_COLORS[0];
+  // se a cor atual do usuário não está na paleta, ela ainda fica selecionada (mas não aparece no grid)
+  container.innerHTML = PROFILE_COLORS.map(c => `
+    <button type="button" class="color-swatch${c.toLowerCase() === sel.toLowerCase() ? ' is-selected' : ''}"
+            data-color="${c}" style="background:${c}" role="radio"
+            aria-checked="${c.toLowerCase() === sel.toLowerCase() ? 'true' : 'false'}"
+            aria-label="Cor ${c}"></button>
+  `).join('');
+  container.dataset.selected = sel;
+}
+
+function onColorSwatchClick(e) {
+  const btn = e.target.closest('.color-swatch');
+  if (!btn) return;
+  const grid = btn.parentElement;
+  grid.querySelectorAll('.color-swatch').forEach(s => {
+    s.classList.remove('is-selected');
+    s.setAttribute('aria-checked', 'false');
+  });
+  btn.classList.add('is-selected');
+  btn.setAttribute('aria-checked', 'true');
+  grid.dataset.selected = btn.dataset.color;
+}
+
+function getSelectedColor(grid) {
+  return grid?.dataset.selected || PROFILE_COLORS[0];
+}
+
+// ---------- Onboarding ----------
+function showOnboarding(profile) {
+  const m = $('#onboarding-modal');
+  if (!m) return;
+  $('#onb-display-name').value = profile?.display_name && profile.display_name !== currentUser?.email
+    ? profile.display_name : '';
+  $('#onb-password').value = '';
+  $('#onb-error').textContent = '';
+  buildColorGrid($('#onb-color-grid'), profile?.avatar_color);
+  m.hidden = false;
+  setTimeout(() => $('#onb-display-name')?.focus(), 100);
+}
+
+function setOnboardingLoading(loading) {
+  const btn = $('#onb-submit');
+  $('#onb-password').disabled = loading;
+  $('#onb-display-name').disabled = loading;
+  if (btn) {
+    btn.disabled = loading;
+    btn.querySelector('.btn-label').textContent = loading ? 'Salvando…' : 'Entrar no grupo';
+  }
+}
+
+async function submitOnboarding(e) {
+  e.preventDefault();
+  const pwd  = $('#onb-password').value;
+  const name = $('#onb-display-name').value.trim();
+  const color = getSelectedColor($('#onb-color-grid'));
+  const err  = $('#onb-error');
+  err.textContent = '';
+  if (pwd.length < 6) { err.textContent = 'A senha precisa de pelo menos 6 caracteres.'; return; }
+  if (!name)          { err.textContent = 'Escolhe um apelido.'; return; }
+  setOnboardingLoading(true);
+  try {
+    const { error: pwdErr } = await sb.auth.updateUser({ password: pwd });
+    if (pwdErr) throw pwdErr;
+    const { error: profErr } = await sb.from('profiles').update({
+      display_name: name,
+      avatar_color: color,
+      onboarding_completed: true,
+    }).eq('id', currentUser.id);
+    if (profErr) throw profErr;
+    const fresh = await carregarProfile(currentUser.id);
+    currentProfile = fresh;
+    aplicarPerfilNaUI(fresh, currentUser);
+    renderMetaCounter();
+    renderDashboard();
+    if (grupoLoaded) carregarGrupo({ silent: true });
+    $('#onboarding-modal').hidden = true;
+    showToast('Bem-vindo!');
+  } catch (ex) {
+    console.warn('[500md] onboarding falhou:', ex);
+    err.textContent = ex.message || 'Erro ao salvar.';
+  } finally {
+    setOnboardingLoading(false);
+  }
+}
+
+// ---------- Editar perfil ----------
+function openProfileModal() {
+  if (!currentUser) return;
+  const m = $('#profile-modal');
+  const p = currentProfile || {};
+  $('#prof-display-name').value = p.display_name || '';
+  $('#prof-meta').value = p.meta_total ?? 500;
+  buildColorGrid($('#prof-color-grid'), p.avatar_color);
+  $('#prof-pwd-current').value = '';
+  $('#prof-pwd-new').value = '';
+  $('#prof-pwd-fields').hidden = true;
+  $('#prof-pwd-toggle').classList.remove('is-open');
+  $('#prof-pwd-toggle').setAttribute('aria-expanded', 'false');
+  $('#profile-error').textContent = '';
+  m.hidden = false;
+}
+
+function closeProfileModal() { $('#profile-modal').hidden = true; }
+
+function toggleProfilePwd() {
+  const fields = $('#prof-pwd-fields');
+  const toggle = $('#prof-pwd-toggle');
+  const opening = fields.hidden;
+  fields.hidden = !opening;
+  toggle.classList.toggle('is-open', opening);
+  toggle.setAttribute('aria-expanded', opening ? 'true' : 'false');
+  if (opening) setTimeout(() => $('#prof-pwd-current')?.focus(), 50);
+}
+
+function setProfileSaving(loading) {
+  const btn = $('#profile-save');
+  const cancel = $('#profile-cancel');
+  if (btn) {
+    btn.disabled = loading;
+    btn.querySelector('.btn-label').textContent = loading ? 'Salvando…' : 'Salvar';
+  }
+  if (cancel) cancel.disabled = loading;
+}
+
+async function submitProfile(e) {
+  e.preventDefault();
+  const name  = $('#prof-display-name').value.trim();
+  const meta  = parseInt($('#prof-meta').value, 10);
+  const color = getSelectedColor($('#prof-color-grid'));
+  const curPwd = $('#prof-pwd-current').value;
+  const newPwd = $('#prof-pwd-new').value;
+  const wantsPwd = !$('#prof-pwd-fields').hidden && newPwd.length > 0;
+  const err = $('#profile-error');
+  err.textContent = '';
+
+  if (!name) { err.textContent = 'Apelido não pode ficar vazio.'; return; }
+  if (!Number.isFinite(meta) || meta < 1 || meta > 100000) {
+    err.textContent = 'A meta tem que ser um número entre 1 e 100.000.'; return;
+  }
+  if (wantsPwd) {
+    if (!curPwd)              { err.textContent = 'Pra trocar a senha, preencha a senha atual.'; return; }
+    if (newPwd.length < 6)    { err.textContent = 'A nova senha precisa de pelo menos 6 caracteres.'; return; }
+    if (curPwd === newPwd)    { err.textContent = 'A nova senha tem que ser diferente da atual.'; return; }
+  }
+
+  setProfileSaving(true);
+  try {
+    if (wantsPwd) {
+      // Confirma a senha atual via re-autenticação (com mesmo user — token refresh não dispara reload)
+      const { error: authErr } = await sb.auth.signInWithPassword({
+        email: currentUser.email,
+        password: curPwd,
+      });
+      if (authErr) {
+        err.textContent = 'Senha atual incorreta.';
+        setProfileSaving(false);
+        return;
+      }
+      const { error: updErr } = await sb.auth.updateUser({ password: newPwd });
+      if (updErr) throw updErr;
+    }
+    const { error: profErr } = await sb.from('profiles').update({
+      display_name: name,
+      avatar_color: color,
+      meta_total: meta,
+    }).eq('id', currentUser.id);
+    if (profErr) throw profErr;
+
+    const fresh = await carregarProfile(currentUser.id);
+    currentProfile = fresh;
+    aplicarPerfilNaUI(fresh, currentUser);
+    renderMetaCounter();
+    renderDashboard();
+    if (grupoLoaded) carregarGrupo({ silent: true });
+    closeProfileModal();
+    showToast(wantsPwd ? 'Perfil e senha atualizados.' : 'Perfil atualizado.');
+  } catch (ex) {
+    console.warn('[500md] perfil:', ex);
+    err.textContent = ex.message || 'Erro ao salvar.';
+  } finally {
+    setProfileSaving(false);
+  }
+}
+
+// ---------- Wire-up dos modais de perfil ----------
+$('#onb-color-grid')?.addEventListener('click', onColorSwatchClick);
+$('#prof-color-grid')?.addEventListener('click', onColorSwatchClick);
+$('#onboarding-form')?.addEventListener('submit', submitOnboarding);
+$('#profile-form')?.addEventListener('submit', submitProfile);
+$('#profile-close')?.addEventListener('click', closeProfileModal);
+$('#profile-cancel')?.addEventListener('click', closeProfileModal);
+$('#prof-pwd-toggle')?.addEventListener('click', toggleProfilePwd);
+$('#user-tag-btn')?.addEventListener('click', openProfileModal);
+$('#profile-modal')?.addEventListener('click', (e) => {
+  if (e.target === $('#profile-modal')) closeProfileModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !$('#profile-modal').hidden) closeProfileModal();
+});
+
+// ----------------------------------------------------------
+// CRUD de Boosters
+// ----------------------------------------------------------
+let boostersCache = [];
+let editingId     = null;
+let saving        = false;
+let pendingDelete = false;
+
+const $boosterList     = $('#booster-list-container');
+const $modal           = $('#booster-modal');
+const $modalTitle      = $('#modal-title');
+const $form            = $('#booster-form');
+const $formError       = $('#form-error');
+const $btnDelete       = $('#btn-delete');
+const $btnSave         = $('#btn-save');
+const $btnCancel       = $('#btn-cancel');
+const $btnAddDesktop   = $('#btn-add-desktop');
+const $btnAddMobile    = $('#btn-add-mobile');
+const $colecoesList    = $('#colecoes-list');
+
+// ---------- helpers ----------
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+function fmtData(iso) {
+  if (!iso) return '—';
+  const [y, m, d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+function fmtDataParts(iso) {
+  if (!iso) return { dm: '—', y: '' };
+  const [y, m, d] = iso.split('-');
+  return { dm: `${d}/${m}`, y };
+}
+function fmtBRL(num) {
+  return Number(num).toLocaleString('pt-BR', {
+    style: 'currency', currency: 'BRL',
+    minimumFractionDigits: 2, maximumFractionDigits: 2
+  });
+}
+// Formata um valor digitado bruto ("12345") como BRL ("R$ 123,45")
+function formatBRLInput(rawValue) {
+  const digits = String(rawValue ?? '').replace(/\D/g, '');
+  if (!digits) return '';
+  const cents = parseInt(digits, 10);
+  return (cents / 100).toLocaleString('pt-BR', {
+    style: 'currency', currency: 'BRL',
+    minimumFractionDigits: 2, maximumFractionDigits: 2
+  });
+}
+// Extrai o número de uma string BRL formatada ("R$ 123,45" → 123.45)
+function parseBRLValue(formatted) {
+  if (formatted == null) return 0;
+  const digits = String(formatted).replace(/\D/g, '');
+  return digits ? parseInt(digits, 10) / 100 : 0;
+}
+function statusLabel(s) {
+  return { encomendado: 'Encomendado', recebido: 'Recebido', aberto: 'Aberto' }[s] || s;
+}
+
+// ---------- regra da meta ----------
+// Boosters abertos antes do encontro (Nov/2027) não contam pra meta.
+// Usa updated_at como proxy do momento da abertura.
+const META_CUTOFF = '2027-11-01';
+function contaParaMeta(b) {
+  if (b.status !== 'aberto') return true;
+  const quando = (b.updated_at || b.created_at || '').slice(0, 10);
+  return quando >= META_CUTOFF;
+}
+
+// ---------- list & render ----------
+async function carregarBoosters() {
+  if (!currentUser) return;
+  const { data, error } = await sb
+    .from('boosters')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .order('data_compra', { ascending: false })
+    .order('created_at',  { ascending: false });
+  if (error) {
+    console.warn('[500md] erro ao carregar boosters:', error);
+    $boosterList.innerHTML = `<div class="empty-state">
+      <h3>Não consegui carregar suas compras</h3>
+      <p>${escapeHtml(error.message || 'Tente recarregar a página.')}</p>
+    </div>`;
+    return;
+  }
+  boostersCache = data || [];
+  renderBoosterList();
+  refreshColecoesDatalist();
+}
+
+function renderBoosterList() {
+  renderMetaCounter();
+  renderSpentIndicator();
+  renderDashboard();
+  if (!boostersCache.length) {
+    $boosterList.innerHTML = `
+      <div class="empty-state">
+        <svg class="es-icon" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <path d="M33 24 A12 12 0 1 1 21 12 A9 9 0 1 0 33 24 Z" fill="currentColor"/>
+        </svg>
+        <h3>Nenhuma decepção registrada ainda</h3>
+        <p>Quando comprar o primeiro booster, ele aparece aqui. Comece agora — a queda é inevitável.</p>
+        <button type="button" class="btn-primary btn-primary--compact es-cta" id="empty-cta" style="display:inline-flex;">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="btn-label">Adicionar a primeira</span>
+        </button>
+      </div>`;
+    const cta = $('#empty-cta');
+    if (cta) cta.addEventListener('click', () => openModal());
+    return;
+  }
+  const html = boostersCache.map(boosterCardHTML).join('');
+  $boosterList.innerHTML = `<ul class="booster-list">${html}</ul>`;
+}
+
+function boosterCardHTML(b) {
+  const d = fmtDataParts(b.data_compra);
+  const foraDaMeta = !contaParaMeta(b);
+  return `
+    <li class="booster-card${foraDaMeta ? ' booster-card--out' : ''}" data-id="${b.id}" tabindex="0" role="button" aria-label="Editar ${escapeHtml(b.produto)}">
+      <div class="booster-card__date">
+        <span class="dm">${d.dm}</span>
+        <span class="y">${d.y}</span>
+      </div>
+      <div class="booster-card__main">
+        <div class="booster-card__title">${escapeHtml(b.produto)}</div>
+        <div class="booster-card__sub">${escapeHtml(b.colecao)}</div>
+        <div class="booster-card__badges">
+          <span class="status-badge status-badge--${b.status}">${statusLabel(b.status)}</span>
+          ${foraDaMeta ? '<span class="out-badge" title="Aberto antes do encontro — não conta na meta">Fora da meta</span>' : ''}
+        </div>
+      </div>
+      <div class="booster-card__amount">
+        <div class="qty">${b.quantidade}<span class="lbl">boosters</span></div>
+        <div class="value">${fmtBRL(b.valor_total)}</div>
+      </div>
+    </li>`;
+}
+
+function refreshColecoesDatalist() {
+  const set = new Set(boostersCache.map(b => b.colecao).filter(Boolean));
+  $colecoesList.innerHTML = Array.from(set).sort()
+    .map(c => `<option value="${escapeHtml(c)}"></option>`).join('');
+}
+
+// ---------- meta counter ----------
+function renderSpentIndicator() {
+  const el = $('#spent-value');
+  if (!el) return;
+  const total = boostersCache.reduce((s, b) => s + (Number(b.valor_total) || 0), 0);
+  el.textContent = fmtBRL(total);
+}
+
+// ---------- dashboard "Meu" (Rodada 2) ----------
+function fmtMesCurto(ym) {
+  const [y, m] = ym.split('-');
+  const d = new Date(Number(y), Number(m) - 1, 1);
+  return d.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '') + '/' + y.slice(2);
+}
+
+// Soma de quantidade por mês (YYYY-MM, via data_compra) → série acumulada contínua.
+function _serieMensal() {
+  const mapa = new Map();
+  boostersCache.forEach(b => {
+    const ym = (b.data_compra || '').slice(0, 7);
+    if (!ym) return;
+    mapa.set(ym, (mapa.get(ym) || 0) + (Number(b.quantidade) || 0));
+  });
+  if (!mapa.size) return [];
+  const chaves = Array.from(mapa.keys()).sort();
+  const nowYM = _dataISO().slice(0, 7);
+  const ultimo = nowYM > chaves[chaves.length - 1] ? nowYM : chaves[chaves.length - 1];
+  let [y, m] = chaves[0].split('-').map(Number);
+  const [ly, lm] = ultimo.split('-').map(Number);
+  const out = [];
+  let acum = 0, guard = 0;
+  while ((y < ly || (y === ly && m <= lm)) && guard < 600) {
+    const ym = `${y}-${String(m).padStart(2, '0')}`;
+    acum += (mapa.get(ym) || 0);
+    out.push({ ym, acum });
+    m++; if (m > 12) { m = 1; y++; }
+    guard++;
+  }
+  return out;
+}
+
+// Sparkline em SVG (linha + área), escalada ao acumulado atual. Sem libs.
+function _sparklineSVG(serie) {
+  const W = 300, H = 90, pad = 5;
+  if (!serie.length) return '';
+  const maxAcum = serie[serie.length - 1].acum || 1;
+  const n = serie.length;
+  const yOf = v => H - pad - (v / maxAcum) * (H - pad * 2);
+  let coords;
+  if (n === 1) {
+    const yy = yOf(serie[0].acum);
+    coords = [[pad, yy], [W - pad, yy]];
+  } else {
+    coords = serie.map((p, i) => [pad + (i / (n - 1)) * (W - pad * 2), yOf(p.acum)]);
+  }
+  const line = coords.map((c, i) => (i ? 'L' : 'M') + c[0].toFixed(1) + ' ' + c[1].toFixed(1)).join(' ');
+  const area = `M${coords[0][0].toFixed(1)} ${(H - pad).toFixed(1)} `
+    + coords.map(c => 'L' + c[0].toFixed(1) + ' ' + c[1].toFixed(1)).join(' ')
+    + ` L${coords[coords.length - 1][0].toFixed(1)} ${(H - pad).toFixed(1)} Z`;
+  return `<svg class="dash-spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Evolução acumulada de boosters ao longo do tempo">
+      <path class="area" d="${area}"/>
+      <path class="line" d="${line}"/>
+    </svg>`;
+}
+
+// Projeção simples de quando a meta é atingida, no ritmo médio.
+function _projecao(serie, totalBoosters, meta, metaCount) {
+  if (metaCount >= meta) {
+    return `Você já cruzou os <strong>${meta}</strong>. A decepção foi um sucesso completo.`;
+  }
+  const meses = serie.length;
+  if (meses < 1 || totalBoosters <= 0) {
+    return 'Ainda não dá pra projetar — registre mais algumas compras e o abismo aparece.';
+  }
+  const ritmo = totalBoosters / meses;
+  if (ritmo <= 0) {
+    return 'Ainda não dá pra projetar — registre mais algumas compras e o abismo aparece.';
+  }
+  const faltam = meta - metaCount;
+  const mesesRest = Math.max(1, Math.ceil(faltam / ritmo));
+  const alvo = new Date();
+  alvo.setDate(1);
+  alvo.setMonth(alvo.getMonth() + mesesRest);
+  const label = alvo.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+  const ritmoTxt = ritmo.toFixed(1).replace('.', ',');
+  return `No ritmo atual (~<strong>${ritmoTxt}</strong> boosters/mês), você chega aos ${meta} por volta de <strong>${label}</strong>. Faltam ${faltam.toLocaleString('pt-BR')} que contam pra meta.`;
+}
+
+function renderDashboard() {
+  const el = $('#dash');
+  if (!el) return;
+  if (!boostersCache.length) { el.hidden = true; el.innerHTML = ''; return; }
+  el.hidden = false;
+
+  const totalBoosters = boostersCache.reduce((s, b) => s + (Number(b.quantidade) || 0), 0);
+  const totalGasto    = boostersCache.reduce((s, b) => s + (Number(b.valor_total) || 0), 0);
+  const custoMedio    = totalBoosters > 0 ? totalGasto / totalBoosters : 0;
+  const meta          = currentProfile?.meta_total ?? 500;
+  const metaCount     = boostersCache.reduce((s, b) => contaParaMeta(b) ? s + (Number(b.quantidade) || 0) : s, 0);
+
+  // por status (em boosters)
+  const st = { encomendado: 0, recebido: 0, aberto: 0 };
+  boostersCache.forEach(b => { if (st[b.status] != null) st[b.status] += (Number(b.quantidade) || 0); });
+
+  // por coleção
+  const colMap = new Map();
+  boostersCache.forEach(b => {
+    const k = (b.colecao || '—').trim() || '—';
+    const cur = colMap.get(k) || { qtd: 0, gasto: 0 };
+    cur.qtd += (Number(b.quantidade) || 0);
+    cur.gasto += (Number(b.valor_total) || 0);
+    colMap.set(k, cur);
+  });
+  const cols = Array.from(colMap, ([nome, v]) => ({ nome, qtd: v.qtd, gasto: v.gasto }))
+    .sort((a, b) => b.qtd - a.qtd);
+  const maxQtd = cols.reduce((m, c) => Math.max(m, c.qtd), 0) || 1;
+
+  const serie = _serieMensal();
+
+  const subMeta = (metaCount !== totalBoosters)
+    ? `<div class="dash-stat__sub">${metaCount.toLocaleString('pt-BR')} contam pra meta</div>` : '';
+
+  const tiles = `
+    <div class="dash-stats">
+      <div class="dash-stat">
+        <div class="dash-stat__label">Custo médio</div>
+        <div class="dash-stat__value">${fmtBRL(custoMedio)}<span class="unit"> /booster</span></div>
+      </div>
+      <div class="dash-stat">
+        <div class="dash-stat__label">Total de boosters</div>
+        <div class="dash-stat__value">${totalBoosters.toLocaleString('pt-BR')}</div>
+        ${subMeta}
+      </div>
+      <div class="dash-stat">
+        <div class="dash-stat__label">Total gasto</div>
+        <div class="dash-stat__value">${fmtBRL(totalGasto)}</div>
+      </div>
+    </div>`;
+
+  const statusPanel = `
+    <div class="dash-panel">
+      <div class="dash-label">Por status</div>
+      <div class="dash-status">
+        <span class="dash-chip dash-chip--encomendado"><span class="dash-chip__n">${st.encomendado.toLocaleString('pt-BR')}</span><span class="dash-chip__l">Encomendados</span></span>
+        <span class="dash-chip dash-chip--recebido"><span class="dash-chip__n">${st.recebido.toLocaleString('pt-BR')}</span><span class="dash-chip__l">Recebidos</span></span>
+        <span class="dash-chip dash-chip--aberto"><span class="dash-chip__n">${st.aberto.toLocaleString('pt-BR')}</span><span class="dash-chip__l">Abertos</span></span>
+      </div>
+    </div>`;
+
+  const colRows = cols.map(c => `
+      <div class="dash-col__row">
+        <div class="dash-col__top">
+          <span class="dash-col__name">${escapeHtml(c.nome)}</span>
+          <span class="dash-col__nums"><strong>${c.qtd.toLocaleString('pt-BR')}</strong> · ${fmtBRL(c.gasto)}</span>
+        </div>
+        <div class="dash-bar"><div class="dash-bar__fill" style="width: ${((c.qtd / maxQtd) * 100).toFixed(1)}%"></div></div>
+      </div>`).join('');
+  const colPanel = `
+    <div class="dash-panel">
+      <div class="dash-label">Por coleção</div>
+      <div class="dash-col">${colRows}</div>
+    </div>`;
+
+  const cap = serie.length
+    ? `<div class="dash-evo__caption"><span>de ${fmtMesCurto(serie[0].ym)} até hoje</span><span>${totalBoosters.toLocaleString('pt-BR')} acumulados</span></div>`
+    : '';
+  const evoPanel = `
+    <div class="dash-panel">
+      <div class="dash-label">Evolução</div>
+      <div class="dash-evo__chart">${_sparklineSVG(serie)}</div>
+      ${cap}
+      <div class="dash-proj">${_projecao(serie, totalBoosters, meta, metaCount)}</div>
+    </div>`;
+
+  el.innerHTML = tiles + statusPanel + colPanel + evoPanel;
+}
+
+function renderMetaCounter() {
+  const el = $('#meta-counter');
+  if (!el) return;
+  const meta  = currentProfile?.meta_total ?? 500;
+  const total = boostersCache.reduce((s, b) => contaParaMeta(b) ? s + (Number(b.quantidade) || 0) : s, 0);
+
+  let state, label, value, sign = '', fillPct;
+  if (total < meta) {
+    state   = 'pending';
+    label   = `Faltam para os ${meta}`;
+    value   = meta - total;
+    fillPct = (total / meta) * 100;
+  } else if (total === meta) {
+    state   = 'achieved';
+    label   = `Meta atingida`;
+    value   = meta;
+    fillPct = 100;
+  } else {
+    state   = 'exceeded';
+    label   = `Além dos ${meta}`;
+    value   = total - meta;
+    sign    = '+';
+    fillPct = 100;
+  }
+
+  const pctRaw = (total / meta) * 100;
+  const pctTxt = pctRaw.toFixed(1).replace('.', ',') + '%';
+
+  el.dataset.state = state;
+  el.innerHTML = `
+    <div class="meta-counter__label">${label}</div>
+    <div class="meta-counter__value">${sign ? `<span class="sign">${sign}</span>` : ''}${value.toLocaleString('pt-BR')}</div>
+    <div class="meta-counter__progress">
+      <div class="progress-track">
+        <div class="progress-fill" style="width: ${fillPct}%"></div>
+      </div>
+      <div class="progress-meta">
+        <span class="mono">${total.toLocaleString('pt-BR')} / ${meta}</span>
+        <span class="mono pct">${pctTxt}</span>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- modal ----------
+function openModal(booster = null) {
+  editingId = booster?.id ?? null;
+  $modalTitle.textContent = booster ? 'Editar compra' : 'Nova compra';
+  $btnDelete.hidden = !booster;
+  resetDeleteConfirm();
+  setFormError('');
+
+  $form.reset();
+  if (booster) {
+    $form.elements.produto.value          = booster.produto || '';
+    $form.elements.colecao.value          = booster.colecao || '';
+    $form.elements.quantidade.value       = booster.quantidade || '';
+    $form.elements.valor_total.value      = booster.valor_total != null
+      ? formatBRLInput(String(Math.round(Number(booster.valor_total) * 100)))
+      : '';
+    $form.elements.data_compra.value      = booster.data_compra || '';
+    $form.elements.data_recebimento.value = booster.data_recebimento || '';
+    const radio = $form.querySelector(`input[name="status"][value="${booster.status}"]`);
+    if (radio) radio.checked = true;
+    $form.elements.notas.value = booster.notas || '';
+  } else {
+    $form.elements.data_compra.value = _dataISO();
+    const r = $form.querySelector('input[name="status"][value="encomendado"]');
+    if (r) r.checked = true;
+  }
+
+  $modal.hidden = false;
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => {
+    const first = $form.elements.produto;
+    if (first && window.matchMedia('(pointer: fine)').matches) first.focus();
+  }, 150);
+}
+
+function closeModal() {
+  $modal.hidden = true;
+  document.body.style.overflow = '';
+  editingId = null;
+  resetDeleteConfirm();
+  setFormError('');
+}
+
+function setFormError(msg) {
+  $formError.textContent = msg || '';
+  if (msg) {
+    $formError.classList.remove('shake');
+    void $formError.offsetWidth;
+    $formError.classList.add('shake');
+  }
+}
+
+function setSaving(isSaving) {
+  $btnSave.disabled    = isSaving;
+  $btnCancel.disabled  = isSaving;
+  $btnDelete.disabled  = isSaving;
+  $btnSave.querySelector('.btn-label').textContent = isSaving ? 'Salvando…' : 'Salvar';
+}
+
+// ---------- validação ----------
+function readFormValues() {
+  return {
+    produto:          $form.elements.produto.value.trim(),
+    colecao:          $form.elements.colecao.value.trim(),
+    quantidade:       parseInt($form.elements.quantidade.value, 10),
+    valor_total:      parseBRLValue($form.elements.valor_total.value),
+    data_compra:      $form.elements.data_compra.value,
+    data_recebimento: $form.elements.data_recebimento.value || null,
+    status:           $form.querySelector('input[name="status"]:checked')?.value || 'encomendado',
+    notas:            $form.elements.notas.value.trim() || null,
+  };
+}
+
+function validateForm(v) {
+  if (!v.produto) return 'Produto é obrigatório.';
+  if (!v.colecao) return 'Coleção é obrigatória.';
+  if (!Number.isFinite(v.quantidade) || v.quantidade < 1) return 'Quantidade deve ser maior que zero.';
+  if (!Number.isFinite(v.valor_total) || v.valor_total < 0) return 'Valor não pode ser negativo.';
+  if (!v.data_compra) return 'Data da compra é obrigatória.';
+  if (v.data_compra > _dataISO()) return 'Data da compra não pode ser no futuro.';
+  if ((v.status === 'recebido' || v.status === 'aberto') && !v.data_recebimento) {
+    return `Status "${statusLabel(v.status).toLowerCase()}" exige data de recebimento.`;
+  }
+  if (v.data_recebimento && v.data_recebimento < v.data_compra) {
+    return 'Recebimento não pode ser antes da compra.';
+  }
+  return null;
+}
+
+// ---------- save / delete ----------
+async function saveBooster() {
+  if (saving) return;
+  const v = readFormValues();
+  const err = validateForm(v);
+  if (err) { setFormError(err); return; }
+
+  saving = true;
+  setSaving(true);
+  try {
+    if (editingId) {
+      const { error } = await sb.from('boosters').update(v).eq('id', editingId);
+      if (error) throw error;
+      showToast('Compra atualizada.');
+    } else {
+      const { error } = await sb.from('boosters').insert({ ...v, user_id: currentUser.id });
+      if (error) throw error;
+      showToast('Compra registrada.');
+    }
+    closeModal();
+    await carregarBoosters();
+    if (grupoLoaded) carregarGrupo({ silent: true });
+  } catch (e) {
+    console.warn('[500md] save falhou:', e);
+    setFormError(e.message || 'Erro ao salvar.');
+  } finally {
+    saving = false;
+    setSaving(false);
+  }
+}
+
+function resetDeleteConfirm() {
+  pendingDelete = false;
+  $btnDelete.classList.remove('confirming');
+  $btnDelete.textContent = 'Excluir';
+}
+
+async function handleDeleteClick() {
+  if (!editingId || saving) return;
+  if (!pendingDelete) {
+    pendingDelete = true;
+    $btnDelete.classList.add('confirming');
+    $btnDelete.textContent = 'Confirmar exclusão';
+    // auto-reset após 4s se não confirmar
+    setTimeout(() => { if (pendingDelete) resetDeleteConfirm(); }, 4000);
+    return;
+  }
+  saving = true;
+  setSaving(true);
+  try {
+    const { error } = await sb.from('boosters').delete().eq('id', editingId);
+    if (error) throw error;
+    showToast('Compra removida.');
+    closeModal();
+    await carregarBoosters();
+    if (grupoLoaded) carregarGrupo({ silent: true });
+  } catch (e) {
+    console.warn('[500md] delete falhou:', e);
+    setFormError(e.message || 'Erro ao excluir.');
+    resetDeleteConfirm();
+  } finally {
+    saving = false;
+    setSaving(false);
+  }
+}
+
+// ==========================================================
+// GRUPO — leaderboard, comparativos, gráfico e Realtime (Rodada 3)
+// ==========================================================
+let grupoCache   = { profiles: [], boosters: [] };
+let grupoLoaded  = false;
+let grupoLoading = false;
+let grupoChart   = null;
+let grupoChannel = null;
+
+function _corSegura(c) {
+  return (typeof c === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(c.trim())) ? c.trim() : '#9a5cc8';
+}
+function _grupoNomeDe(uid) {
+  const p = grupoCache.profiles.find(x => x.id === uid);
+  return p ? (p.display_name || null) : null;
+}
+
+// Carrega todos os perfis + todas as compras (RLS libera leitura pra autenticados).
+async function carregarGrupo(opts = {}) {
+  if (!currentUser) return;
+  if (grupoLoading) return;
+  const content = $('#grupo-content');
+  if (!opts.silent && !grupoLoaded && content) {
+    content.innerHTML = '<div class="grupo-loading">Reunindo o grupo</div>';
+  }
+  grupoLoading = true;
+  const btn = $('#grupo-refresh');
+  if (btn) btn.classList.add('spinning');
+  try {
+    const [pr, br] = await Promise.all([
+      sb.from('profiles').select('*'),
+      sb.from('boosters').select('*'),
+    ]);
+    if (pr.error) throw pr.error;
+    if (br.error) throw br.error;
+    grupoCache  = { profiles: pr.data || [], boosters: br.data || [] };
+    grupoLoaded = true;
+    renderGrupo(opts.flashUserId);
+    setupGrupoRealtime();
+  } catch (e) {
+    console.warn('[500md] grupo:', e);
+    if (content && !opts.silent) {
+      content.innerHTML = `<div class="empty-state"><h3>Não consegui reunir o grupo</h3><p>${escapeHtml(e.message || 'Tente de novo.')}</p></div>`;
+    }
+  } finally {
+    grupoLoading = false;
+    if (btn) btn.classList.remove('spinning');
+  }
+}
+
+// Agrega por usuário: { profile, metaCount, total, gasto, boosters[] }
+function _grupoAgregado() {
+  const { profiles, boosters } = grupoCache;
+  const byUser = new Map();
+  profiles.forEach(p => byUser.set(p.id, { profile: p, metaCount: 0, total: 0, gasto: 0, boosters: [] }));
+  boosters.forEach(b => {
+    let u = byUser.get(b.user_id);
+    if (!u) {
+      u = { profile: { id: b.user_id, display_name: '—', avatar_color: '#9a5cc8', meta_total: 500 }, metaCount: 0, total: 0, gasto: 0, boosters: [] };
+      byUser.set(b.user_id, u);
+    }
+    const q = Number(b.quantidade) || 0;
+    u.total += q;
+    u.gasto += Number(b.valor_total) || 0;
+    if (contaParaMeta(b)) u.metaCount += q;
+    u.boosters.push(b);
+  });
+  return Array.from(byUser.values());
+}
+
+function _grupoComparativos(agg) {
+  let maiorGasto = null;
+  agg.forEach(u => {
+    if (u.gasto > 0 && (!maiorGasto || u.gasto > maiorGasto.valor)) {
+      maiorGasto = { nome: u.profile?.display_name || '—', valor: u.gasto };
+    }
+  });
+  const colMap = new Map();
+  grupoCache.boosters.forEach(b => {
+    const k = (b.colecao || '—').trim() || '—';
+    colMap.set(k, (colMap.get(k) || 0) + (Number(b.quantidade) || 0));
+  });
+  let colPop = null;
+  colMap.forEach((q, k) => { if (!colPop || q > colPop.qtd) colPop = { nome: k, qtd: q }; });
+  let melhor = null;
+  grupoCache.boosters.forEach(b => {
+    const q = Number(b.quantidade) || 0, v = Number(b.valor_total) || 0;
+    if (q > 0 && v > 0) {
+      const up = v / q;
+      if (!melhor || up < melhor.up) melhor = { up, nome: _grupoNomeDe(b.user_id) || '—', colecao: b.colecao || '—' };
+    }
+  });
+  return { maiorGasto, colPop, melhor };
+}
+
+// Série mensal acumulada por usuário (para o gráfico comparativo).
+function _serieGrupo(agg) {
+  const all = grupoCache.boosters;
+  if (!all.length) return { labels: [], datasets: [] };
+  let minYM = null;
+  all.forEach(b => { const ym = (b.data_compra || '').slice(0, 7); if (ym && (!minYM || ym < minYM)) minYM = ym; });
+  if (!minYM) return { labels: [], datasets: [] };
+  const nowYM = _dataISO().slice(0, 7);
+  const axis = [];
+  let [y, m] = minYM.split('-').map(Number);
+  const [ly, lm] = (nowYM > minYM ? nowYM : minYM).split('-').map(Number);
+  let guard = 0;
+  while ((y < ly || (y === ly && m <= lm)) && guard < 600) {
+    axis.push(`${y}-${String(m).padStart(2, '0')}`);
+    m++; if (m > 12) { m = 1; y++; }
+    guard++;
+  }
+  const datasets = agg.filter(u => u.boosters.length).map(u => {
+    const perMonth = new Map();
+    u.boosters.forEach(b => { const ym = (b.data_compra || '').slice(0, 7); if (ym) perMonth.set(ym, (perMonth.get(ym) || 0) + (Number(b.quantidade) || 0)); });
+    let acum = 0;
+    const data = axis.map(ym => { acum += (perMonth.get(ym) || 0); return acum; });
+    return { nome: u.profile?.display_name || '—', cor: _corSegura(u.profile?.avatar_color), data };
+  });
+  return { labels: axis.map(fmtMesCurto), datasets };
+}
+
+function renderGrupo(flashUserId) {
+  const content = $('#grupo-content');
+  if (!content) return;
+  const agg = _grupoAgregado();
+  const parts = agg.filter(u => u.profile || u.boosters.length);
+  if (!parts.length) {
+    content.innerHTML = `<div class="empty-state">
+      <svg class="es-icon" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M33 24 A12 12 0 1 1 21 12 A9 9 0 1 0 33 24 Z" fill="currentColor"/></svg>
+      <h3>Ninguém por aqui ainda</h3>
+      <p>Quando o grupo começar a registrar, o ranking aparece.</p>
+    </div>`;
+    return;
+  }
+
+  const somaMeta = parts.reduce((s, u) => s + u.metaCount, 0);
+  const somaAlvo = parts.reduce((s, u) => s + (u.profile?.meta_total ?? 500), 0);
+  const pctGrupo = somaAlvo > 0 ? (somaMeta / somaAlvo) * 100 : 0;
+
+  const rank = parts.slice().sort((a, b) =>
+    b.metaCount - a.metaCount ||
+    b.total - a.total ||
+    (a.profile?.display_name || '').localeCompare(b.profile?.display_name || ''));
+
+  const comp  = _grupoComparativos(agg);
+  const serie = _serieGrupo(agg);
+
+  const totalHTML = `
+    <div class="grupo-total">
+      <div class="grupo-total__label">O grupo, somado</div>
+      <div class="grupo-total__value">${somaMeta.toLocaleString('pt-BR')}<span class="of"> / ${somaAlvo.toLocaleString('pt-BR')}</span></div>
+      <div class="grupo-total__sub">${parts.length} ${parts.length === 1 ? 'pessoa' : 'pessoas'} rumo aos 500 de cada</div>
+      <div class="grupo-total__progress">
+        <div class="progress-track"><div class="progress-fill" style="width:${Math.min(100, pctGrupo).toFixed(1)}%"></div></div>
+        <div class="progress-meta"><span class="mono">${somaMeta.toLocaleString('pt-BR')} / ${somaAlvo.toLocaleString('pt-BR')}</span><span class="mono pct">${pctGrupo.toFixed(1).replace('.', ',')}%</span></div>
+      </div>
+    </div>`;
+
+  const rankRows = rank.map((u, i) => {
+    const meta = u.profile?.meta_total ?? 500;
+    const pct  = meta > 0 ? (u.metaCount / meta) * 100 : 0;
+    const isMe = u.profile?.id && u.profile.id === currentUser?.id;
+    return `
+      <div class="rank-row${i === 0 ? ' rank-row--lead' : ''}${isMe ? ' rank-row--me' : ''}" data-uid="${u.profile?.id || ''}">
+        <div class="rank-row__pos">${i + 1}</div>
+        <div class="rank-row__avatar" style="background:${_corSegura(u.profile?.avatar_color)}"></div>
+        <div class="rank-row__center">
+          <div class="rank-row__name">${escapeHtml(u.profile?.display_name || '—')}${isMe ? ' <span class="me-tag">você</span>' : ''}</div>
+          <div class="dash-bar rank-row__bar"><div class="dash-bar__fill" style="width:${Math.min(100, pct).toFixed(1)}%"></div></div>
+        </div>
+        <div class="rank-row__nums"><strong>${u.metaCount.toLocaleString('pt-BR')}</strong>/${meta.toLocaleString('pt-BR')}<span class="pct">${pct.toFixed(1).replace('.', ',')}%</span></div>
+      </div>`;
+  }).join('');
+  const rankHTML = `<div class="dash-panel"><div class="dash-label">Ranking</div><div class="rank-list">${rankRows}</div></div>`;
+
+  const compHTML = `
+    <div class="dash-stats">
+      <div class="dash-stat">
+        <div class="dash-stat__label">Maior gastador</div>
+        <div class="dash-stat__value" style="font-size:clamp(15px,3.5vw,18px)">${comp.maiorGasto ? escapeHtml(comp.maiorGasto.nome) : '—'}</div>
+        <div class="dash-stat__sub">${comp.maiorGasto ? fmtBRL(comp.maiorGasto.valor) : 'sem dados'}</div>
+      </div>
+      <div class="dash-stat">
+        <div class="dash-stat__label">Coleção mais popular</div>
+        <div class="dash-stat__value" style="font-size:clamp(15px,3.5vw,18px)">${comp.colPop ? escapeHtml(comp.colPop.nome) : '—'}</div>
+        <div class="dash-stat__sub">${comp.colPop ? comp.colPop.qtd.toLocaleString('pt-BR') + ' boosters' : 'sem dados'}</div>
+      </div>
+      <div class="dash-stat">
+        <div class="dash-stat__label">Melhor preço</div>
+        <div class="dash-stat__value">${comp.melhor ? fmtBRL(comp.melhor.up) : '—'}<span class="unit"> /booster</span></div>
+        <div class="dash-stat__sub">${comp.melhor ? escapeHtml(comp.melhor.nome) + ' · ' + escapeHtml(comp.melhor.colecao) : 'sem dados'}</div>
+      </div>
+    </div>`;
+
+  const chartHTML = serie.datasets.length
+    ? `<div class="dash-panel"><div class="dash-label">Evolução comparativa</div><div class="grupo-chart__canvas"><canvas id="grupo-chart-canvas"></canvas></div></div>`
+    : '';
+
+  content.innerHTML = `<div class="grupo">${totalHTML}${rankHTML}${compHTML}${chartHTML}</div>`;
+
+  if (serie.datasets.length) {
+    _ensureChart(() => buildGrupoChart(serie));
+  } else if (grupoChart) {
+    try { grupoChart.destroy(); } catch (_) {}
+    grupoChart = null;
+  }
+
+  if (flashUserId) {
+    const row = content.querySelector(`.rank-row[data-uid="${flashUserId}"]`);
+    if (row) { row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash'); }
+  }
+}
+
+// ---------- Chart.js sob demanda ----------
+let _chartLoading = null;
+function _ensureChart(cb) {
+  if (window.Chart) { cb(); return; }
+  if (!_chartLoading) {
+    _chartLoading = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error('Falha ao carregar o gráfico.'));
+      document.head.appendChild(s);
+    });
+  }
+  _chartLoading.then(cb).catch(e => console.warn('[500md] chart:', e));
+}
+
+function _themeChartColors() {
+  const cs = getComputedStyle(document.documentElement);
+  return {
+    grid: (cs.getPropertyValue('--border') || '').trim() || 'rgba(128,128,128,0.2)',
+    tick: (cs.getPropertyValue('--text-muted') || '').trim() || '#888',
+  };
+}
+
+function buildGrupoChart(serie) {
+  const canvas = $('#grupo-chart-canvas');
+  if (!canvas || !window.Chart) return;
+  if (grupoChart) { try { grupoChart.destroy(); } catch (_) {} grupoChart = null; }
+  const col = _themeChartColors();
+  const monoFont = "'JetBrains Mono', monospace";
+  const umMesSo = serie.labels.length === 1;
+  grupoChart = new window.Chart(canvas.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: serie.labels,
+      datasets: serie.datasets.map(d => ({
+        label: d.nome,
+        data: d.data,
+        borderColor: d.cor,
+        backgroundColor: d.cor,
+        pointRadius: umMesSo ? 5 : 0,
+        pointHoverRadius: umMesSo ? 6 : 4,
+        borderWidth: 2,
+        tension: 0.25,
+        spanGaps: true,
+      })),
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { color: col.tick, font: { family: monoFont, size: 10 }, boxWidth: 10, boxHeight: 10, usePointStyle: true } },
+      },
+      scales: {
+        x: { grid: { color: col.grid }, ticks: { color: col.tick, font: { family: monoFont, size: 9 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 6 } },
+        y: { grid: { color: col.grid }, ticks: { color: col.tick, font: { family: monoFont, size: 9 }, precision: 0 }, beginAtZero: true },
+      },
+    },
+  });
+}
+
+function refreshGrupoChartTheme() {
+  if (!grupoChart) return;
+  const col = _themeChartColors();
+  const o = grupoChart.options;
+  o.scales.x.grid.color = col.grid; o.scales.x.ticks.color = col.tick;
+  o.scales.y.grid.color = col.grid; o.scales.y.ticks.color = col.tick;
+  o.plugins.legend.labels.color = col.tick;
+  try { grupoChart.update('none'); } catch (_) {}
+}
+
+// ---------- Realtime ----------
+function setupGrupoRealtime() {
+  if (grupoChannel) return;
+  try {
+    grupoChannel = sb.channel('grupo-rt')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'boosters' }, (p) => handleGrupoChange('boosters', p))
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, (p) => handleGrupoChange('profiles', p))
+      .subscribe();
+  } catch (e) { console.warn('[500md] realtime indisponível:', e); }
+}
+function teardownGrupoRealtime() {
+  if (grupoChannel) { try { sb.removeChannel(grupoChannel); } catch (_) {} grupoChannel = null; }
+}
+let _grupoRtTimer = null, _grupoPending = null;
+function handleGrupoChange(table, payload) {
+  const ev  = payload.eventType || payload.type;
+  const rec = (payload.new && Object.keys(payload.new).length) ? payload.new : payload.old;
+  const uid = table === 'boosters' ? rec?.user_id : rec?.id;
+  if (table === 'boosters' && uid && uid !== currentUser?.id) {
+    const verbo = ev === 'INSERT' ? 'registrou uma compra'
+                : ev === 'DELETE' ? 'removeu uma compra'
+                : 'atualizou uma compra';
+    _grupoPending = { uid, verbo };
+  }
+  clearTimeout(_grupoRtTimer);
+  _grupoRtTimer = setTimeout(() => {
+    const pend = _grupoPending; _grupoPending = null;
+    carregarGrupo({ silent: true, flashUserId: pend?.uid || null }).then(() => {
+      if (pend) { const nome = _grupoNomeDe(pend.uid); if (nome) showToast(`${nome} ${pend.verbo}.`); }
+    });
+  }, 450);
+}
+
+// ---------- tabs ----------
+function switchTab(tab) {
+  $$('.tab-content').forEach(s => s.classList.toggle('active', s.id === 'tab-' + tab));
+  $$('[data-tab]').forEach(b => {
+    if (!b.dataset.tab) return;
+    const on = b.dataset.tab === tab;
+    b.classList.toggle('active', on);
+    if (b.classList.contains('tab-btn')) b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  if (tab === 'grupo') carregarGrupo();
+}
+
+// ---------- wire up ----------
+$btnAddDesktop.addEventListener('click', () => openModal());
+$btnAddMobile.addEventListener('click', () => openModal());
+$btnCancel.addEventListener('click', () => closeModal());
+$('#modal-close').addEventListener('click', () => closeModal());
+$btnDelete.addEventListener('click', handleDeleteClick);
+$form.addEventListener('submit', (e) => { e.preventDefault(); saveBooster(); });
+
+// click outside fecha modal
+$modal.addEventListener('click', (e) => {
+  if (e.target === $modal) closeModal();
+});
+// ESC fecha modal
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !$modal.hidden) closeModal();
+});
+
+// click em booster abre edição
+$boosterList.addEventListener('click', (e) => {
+  const card = e.target.closest('.booster-card');
+  if (!card) return;
+  const b = boostersCache.find(x => x.id === card.dataset.id);
+  if (b) openModal(b);
+});
+$boosterList.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const card = e.target.closest('.booster-card');
+  if (!card) return;
+  e.preventDefault();
+  const b = boostersCache.find(x => x.id === card.dataset.id);
+  if (b) openModal(b);
+});
+
+// tab switching
+$$('[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.disabled) return;
+    switchTab(btn.dataset.tab);
+  });
+});
+
+// botão de atualizar o grupo
+$('#grupo-refresh')?.addEventListener('click', () => carregarGrupo());
+
+// Reage a mudança de status (data_recebimento condicional)
+$$('input[name="status"]').forEach(r => {
+  r.addEventListener('change', () => {
+    const reqDates = ['recebido', 'aberto'].includes(r.value);
+    $form.elements.data_recebimento.required = reqDates;
+    // auto-preenche data_recebimento se virou requerida e está vazia
+    if (reqDates && !$form.elements.data_recebimento.value) {
+      $form.elements.data_recebimento.value = _dataISO();
+    }
+  });
+});
+
+// Formata o input de valor como BRL enquanto o usuário digita
+(function setupBRLInput() {
+  const input = $form.elements.valor_total;
+  if (!input) return;
+  input.addEventListener('input', (e) => {
+    const formatted = formatBRLInput(e.target.value);
+    e.target.value = formatted;
+    // mantém o caret no fim (já que estamos formatando da direita pra esquerda)
+    const end = formatted.length;
+    if (e.target === document.activeElement) {
+      try { e.target.setSelectionRange(end, end); } catch (_) {}
+    }
+  });
+  // Limpa zero residual ao focar campo vazio
+  input.addEventListener('focus', (e) => {
+    if (e.target.value === '' || e.target.value === 'R$ 0,00') {
+      e.target.value = '';
+    }
+  });
+})();
+
+// ----------------------------------------------------------
+// Parallax sutil do mouse — wisps e aura reagem ao cursor
+// ----------------------------------------------------------
+(function setupParallax() {
+  const wisps = $('.bg-wisps');
+  const aura  = $('.login-aura');
+  if (!wisps && !aura) return;
+  let rafId = null;
+  let targetX = 0, targetY = 0;
+  let currentX = 0, currentY = 0;
+
+  function loop() {
+    currentX += (targetX - currentX) * 0.05;
+    currentY += (targetY - currentY) * 0.05;
+    if (wisps) wisps.style.transform = `translate3d(${currentX * 14}px, ${currentY * 14}px, 0)`;
+    if (aura)  aura.style.transform  = `translate3d(${currentX * -22}px, ${currentY * -22}px, 0)`;
+    if (Math.abs(targetX - currentX) > 0.001 || Math.abs(targetY - currentY) > 0.001) {
+      rafId = requestAnimationFrame(loop);
+    } else {
+      rafId = null;
+    }
+  }
+
+  // Só ativa em pointer fine (desktop), respeita reduced-motion
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fine   = window.matchMedia('(pointer: fine)').matches;
+  if (reduce || !fine) return;
+
+  window.addEventListener('mousemove', (e) => {
+    targetX = (e.clientX / window.innerWidth)  - 0.5;
+    targetY = (e.clientY / window.innerHeight) - 0.5;
+    if (!rafId) rafId = requestAnimationFrame(loop);
+  }, { passive: true });
+})();
+
+// Boot inicial — pega sessão existente (se houver)
+(async function init() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.user) {
+      entrarComoLogado(session.user);
+    } else {
+      entrarComoDeslogado();
+    }
+  } catch (err) {
+    console.error('[500md] erro no boot:', err);
+    entrarComoDeslogado();
+    setLoginError('Erro ao conectar. Verifique sua conexão.');
+  } finally {
+    hideBoot();
+  }
+})();
+</script>
+
+</body>
+</html>
