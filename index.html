@@ -1984,6 +1984,19 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   .eclipse { width: 60px; height: 60px; }
 }
 
+/* Landscape mobile: enxuga header e bottom-nav pra liberar altura vertical útil */
+@media (orientation: landscape) and (max-height: 540px) {
+  .app-header { padding-top: 6px; padding-bottom: 6px; }
+  .app-header .brand .brand-full { font-size: 13px; }
+  .bottom-nav { padding: 6px 16px calc(6px + env(safe-area-inset-bottom)); }
+  .nav-btn { min-height: 40px; padding: 4px 8px; gap: 2px; }
+  .nav-btn svg { width: 18px; height: 18px; }
+  .nav-btn span { font-size: 9.5px; }
+  /* Card de login também encolhe */
+  .login-card { padding: 24px 28px; gap: 16px; max-width: 480px; }
+  .login-header { gap: 10px; }
+}
+
 /* Reduz movimentação para quem pediu */
 @media (prefers-reduced-motion: reduce) {
   .bg-mist, .bg-wisps span, .login-aura, .bg-stars span,
@@ -2320,11 +2333,18 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   transition: var(--transition-fast);
 }
 .rank-row:hover { border-color: var(--border-hover); transform: translateY(-1px); }
-.rank-row__pos { font-family: var(--font-mono); font-size: 13px; font-weight: 600; color: var(--text-muted); text-align: center; }
+.rank-row__pos { font-family: var(--font-mono); font-size: 13px; font-weight: 600; color: var(--text-muted); text-align: center; display: flex; align-items: center; justify-content: center; min-width: 24px; }
 .rank-row--lead .rank-row__pos { color: var(--accent-purple-bright); }
 .rank-row__avatar { width: 26px; height: 26px; border-radius: 50%; border: 1px solid rgba(var(--accent-rgb), 0.3); }
-.rank-row__center { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
-.rank-row__name { font-size: 13.5px; color: var(--text-primary); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rank-row__center { display: flex; flex-direction: column; gap: 7px; min-width: 0; flex: 1; }
+.rank-row__nameline { display: flex; align-items: baseline; gap: 10px; min-width: 0; overflow: hidden; }
+.rank-row__name { font-size: 13.5px; color: var(--text-primary); font-weight: 500; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; flex: 0 0 auto; }
+.rank-row__money {
+  font-family: var(--font-mono); font-feature-settings: "tnum";
+  font-size: 11px; color: var(--text-muted);
+  white-space: nowrap; overflow: hidden;
+  flex: 0 1 auto; min-width: 0;   /* encolhe e some quando não cabe */
+}
 .rank-row__name .me-tag {
   margin-left: 7px; font-family: var(--font-mono);
   font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase;
@@ -2335,6 +2355,32 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 .rank-row__nums { font-family: var(--font-mono); font-feature-settings: "tnum"; font-size: 12px; color: var(--text-secondary); text-align: right; white-space: nowrap; }
 .rank-row__nums strong { color: var(--text-primary); font-weight: 600; }
 .rank-row__nums .pct { display: block; font-size: 10px; color: var(--accent-purple-bright); margin-top: 2px; }
+
+/* Coroas do pódio (top 3 não-observadores) */
+.crown { width: 22px; height: 16px; display: block; }
+.crown--gold {
+  color: #f4d98a;
+  filter: drop-shadow(0 0 4px rgba(244, 217, 138, 0.7))
+          drop-shadow(0 0 10px rgba(244, 217, 138, 0.4));
+  animation: crown-glow 2.6s ease-in-out infinite;
+}
+.crown--silver { color: #cfd0d3; filter: drop-shadow(0 0 2px rgba(207, 208, 211, 0.45)); }
+.crown--bronze { color: #c47a3a; filter: drop-shadow(0 0 2px rgba(196, 122, 58, 0.4)); }
+@keyframes crown-glow {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(244, 217, 138, 0.55))  drop-shadow(0 0 8px  rgba(244, 217, 138, 0.3)); }
+  50%      { filter: drop-shadow(0 0 6px rgba(244, 217, 138, 0.9))   drop-shadow(0 0 16px rgba(244, 217, 138, 0.55)); }
+}
+/* Cresselia: tons mais escuros pra contrastar com o creme */
+[data-theme="cresselia"] .crown--gold {
+  color: #c89a3a;
+  animation: crown-glow-cresselia 2.6s ease-in-out infinite;
+}
+[data-theme="cresselia"] .crown--silver { color: #8a8d92; }
+[data-theme="cresselia"] .crown--bronze { color: #8a5028; }
+@keyframes crown-glow-cresselia {
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(200, 154, 58, 0.5)) drop-shadow(0 0 7px rgba(200, 154, 58, 0.25)); }
+  50%      { filter: drop-shadow(0 0 5px rgba(200, 154, 58, 0.8)) drop-shadow(0 0 14px rgba(200, 154, 58, 0.45)); }
+}
 .rank-row--me {
   border-color: rgba(var(--accent-rgb), 0.5);
   background:
@@ -2443,6 +2489,78 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 .profile-pwd-toggle:hover { color: var(--text-primary); }
 .profile-pwd-fields { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
 .profile-pwd-fields[hidden] { display: none; }
+
+/* Toggle switch reutilizável + bloco de privacidade do perfil */
+.profile-section-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+  opacity: 0.6;
+}
+.toggle-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  cursor: pointer;
+  user-select: none;
+}
+.toggle-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+.toggle-row__label {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.toggle-row__sub {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.toggle-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.toggle-track {
+  position: relative;
+  flex-shrink: 0;
+  width: 38px;
+  height: 22px;
+  background: var(--border);
+  border-radius: 999px;
+  transition: background 0.22s ease;
+  margin-top: 2px;
+}
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  background: var(--text-secondary);
+  border-radius: 50%;
+  transition: transform 0.22s ease, background 0.22s ease;
+}
+.toggle-input:checked ~ .toggle-track {
+  background: var(--accent-purple);
+}
+.toggle-input:checked ~ .toggle-track .toggle-thumb {
+  transform: translateX(16px);
+  background: #ffffff;
+}
+.toggle-input:focus-visible ~ .toggle-track {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 2px;
+}
 
 /* ==========================================================
    Rodada 3.6 — Esqueci a senha
@@ -3188,6 +3306,17 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
         <input id="prof-meta" name="meta_total" type="number" required min="0" max="100000" step="1" inputmode="numeric" placeholder="500" />
       </div>
 
+      <div class="profile-section-divider"></div>
+
+      <label class="toggle-row" for="prof-spent-visible">
+        <span class="toggle-row__text">
+          <span class="toggle-row__label">Mostrar quanto gastei no ranking</span>
+          <span class="toggle-row__sub">Quando desligado, ninguém vê seu gasto total (nem você).</span>
+        </span>
+        <input id="prof-spent-visible" name="spent_visible" type="checkbox" class="toggle-input" />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+      </label>
+
       <div class="profile-password-section">
         <button type="button" class="btn-ghost profile-pwd-toggle" id="prof-pwd-toggle" aria-expanded="false">
           <span>Trocar senha</span>
@@ -3722,6 +3851,7 @@ function openProfileModal() {
   const p = currentProfile || {};
   $('#prof-display-name').value = p.display_name || '';
   $('#prof-meta').value = p.meta_total ?? 500;
+  $('#prof-spent-visible').checked = p.spent_visible !== false;  // default visível
   buildColorGrid($('#prof-color-grid'), p.avatar_color);
   $('#prof-pwd-current').value = '';
   $('#prof-pwd-new').value = '';
@@ -3791,10 +3921,12 @@ async function submitProfile(e) {
       const { error: updErr } = await sb.auth.updateUser({ password: newPwd });
       if (updErr) throw updErr;
     }
+    const spentVisible = !!$('#prof-spent-visible').checked;
     const { error: profErr } = await sb.from('profiles').update({
       display_name: name,
       avatar_color: color,
       meta_total: meta,
+      spent_visible: spentVisible,
     }).eq('id', currentUser.id);
     if (profErr) throw profErr;
 
@@ -4565,12 +4697,6 @@ function _grupoAgregado() {
 }
 
 function _grupoComparativos(agg) {
-  let maiorGasto = null;
-  agg.forEach(u => {
-    if (u.gasto > 0 && (!maiorGasto || u.gasto > maiorGasto.valor)) {
-      maiorGasto = { nome: u.profile?.display_name || '—', valor: u.gasto };
-    }
-  });
   const colMap = new Map();
   grupoCache.boosters.forEach(b => {
     const k = (b.colecao || '—').trim() || '—';
@@ -4586,7 +4712,7 @@ function _grupoComparativos(agg) {
       if (!melhor || up < melhor.up) melhor = { up, nome: _grupoNomeDe(b.user_id) || '—', colecao: b.colecao || '—' };
     }
   });
-  return { maiorGasto, colPop, melhor };
+  return { colPop, melhor };
 }
 
 // Série mensal acumulada por usuário (para o gráfico comparativo).
@@ -4671,34 +4797,53 @@ function renderGrupo(flashUserId) {
       </div>
     </div>`;
 
+  // SVG da coroa (3 picos + base) — usado em top 3 racers
+  const CROWN_SVG = `<svg class="crown" viewBox="0 0 24 18" fill="currentColor" aria-hidden="true"><path d="M3 14.5 L5 5 L9 10 L12 4 L15 10 L19 5 L21 14.5 L21 17 L3 17 Z"/></svg>`;
+  function rankIndicator(idx, isObserver) {
+    if (isObserver)  return `<div class="rank-row__pos">·</div>`;
+    if (idx === 0)   return `<div class="rank-row__pos">${CROWN_SVG.replace('class="crown"', 'class="crown crown--gold"')}</div>`;
+    if (idx === 1)   return `<div class="rank-row__pos">${CROWN_SVG.replace('class="crown"', 'class="crown crown--silver"')}</div>`;
+    if (idx === 2)   return `<div class="rank-row__pos">${CROWN_SVG.replace('class="crown"', 'class="crown crown--bronze"')}</div>`;
+    return `<div class="rank-row__pos">${idx + 1}</div>`;
+  }
+
   const rankRows = rank.map((u, i) => {
     const meta = u.profile?.meta_total ?? 500;
     const isObserver = meta === 0;
     const pct  = !isObserver ? (u.metaCount / meta) * 100 : 0;
     const isMe = u.profile?.id && u.profile.id === currentUser?.id;
     const isLead = i === 0 && !isObserver;
+    // Mostra valor gasto se: não-observador E perfil deixa (spent_visible !== false).
+    // Quando o user desliga pra outros, esconde pra ele mesmo também (sem distinção isMe).
+    const mostraValor = !isObserver && (u.profile?.spent_visible !== false);
+    const moneyHTML = mostraValor ? `<div class="rank-row__money">${fmtBRL(u.gasto)}</div>` : '';
     return `
       <div class="rank-row${isLead ? ' rank-row--lead' : ''}${isMe ? ' rank-row--me' : ''}${isObserver ? ' rank-row--observer' : ''}" data-uid="${u.profile?.id || ''}">
-        <div class="rank-row__pos">${isObserver ? '·' : (i + 1)}</div>
+        ${rankIndicator(i, isObserver)}
         <div class="rank-row__avatar" style="background:${_corSegura(u.profile?.avatar_color)}"></div>
         <div class="rank-row__center">
-          <div class="rank-row__name">${escapeHtml(u.profile?.display_name || '—')}${isMe ? ' <span class="me-tag">você</span>' : ''}${isObserver ? ' <span class="me-tag observer-tag">observador</span>' : ''}</div>
+          <div class="rank-row__nameline">
+            <div class="rank-row__name">${escapeHtml(u.profile?.display_name || '—')}${isMe ? ' <span class="me-tag">você</span>' : ''}${isObserver ? ' <span class="me-tag observer-tag">observador</span>' : ''}</div>
+            ${moneyHTML}
+          </div>
           ${isObserver ? '' : `<div class="dash-bar rank-row__bar"><div class="dash-bar__fill" style="width:${Math.min(100, pct).toFixed(1)}%"></div></div>`}
         </div>
         <div class="rank-row__nums">${isObserver
-          ? `<strong>${u.metaCount.toLocaleString('pt-BR')}</strong> coletados`
+          ? ''
           : `<strong>${u.metaCount.toLocaleString('pt-BR')}</strong>/${meta.toLocaleString('pt-BR')}<span class="pct">${pct.toFixed(1).replace('.', ',')}%</span>`}
         </div>
       </div>`;
   }).join('');
   const rankHTML = `<div class="dash-panel"><div class="dash-label">Ranking</div><div class="rank-list">${rankRows}</div></div>`;
 
+  // Tile "Total gasto pelo grupo" substitui "Maior gastador" (agregado, anônimo, não vaza opt-out)
+  const totalGastoGrupo = parts.reduce((s, u) => s + (u.gasto || 0), 0);
   const compHTML = `
     <div class="dash-stats">
       <div class="dash-stat">
-        <div class="dash-stat__label">Maior gastador</div>
-        <div class="dash-stat__value dash-stat__value--text">${comp.maiorGasto ? escapeHtml(comp.maiorGasto.nome) : '—'}</div>
-        <div class="dash-stat__sub">${comp.maiorGasto ? fmtBRL(comp.maiorGasto.valor) : 'sem dados'}</div>
+        <div class="dash-stat__label">Total gasto pelo grupo</div>
+        <div class="dash-stat__value">${fmtBRL(totalGastoGrupo)}</div>
+        <div class="dash-stat__sub">queimados juntos rumo à decepção</div>
       </div>
       <div class="dash-stat">
         <div class="dash-stat__label">Coleção mais popular</div>
