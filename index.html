@@ -2585,13 +2585,13 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 }
 
 /* ==========================================================
-   Rodada 5 — Efeitos da tela de login (cessam após o login)
+   Rodada 5 — Efeitos atmosféricos globais (cobrem o site inteiro)
    ========================================================== */
 
 /* Container das duas atmosferas (Darkrai = névoa, Cresselia = estrelas cadentes) */
-.login-fog,
-.login-stars {
-  position: absolute;
+.bg-fog,
+.bg-shooting {
+  position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
@@ -2600,12 +2600,12 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 }
 
 /* No Cresselia, esconde a névoa */
-[data-theme="cresselia"] .login-fog  { opacity: 0; }
+[data-theme="cresselia"] .bg-fog  { opacity: 0; }
 /* No Darkrai, esconde as estrelas */
-.login-stars { opacity: 0; }
-[data-theme="cresselia"] .login-stars { opacity: 1; }
+.bg-shooting { opacity: 0; }
+[data-theme="cresselia"] .bg-shooting { opacity: 1; }
 
-/* ---------- Névoa subindo (Darkrai) ---------- */
+/* ---------- Névoa subindo (Darkrai) — intensificada ---------- */
 .fog-layer {
   position: absolute;
   border-radius: 50%;
@@ -2617,19 +2617,19 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 }
 @keyframes fog-rise {
   0%   { transform: translateY(15%)  scale(1);    opacity: 0; }
-  18%  { opacity: var(--opa, 0.7); }
-  82%  { opacity: var(--opa, 0.7); }
+  18%  { opacity: var(--opa, 0.85); }
+  82%  { opacity: var(--opa, 0.85); }
   100% { transform: translateY(-85%) scale(1.35); opacity: 0; }
 }
 
-/* ---------- Estrelas cadentes com rastro prismático (Cresselia) ----------
+/* ---------- Estrelas cadentes com rastro prismático (Cresselia) — intensificada ----------
    Cada estrela é uma faixa fina rotacionada, com gradiente pastel-arco-íris
    começando transparente no rabo e terminando num "ponto" brilhante na cabeça.
    O drop-shadow cria o brilho ao redor do rastro. */
 .shooting-star {
   position: absolute;
   width: var(--length, 220px);
-  height: 1.5px;
+  height: 2px;
   top: var(--y, 30%);
   left: -25%;
   transform-origin: left center;
@@ -2638,18 +2638,18 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
     90deg,
     transparent 0%,
     rgba(196, 255, 214, 0)    7%,
-    rgba(196, 255, 214, 0.4) 20%,    /* menta */
-    rgba(196, 224, 255, 0.55) 33%,   /* azul-céu */
-    rgba(228, 200, 255, 0.7)  46%,   /* lavanda */
-    rgba(255, 196, 224, 0.8)  60%,   /* rosa pastel */
-    rgba(255, 218, 184, 0.9)  74%,   /* pêssego */
-    rgba(255, 240, 200, 0.97) 87%,   /* creme quente */
+    rgba(196, 255, 214, 0.55) 20%,   /* menta */
+    rgba(196, 224, 255, 0.7)  33%,   /* azul-céu */
+    rgba(228, 200, 255, 0.82) 46%,   /* lavanda */
+    rgba(255, 196, 224, 0.9)  60%,   /* rosa pastel */
+    rgba(255, 218, 184, 0.95) 74%,   /* pêssego */
+    rgba(255, 240, 200, 1)    87%,   /* creme quente */
     rgba(255, 230, 158, 1)    96%,   /* dourado */
     rgba(255, 250, 230, 1)    100%   /* cabeça brilhante */
   );
   filter:
-    drop-shadow(0 0 5px  rgba(255, 200, 168, 0.6))
-    drop-shadow(0 0 14px rgba(228, 168, 224, 0.4));
+    drop-shadow(0 0 6px  rgba(255, 200, 168, 0.7))
+    drop-shadow(0 0 16px rgba(228, 168, 224, 0.5));
   opacity: 0;
   pointer-events: none;
   will-change: transform, opacity;
@@ -2663,10 +2663,10 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   right: -3px;
   top: 50%;
   transform: translate(50%, -50%);
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: radial-gradient(circle, #ffffff 0%, rgba(255, 230, 200, 0.5) 45%, transparent 80%);
+  background: radial-gradient(circle, #ffffff 0%, rgba(255, 230, 200, 0.55) 45%, transparent 80%);
   filter: blur(0.3px);
 }
 @keyframes star-fall {
@@ -2796,6 +2796,49 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 </div>
 <div class="bg-eye"></div>
 <div class="bg-vignette"></div>
+
+<!-- Névoa subindo (Darkrai) — global, intensificada, 5 camadas com posições/velocidades variadas -->
+<div class="bg-fog" aria-hidden="true">
+  <div class="fog-layer"
+       style="left:-15%; right:-15%; bottom:-25%; height:55%;
+              background: radial-gradient(ellipse at 50% 100%, rgba(154,92,200,0.7), rgba(95,190,212,0.22) 45%, transparent 78%);
+              filter: blur(70px);
+              --dur: 22s; --delay: 0s;   --opa: 0.85;"></div>
+  <div class="fog-layer"
+       style="left:-5%; right:30%; bottom:-15%; height:60%;
+              background: radial-gradient(ellipse at 50% 100%, rgba(95,190,212,0.55), rgba(154,92,200,0.18) 50%, transparent 80%);
+              filter: blur(55px);
+              --dur: 18s; --delay: -7s;  --opa: 0.75;"></div>
+  <div class="fog-layer"
+       style="left:30%; right:-5%; bottom:-10%; height:65%;
+              background: radial-gradient(ellipse at 50% 100%, rgba(184,138,196,0.5), rgba(95,190,212,0.16) 55%, transparent 82%);
+              filter: blur(60px);
+              --dur: 26s; --delay: -3s;  --opa: 0.7;"></div>
+  <div class="fog-layer"
+       style="left:10%; right:10%; bottom:-5%; height:35%;
+              background: radial-gradient(ellipse at 50% 100%, rgba(95,190,212,0.45), transparent 75%);
+              filter: blur(40px);
+              --dur: 14s; --delay: -10s; --opa: 0.55;"></div>
+  <div class="fog-layer"
+       style="left:20%; right:-10%; bottom:-20%; height:50%;
+              background: radial-gradient(ellipse at 50% 100%, rgba(140,90,180,0.45), rgba(80,160,200,0.15) 55%, transparent 82%);
+              filter: blur(50px);
+              --dur: 20s; --delay: -14s; --opa: 0.65;"></div>
+</div>
+
+<!-- Estrelas cadentes com rastro prismático (Cresselia) — global, intensificadas, 9 estrelas -->
+<div class="bg-shooting" aria-hidden="true">
+  <div class="shooting-star" style="--y:6%;  --angle:20deg; --length:260px; --dur:5.5s; --delay:0s;   --opa:1;   --travel:170vw;"></div>
+  <div class="shooting-star" style="--y:14%; --angle:24deg; --length:200px; --dur:4.5s; --delay:-6s;  --opa:0.95;--travel:175vw;"></div>
+  <div class="shooting-star" style="--y:22%; --angle:28deg; --length:180px; --dur:4s;   --delay:-2.5s;--opa:0.9; --travel:175vw;"></div>
+  <div class="shooting-star" style="--y:32%; --angle:14deg; --length:300px; --dur:7s;   --delay:-1s;  --opa:0.95;--travel:165vw;"></div>
+  <div class="shooting-star" style="--y:42%; --angle:22deg; --length:170px; --dur:4.2s; --delay:-9s;  --opa:1;   --travel:180vw;"></div>
+  <div class="shooting-star" style="--y:50%; --angle:24deg; --length:150px; --dur:3.8s; --delay:-3.5s;--opa:1;   --travel:180vw;"></div>
+  <div class="shooting-star" style="--y:62%; --angle:18deg; --length:230px; --dur:6.2s; --delay:-0.5s;--opa:0.9; --travel:170vw;"></div>
+  <div class="shooting-star" style="--y:72%; --angle:26deg; --length:200px; --dur:5s;   --delay:-7s;  --opa:1;   --travel:175vw;"></div>
+  <div class="shooting-star" style="--y:84%; --angle:20deg; --length:240px; --dur:5.8s; --delay:-4s;  --opa:0.95;--travel:170vw;"></div>
+</div>
+
 <div class="bg-noise"></div>
 
 <!-- Tela de boot (mostra enquanto checamos sessão) -->
@@ -2813,40 +2856,6 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 ============================================ -->
 <section id="login-screen" class="screen">
   <div class="login-aura"></div>
-
-  <!-- Névoa subindo (Darkrai) — 4 camadas com posições/velocidades variadas -->
-  <div class="login-fog" aria-hidden="true">
-    <div class="fog-layer"
-         style="left:-15%; right:-15%; bottom:-25%; height:55%;
-                background: radial-gradient(ellipse at 50% 100%, rgba(154,92,200,0.55), rgba(95,190,212,0.18) 45%, transparent 78%);
-                filter: blur(70px);
-                --dur: 22s; --delay: 0s;  --opa: 0.65;"></div>
-    <div class="fog-layer"
-         style="left:-5%; right:30%; bottom:-15%; height:60%;
-                background: radial-gradient(ellipse at 50% 100%, rgba(95,190,212,0.45), rgba(154,92,200,0.15) 50%, transparent 80%);
-                filter: blur(55px);
-                --dur: 18s; --delay: -7s; --opa: 0.55;"></div>
-    <div class="fog-layer"
-         style="left:30%; right:-5%; bottom:-10%; height:65%;
-                background: radial-gradient(ellipse at 50% 100%, rgba(184,138,196,0.4), rgba(95,190,212,0.12) 55%, transparent 82%);
-                filter: blur(60px);
-                --dur: 26s; --delay: -3s; --opa: 0.5;"></div>
-    <div class="fog-layer"
-         style="left:10%; right:10%; bottom:-5%; height:35%;
-                background: radial-gradient(ellipse at 50% 100%, rgba(95,190,212,0.35), transparent 75%);
-                filter: blur(40px);
-                --dur: 14s; --delay: -10s; --opa: 0.4;"></div>
-  </div>
-
-  <!-- Estrelas cadentes com rastro prismático (Cresselia) — varia posição vertical, ângulo, comprimento e velocidade -->
-  <div class="login-stars" aria-hidden="true">
-    <div class="shooting-star" style="--y:6%;  --angle:20deg; --length:260px; --dur:5.5s; --delay:0s;   --opa:1;   --travel:170vw;"></div>
-    <div class="shooting-star" style="--y:18%; --angle:28deg; --length:180px; --dur:4s;   --delay:-2.5s;--opa:0.9; --travel:175vw;"></div>
-    <div class="shooting-star" style="--y:30%; --angle:14deg; --length:300px; --dur:7s;   --delay:-1s;  --opa:0.95;--travel:165vw;"></div>
-    <div class="shooting-star" style="--y:46%; --angle:24deg; --length:150px; --dur:3.8s; --delay:-3.5s;--opa:1;   --travel:180vw;"></div>
-    <div class="shooting-star" style="--y:62%; --angle:18deg; --length:230px; --dur:6.2s; --delay:-0.5s;--opa:0.85;--travel:170vw;"></div>
-    <div class="shooting-star" style="--y:78%; --angle:26deg; --length:200px; --dur:5s;   --delay:-4s;  --opa:1;   --travel:175vw;"></div>
-  </div>
 
   <div class="login-card">
 
