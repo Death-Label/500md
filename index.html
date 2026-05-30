@@ -325,7 +325,6 @@ body.theme-hint-active .app-header {
 }
 
 html, body {
-  height: 100%;
   background-color: var(--bg-deep);
   color: var(--text-primary);
   font-family: var(--font-display);
@@ -1989,7 +1988,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 @media (prefers-reduced-motion: reduce) {
   .bg-mist, .bg-wisps span, .login-aura, .bg-stars span,
   .eclipse::before, .eclipse::after, .bg-tendrils, .bg-smoke span,
-  .bg-eye, .bg-shimmer, .login-card::after {
+  .bg-eye, .bg-shimmer, .login-card::after,
+  .fog-layer, .shooting-star, .install-icon-wrap.hint-active .install-icon::after {
     animation: none !important;
   }
 }
@@ -2068,6 +2068,38 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   font-weight: 400;
   color: var(--text-muted);
   letter-spacing: 0.04em;
+}
+.dash-stat__value--text {
+  font-size: clamp(15px, 3.4vw, 17px);
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.25;
+}
+
+/* Modo observador (meta = 0) */
+.meta-counter[data-state="observer"] .meta-counter__value {
+  color: var(--text-secondary);
+}
+.meta-counter__observer-note {
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  text-align: center;
+}
+.rank-row--observer {
+  opacity: 0.72;
+}
+.rank-row--observer .rank-row__pos {
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1;
+}
+.rank-row--observer .observer-tag {
+  color: var(--text-muted);
+  border-color: var(--border);
+  background: transparent;
 }
 .dash-stat__sub {
   margin-top: 6px;
@@ -2551,6 +2583,201 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   from { opacity: 0; transform: translate(-50%, -10px); }
   to   { opacity: 1; transform: translate(-50%, 0); }
 }
+
+/* ==========================================================
+   Rodada 5 — Efeitos da tela de login (cessam após o login)
+   ========================================================== */
+
+/* Container das duas atmosferas (Darkrai = névoa, Cresselia = estrelas cadentes) */
+.login-fog,
+.login-stars {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  transition: opacity 0.7s ease;
+}
+
+/* No Cresselia, esconde a névoa */
+[data-theme="cresselia"] .login-fog  { opacity: 0; }
+/* No Darkrai, esconde as estrelas */
+.login-stars { opacity: 0; }
+[data-theme="cresselia"] .login-stars { opacity: 1; }
+
+/* ---------- Névoa subindo (Darkrai) ---------- */
+.fog-layer {
+  position: absolute;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: fog-rise var(--dur, 16s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes fog-rise {
+  0%   { transform: translateY(15%)  scale(1);    opacity: 0; }
+  18%  { opacity: var(--opa, 0.7); }
+  82%  { opacity: var(--opa, 0.7); }
+  100% { transform: translateY(-85%) scale(1.35); opacity: 0; }
+}
+
+/* ---------- Estrelas cadentes com rastro prismático (Cresselia) ----------
+   Cada estrela é uma faixa fina rotacionada, com gradiente pastel-arco-íris
+   começando transparente no rabo e terminando num "ponto" brilhante na cabeça.
+   O drop-shadow cria o brilho ao redor do rastro. */
+.shooting-star {
+  position: absolute;
+  width: var(--length, 220px);
+  height: 1.5px;
+  top: var(--y, 30%);
+  left: -25%;
+  transform-origin: left center;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(196, 255, 214, 0)    7%,
+    rgba(196, 255, 214, 0.4) 20%,    /* menta */
+    rgba(196, 224, 255, 0.55) 33%,   /* azul-céu */
+    rgba(228, 200, 255, 0.7)  46%,   /* lavanda */
+    rgba(255, 196, 224, 0.8)  60%,   /* rosa pastel */
+    rgba(255, 218, 184, 0.9)  74%,   /* pêssego */
+    rgba(255, 240, 200, 0.97) 87%,   /* creme quente */
+    rgba(255, 230, 158, 1)    96%,   /* dourado */
+    rgba(255, 250, 230, 1)    100%   /* cabeça brilhante */
+  );
+  filter:
+    drop-shadow(0 0 5px  rgba(255, 200, 168, 0.6))
+    drop-shadow(0 0 14px rgba(228, 168, 224, 0.4));
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  animation: star-fall var(--dur, 5s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+/* Bolinha brilhante na ponta — reforça a "cabeça" do cometa */
+.shooting-star::after {
+  content: "";
+  position: absolute;
+  right: -3px;
+  top: 50%;
+  transform: translate(50%, -50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, rgba(255, 230, 200, 0.5) 45%, transparent 80%);
+  filter: blur(0.3px);
+}
+@keyframes star-fall {
+  0%   { transform: rotate(var(--angle, 22deg)) translateX(0);                  opacity: 0; }
+  10%  { opacity: var(--opa, 1); }
+  85%  { opacity: var(--opa, 1); }
+  100% { transform: rotate(var(--angle, 22deg)) translateX(var(--travel, 170vw)); opacity: 0; }
+}
+
+/* ---------- Ícone de instalar no header + tooltip ---------- */
+.install-icon-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+.install-icon-wrap[hidden] { display: none; }
+.install-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.install-icon:hover {
+  color: var(--accent-purple-bright);
+  border-color: var(--accent-purple);
+  background: rgba(var(--accent-rgb), 0.08);
+}
+.install-icon:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 2px;
+}
+.install-icon svg { width: 16px; height: 16px; display: block; }
+
+/* Anel pulsante igual ao do theme-hint */
+.install-icon-wrap.hint-active .install-icon::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-purple);
+  pointer-events: none;
+  animation: theme-hint-pulse 1.8s ease-in-out infinite;
+}
+
+/* Tooltip (mesmo idioma visual do theme-hint, mas abre pra esquerda
+   porque o ícone fica no canto direito do header) */
+.install-hint {
+  position: absolute;
+  top: calc(100% + 14px);
+  right: 0;
+  padding: 10px 30px 10px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--accent-purple);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+  white-space: nowrap;
+  max-width: calc(100vw - 32px);
+  box-shadow: var(--shadow-md), 0 0 18px rgba(var(--accent-rgb), 0.35);
+  z-index: 50;
+  animation: install-hint-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  cursor: default;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.install-hint::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 14px;
+  width: 10px;
+  height: 10px;
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--accent-purple);
+  border-left: 1px solid var(--accent-purple);
+  transform: rotate(45deg);
+}
+.install-hint .hint-dismiss {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.install-hint .hint-dismiss:hover { color: var(--text-primary); }
+.install-hint[hidden] { display: none; }
+@keyframes install-hint-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 480px) {
+  .install-hint { font-size: 10px; padding: 8px 28px 8px 12px; }
+}
 </style>
 </head>
 
@@ -2586,6 +2813,41 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 ============================================ -->
 <section id="login-screen" class="screen">
   <div class="login-aura"></div>
+
+  <!-- Névoa subindo (Darkrai) — 4 camadas com posições/velocidades variadas -->
+  <div class="login-fog" aria-hidden="true">
+    <div class="fog-layer"
+         style="left:-15%; right:-15%; bottom:-25%; height:55%;
+                background: radial-gradient(ellipse at 50% 100%, rgba(154,92,200,0.55), rgba(95,190,212,0.18) 45%, transparent 78%);
+                filter: blur(70px);
+                --dur: 22s; --delay: 0s;  --opa: 0.65;"></div>
+    <div class="fog-layer"
+         style="left:-5%; right:30%; bottom:-15%; height:60%;
+                background: radial-gradient(ellipse at 50% 100%, rgba(95,190,212,0.45), rgba(154,92,200,0.15) 50%, transparent 80%);
+                filter: blur(55px);
+                --dur: 18s; --delay: -7s; --opa: 0.55;"></div>
+    <div class="fog-layer"
+         style="left:30%; right:-5%; bottom:-10%; height:65%;
+                background: radial-gradient(ellipse at 50% 100%, rgba(184,138,196,0.4), rgba(95,190,212,0.12) 55%, transparent 82%);
+                filter: blur(60px);
+                --dur: 26s; --delay: -3s; --opa: 0.5;"></div>
+    <div class="fog-layer"
+         style="left:10%; right:10%; bottom:-5%; height:35%;
+                background: radial-gradient(ellipse at 50% 100%, rgba(95,190,212,0.35), transparent 75%);
+                filter: blur(40px);
+                --dur: 14s; --delay: -10s; --opa: 0.4;"></div>
+  </div>
+
+  <!-- Estrelas cadentes com rastro prismático (Cresselia) — varia posição vertical, ângulo, comprimento e velocidade -->
+  <div class="login-stars" aria-hidden="true">
+    <div class="shooting-star" style="--y:6%;  --angle:20deg; --length:260px; --dur:5.5s; --delay:0s;   --opa:1;   --travel:170vw;"></div>
+    <div class="shooting-star" style="--y:18%; --angle:28deg; --length:180px; --dur:4s;   --delay:-2.5s;--opa:0.9; --travel:175vw;"></div>
+    <div class="shooting-star" style="--y:30%; --angle:14deg; --length:300px; --dur:7s;   --delay:-1s;  --opa:0.95;--travel:165vw;"></div>
+    <div class="shooting-star" style="--y:46%; --angle:24deg; --length:150px; --dur:3.8s; --delay:-3.5s;--opa:1;   --travel:180vw;"></div>
+    <div class="shooting-star" style="--y:62%; --angle:18deg; --length:230px; --dur:6.2s; --delay:-0.5s;--opa:0.85;--travel:170vw;"></div>
+    <div class="shooting-star" style="--y:78%; --angle:26deg; --length:200px; --dur:5s;   --delay:-4s;  --opa:1;   --travel:175vw;"></div>
+  </div>
+
   <div class="login-card">
 
     <div class="login-header">
@@ -2676,6 +2938,17 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
     </nav>
 
     <div class="header-right">
+      <div class="install-icon-wrap" id="install-icon-wrap" hidden>
+        <button type="button" class="install-icon" id="install-icon" aria-label="Instalar aplicativo">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="install-hint" id="install-hint" hidden role="tooltip">
+          <span>Instale o app na sua área de trabalho</span>
+          <button type="button" class="hint-dismiss" id="install-hint-dismiss" aria-label="Dispensar">×</button>
+        </div>
+      </div>
       <div class="spent-indicator" id="spent-indicator" aria-live="polite">
         <span class="lbl">Gasto</span>
         <span class="val" id="spent-value" style="color: rgb(224, 110, 110)">R$ 0,00</span>
@@ -2903,7 +3176,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 
       <div class="field-group">
         <label for="prof-meta">Meta pessoal (em boosters)</label>
-        <input id="prof-meta" name="meta_total" type="number" required min="1" max="100000" step="1" inputmode="numeric" placeholder="500" />
+        <input id="prof-meta" name="meta_total" type="number" required min="0" max="100000" step="1" inputmode="numeric" placeholder="500" />
       </div>
 
       <div class="profile-password-section">
@@ -3198,6 +3471,8 @@ async function entrarComoLogado(user) {
   switchTab('meu');
   // Mostra o hint do toggle de tema (só no primeiro acesso)
   setTimeout(maybeShowThemeHint, 900);
+  // Hint do PWA: aparece um pouco depois (e só se for instalável e ainda não viu)
+  setTimeout(() => { syncInstallUI(); maybeShowInstallHint(); }, 3500);
   carregarProfile(user.id)
     .then((p) => {
       currentProfile = p;
@@ -3229,7 +3504,9 @@ function entrarComoDeslogado() {
   const _fp = $('#forgot-password-modal'); if (_fp) _fp.hidden = true;
   const _rp = $('#reset-password-modal'); if (_rp) _rp.hidden = true;
   recoveryMode = false;
+  dismissInstallHint();
   showScreen('login');
+  syncInstallUI();
 }
 
 sb.auth.onAuthStateChange((event, session) => {
@@ -3480,8 +3757,8 @@ async function submitProfile(e) {
   err.textContent = '';
 
   if (!name) { err.textContent = 'Apelido não pode ficar vazio.'; return; }
-  if (!Number.isFinite(meta) || meta < 1 || meta > 100000) {
-    err.textContent = 'A meta tem que ser um número entre 1 e 100.000.'; return;
+  if (!Number.isFinite(meta) || meta < 0 || meta > 100000) {
+    err.textContent = 'A meta tem que ser um número entre 0 e 100.000.'; return;
   }
   if (wantsPwd) {
     if (!curPwd)              { err.textContent = 'Pra trocar a senha, preencha a senha atual.'; return; }
@@ -3537,12 +3814,7 @@ $('#profile-close')?.addEventListener('click', closeProfileModal);
 $('#profile-cancel')?.addEventListener('click', closeProfileModal);
 $('#prof-pwd-toggle')?.addEventListener('click', toggleProfilePwd);
 $('#user-tag-btn')?.addEventListener('click', openProfileModal);
-$('#profile-modal')?.addEventListener('click', (e) => {
-  if (e.target === $('#profile-modal')) closeProfileModal();
-});
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && !$('#profile-modal').hidden) closeProfileModal();
-});
+// O modal de perfil só fecha pelo X ou Cancelar — clique no backdrop e Esc foram desativados de propósito
 
 // ==========================================================
 // Esqueci a senha (Rodada 3.6)
@@ -3890,14 +4162,17 @@ function _sparklineSVG(serie) {
 
 // Projeção simples de quando a meta é atingida, no ritmo médio.
 function _projecao(serie, totalBoosters, meta, metaCount) {
+  if (meta === 0) {
+    return 'Modo observador: nada a alcançar, só assistir o resto se afundar.';
+  }
   if (metaCount >= meta) {
     return `Você já cruzou os <strong>${meta}</strong>. A decepção foi um sucesso completo.`;
   }
   const meses = serie.length;
-  if (meses < 1 || totalBoosters <= 0) {
+  if (meses < 1 || metaCount <= 0) {
     return 'Ainda não dá pra projetar — registre mais algumas compras e o abismo aparece.';
   }
-  const ritmo = totalBoosters / meses;
+  const ritmo = metaCount / meses;
   if (ritmo <= 0) {
     return 'Ainda não dá pra projetar — registre mais algumas compras e o abismo aparece.';
   }
@@ -4005,6 +4280,17 @@ function renderMetaCounter() {
   if (!el) return;
   const meta  = currentProfile?.meta_total ?? 500;
   const total = boostersCache.reduce((s, b) => contaParaMeta(b) ? s + (Number(b.quantidade) || 0) : s, 0);
+
+  // Modo observador (meta = 0): só assistindo, sem corrida
+  if (meta === 0) {
+    el.dataset.state = 'observer';
+    el.innerHTML = `
+      <div class="meta-counter__label">Modo observador</div>
+      <div class="meta-counter__value">${total.toLocaleString('pt-BR')}</div>
+      <div class="meta-counter__observer-note">Só assistindo o resto se afundar.</div>
+    `;
+    return;
+  }
 
   let state, label, value, sign = '', fillPct;
   if (total < meta) {
@@ -4335,23 +4621,41 @@ function renderGrupo(flashUserId) {
     return;
   }
 
-  const somaMeta = parts.reduce((s, u) => s + u.metaCount, 0);
-  const somaAlvo = parts.reduce((s, u) => s + (u.profile?.meta_total ?? 500), 0);
-  const pctGrupo = somaAlvo > 0 ? (somaMeta / somaAlvo) * 100 : 0;
+  // Separa quem corre da meta dos que só observam (meta=0)
+  const racers     = parts.filter(u => (u.profile?.meta_total ?? 500) > 0);
+  const observers  = parts.length - racers.length;
+  const somaMeta   = racers.reduce((s, u) => s + u.metaCount, 0);
+  const somaAlvo   = racers.reduce((s, u) => s + (u.profile?.meta_total ?? 500), 0);
+  const pctGrupo   = somaAlvo > 0 ? (somaMeta / somaAlvo) * 100 : 0;
 
-  const rank = parts.slice().sort((a, b) =>
-    b.metaCount - a.metaCount ||
-    b.total - a.total ||
-    (a.profile?.display_name || '').localeCompare(b.profile?.display_name || ''));
+  // Ranking: observadores vão pra trás
+  const rank = parts.slice().sort((a, b) => {
+    const aObs = (a.profile?.meta_total ?? 500) === 0;
+    const bObs = (b.profile?.meta_total ?? 500) === 0;
+    if (aObs !== bObs) return aObs ? 1 : -1;
+    return b.metaCount - a.metaCount ||
+           b.total - a.total ||
+           (a.profile?.display_name || '').localeCompare(b.profile?.display_name || '');
+  });
 
   const comp  = _grupoComparativos(agg);
   const serie = _serieGrupo(agg);
+
+  // Legenda do topo: descreve corredores e observadores
+  let subText;
+  if (racers.length === 0) {
+    subText = `${observers} ${observers === 1 ? 'observador' : 'observadores'}, sem ninguém correndo`;
+  } else {
+    const rcText = `${racers.length} ${racers.length === 1 ? 'pessoa' : 'pessoas'} rumo aos 500 de cada`;
+    const obText = observers > 0 ? ` · ${observers} ${observers === 1 ? 'observador' : 'observadores'}` : '';
+    subText = rcText + obText;
+  }
 
   const totalHTML = `
     <div class="grupo-total">
       <div class="grupo-total__label">O grupo, somado</div>
       <div class="grupo-total__value">${somaMeta.toLocaleString('pt-BR')}<span class="of"> / ${somaAlvo.toLocaleString('pt-BR')}</span></div>
-      <div class="grupo-total__sub">${parts.length} ${parts.length === 1 ? 'pessoa' : 'pessoas'} rumo aos 500 de cada</div>
+      <div class="grupo-total__sub">${subText}</div>
       <div class="grupo-total__progress">
         <div class="progress-track"><div class="progress-fill" style="width:${Math.min(100, pctGrupo).toFixed(1)}%"></div></div>
         <div class="progress-meta"><span class="mono">${somaMeta.toLocaleString('pt-BR')} / ${somaAlvo.toLocaleString('pt-BR')}</span><span class="mono pct">${pctGrupo.toFixed(1).replace('.', ',')}%</span></div>
@@ -4360,17 +4664,22 @@ function renderGrupo(flashUserId) {
 
   const rankRows = rank.map((u, i) => {
     const meta = u.profile?.meta_total ?? 500;
-    const pct  = meta > 0 ? (u.metaCount / meta) * 100 : 0;
+    const isObserver = meta === 0;
+    const pct  = !isObserver ? (u.metaCount / meta) * 100 : 0;
     const isMe = u.profile?.id && u.profile.id === currentUser?.id;
+    const isLead = i === 0 && !isObserver;
     return `
-      <div class="rank-row${i === 0 ? ' rank-row--lead' : ''}${isMe ? ' rank-row--me' : ''}" data-uid="${u.profile?.id || ''}">
-        <div class="rank-row__pos">${i + 1}</div>
+      <div class="rank-row${isLead ? ' rank-row--lead' : ''}${isMe ? ' rank-row--me' : ''}${isObserver ? ' rank-row--observer' : ''}" data-uid="${u.profile?.id || ''}">
+        <div class="rank-row__pos">${isObserver ? '·' : (i + 1)}</div>
         <div class="rank-row__avatar" style="background:${_corSegura(u.profile?.avatar_color)}"></div>
         <div class="rank-row__center">
-          <div class="rank-row__name">${escapeHtml(u.profile?.display_name || '—')}${isMe ? ' <span class="me-tag">você</span>' : ''}</div>
-          <div class="dash-bar rank-row__bar"><div class="dash-bar__fill" style="width:${Math.min(100, pct).toFixed(1)}%"></div></div>
+          <div class="rank-row__name">${escapeHtml(u.profile?.display_name || '—')}${isMe ? ' <span class="me-tag">você</span>' : ''}${isObserver ? ' <span class="me-tag observer-tag">observador</span>' : ''}</div>
+          ${isObserver ? '' : `<div class="dash-bar rank-row__bar"><div class="dash-bar__fill" style="width:${Math.min(100, pct).toFixed(1)}%"></div></div>`}
         </div>
-        <div class="rank-row__nums"><strong>${u.metaCount.toLocaleString('pt-BR')}</strong>/${meta.toLocaleString('pt-BR')}<span class="pct">${pct.toFixed(1).replace('.', ',')}%</span></div>
+        <div class="rank-row__nums">${isObserver
+          ? `<strong>${u.metaCount.toLocaleString('pt-BR')}</strong> coletados`
+          : `<strong>${u.metaCount.toLocaleString('pt-BR')}</strong>/${meta.toLocaleString('pt-BR')}<span class="pct">${pct.toFixed(1).replace('.', ',')}%</span>`}
+        </div>
       </div>`;
   }).join('');
   const rankHTML = `<div class="dash-panel"><div class="dash-label">Ranking</div><div class="rank-list">${rankRows}</div></div>`;
@@ -4379,12 +4688,12 @@ function renderGrupo(flashUserId) {
     <div class="dash-stats">
       <div class="dash-stat">
         <div class="dash-stat__label">Maior gastador</div>
-        <div class="dash-stat__value" style="font-size:clamp(15px,3.5vw,18px)">${comp.maiorGasto ? escapeHtml(comp.maiorGasto.nome) : '—'}</div>
+        <div class="dash-stat__value dash-stat__value--text">${comp.maiorGasto ? escapeHtml(comp.maiorGasto.nome) : '—'}</div>
         <div class="dash-stat__sub">${comp.maiorGasto ? fmtBRL(comp.maiorGasto.valor) : 'sem dados'}</div>
       </div>
       <div class="dash-stat">
         <div class="dash-stat__label">Coleção mais popular</div>
-        <div class="dash-stat__value" style="font-size:clamp(15px,3.5vw,18px)">${comp.colPop ? escapeHtml(comp.colPop.nome) : '—'}</div>
+        <div class="dash-stat__value dash-stat__value--text">${comp.colPop ? escapeHtml(comp.colPop.nome) : '—'}</div>
         <div class="dash-stat__sub">${comp.colPop ? comp.colPop.qtd.toLocaleString('pt-BR') + ' boosters' : 'sem dados'}</div>
       </div>
       <div class="dash-stat">
@@ -4538,14 +4847,7 @@ $('#modal-close').addEventListener('click', () => closeModal());
 $btnDelete.addEventListener('click', handleDeleteClick);
 $form.addEventListener('submit', (e) => { e.preventDefault(); saveBooster(); });
 
-// click outside fecha modal
-$modal.addEventListener('click', (e) => {
-  if (e.target === $modal) closeModal();
-});
-// ESC fecha modal
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && !$modal.hidden) closeModal();
-});
+// O modal de booster só fecha pelo X ou Cancelar — evitamos perda acidental do que foi digitado
 
 // click em booster abre edição
 $boosterList.addEventListener('click', (e) => {
@@ -4661,62 +4963,111 @@ $$('input[name="status"]').forEach(r => {
 })();
 
 // ==========================================================
-// PWA (Rodada 4) — service worker, instalar, indicador de offline
+// PWA (Rodadas 4 + 5) — service worker, instalar, offline, hint de instalar
 // ==========================================================
-(function pwaSetup() {
-  // 1) Registra o service worker
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then((reg) => console.log('[500md] SW registrado, scope:', reg.scope))
-        .catch((e) => console.warn('[500md] SW falhou:', e));
-    });
+
+// Estado compartilhado entre o botão da tela de login, o ícone do header e o hint
+let deferredPrompt = null;
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                     window.navigator.standalone === true;
+
+// Mantém os dois pontos de instalação (login footer + header) em sincronia
+function syncInstallUI() {
+  const btn = $('#install-btn');
+  const wrap = $('#install-icon-wrap');
+  const podeInstalar = !!deferredPrompt && !isStandalone;
+  if (btn) {
+    if (podeInstalar) btn.classList.add('is-visible');
+    else              btn.classList.remove('is-visible');
   }
-
-  // 2) Prompt de instalação (Chrome/Edge/Android)
-  let deferredPrompt = null;
-  const installBtn = $('#install-btn');
-
-  // Esconde o botão se o app já está em modo standalone (instalado)
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
-                       window.navigator.standalone === true;
-  if (isStandalone && installBtn) installBtn.classList.remove('is-visible');
-
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    if (installBtn && !isStandalone) installBtn.classList.add('is-visible');
-  });
-
-  installBtn?.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
-    installBtn.classList.remove('is-visible');
-    const promptEvent = deferredPrompt;
-    deferredPrompt = null;
-    try {
-      await promptEvent.prompt();
-      const { outcome } = await promptEvent.userChoice;
-      console.log('[500md] install:', outcome);
-    } catch (err) {
-      console.warn('[500md] install prompt:', err);
-    }
-  });
-
-  window.addEventListener('appinstalled', () => {
-    deferredPrompt = null;
-    if (installBtn) installBtn.classList.remove('is-visible');
-    showToast('App instalado.');
-  });
-
-  // 3) Indicador de offline
-  const offlineBanner = $('#offline-banner');
-  function setOfflineUI(isOffline) {
-    if (!offlineBanner) return;
-    offlineBanner.hidden = !isOffline;
+  if (wrap) {
+    // ícone do header só faz sentido depois do login
+    wrap.hidden = !(podeInstalar && currentUser);
   }
-  setOfflineUI(!navigator.onLine);
-  window.addEventListener('online',  () => setOfflineUI(false));
-  window.addEventListener('offline', () => setOfflineUI(true));
+}
+
+async function triggerInstallPrompt() {
+  if (!deferredPrompt) return;
+  dismissInstallHint();  // se o hint estava aberto, fecha
+  const pe = deferredPrompt;
+  deferredPrompt = null;
+  syncInstallUI();
+  try {
+    await pe.prompt();
+    const { outcome } = await pe.userChoice;
+    console.log('[500md] install:', outcome);
+  } catch (err) {
+    console.warn('[500md] install prompt:', err);
+  }
+}
+
+// ---------- Hint do PWA (Rodada 5) ----------
+const INSTALL_HINT_KEY = '500md.installHintSeen';
+let installHintTimer = null;
+
+function maybeShowInstallHint() {
+  let seen = null;
+  try { seen = localStorage.getItem(INSTALL_HINT_KEY); } catch (_) {}
+  if (seen) return;
+  if (!deferredPrompt || isStandalone || !currentUser) return;
+  const wrap = $('#install-icon-wrap');
+  const hint = $('#install-hint');
+  if (!wrap || !hint || wrap.hidden) return;     // ícone tem que estar visível
+  if (!hint.hidden) return;                       // já está aberto
+  wrap.classList.add('hint-active');
+  hint.hidden = false;
+  installHintTimer = setTimeout(dismissInstallHint, 15000);
+}
+
+function dismissInstallHint() {
+  if (installHintTimer) { clearTimeout(installHintTimer); installHintTimer = null; }
+  const wrap = $('#install-icon-wrap');
+  const hint = $('#install-hint');
+  if (wrap) wrap.classList.remove('hint-active');
+  if (hint) hint.hidden = true;
+  try { localStorage.setItem(INSTALL_HINT_KEY, '1'); } catch (_) {}
+}
+
+// ---------- Eventos PWA ----------
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  syncInstallUI();
+  // Se o prompt chegou depois do usuário já estar logado, avalia mostrar o hint
+  if (currentUser) setTimeout(maybeShowInstallHint, 1500);
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredPrompt = null;
+  syncInstallUI();
+  dismissInstallHint();
+  showToast('App instalado.');
+});
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then((reg) => console.log('[500md] SW registrado, scope:', reg.scope))
+      .catch((e) => console.warn('[500md] SW falhou:', e));
+  });
+}
+
+// Wire-ups dos botões/cliques
+$('#install-btn')?.addEventListener('click', triggerInstallPrompt);
+$('#install-icon')?.addEventListener('click', triggerInstallPrompt);
+$('#install-hint-dismiss')?.addEventListener('click', (e) => {
+  e.stopPropagation();   // não dispara o click do ícone
+  dismissInstallHint();
+});
+
+// Indicador de offline
+(function setupOffline() {
+  const banner = $('#offline-banner');
+  function set(off) { if (banner) banner.hidden = !off; }
+  set(!navigator.onLine);
+  window.addEventListener('online',  () => set(false));
+  window.addEventListener('offline', () => set(true));
 })();
 </script>
 
