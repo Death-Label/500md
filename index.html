@@ -2357,7 +2357,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 .rank-row__nums .pct { display: block; font-size: 10px; color: var(--accent-purple-bright); margin-top: 2px; }
 
 /* Coroas do pódio (top 3 não-observadores) */
-.crown { width: 22px; height: 16px; display: block; }
+.crown { width: 28px; height: 18px; display: block; }
 .crown--gold {
   color: #f4d98a;
   filter: drop-shadow(0 0 4px rgba(244, 217, 138, 0.7))
@@ -4798,7 +4798,7 @@ function renderGrupo(flashUserId) {
     </div>`;
 
   // SVG da coroa (3 picos + base) — usado em top 3 racers
-  const CROWN_SVG = `<svg class="crown" viewBox="0 0 24 18" fill="currentColor" aria-hidden="true"><path d="M3 14.5 L5 5 L9 10 L12 4 L15 10 L19 5 L21 14.5 L21 17 L3 17 Z"/></svg>`;
+  const CROWN_SVG = `<svg class="crown" viewBox="0 80 640 416" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M528 448H112c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm64-320c-26.5 0-48 21.5-48 48 0 7.1 1.6 13.7 4.4 19.8L476 239.2c-15.4 9.2-35.3 4-44.2-11.6L350.3 85C361 76.2 368 63 368 48c0-26.5-21.5-48-48-48s-48 21.5-48 48c0 15 7 28.2 17.7 37l-81.5 142.6c-8.9 15.6-28.9 20.8-44.2 11.6l-72.3-43.4c2.7-6 4.4-12.7 4.4-19.8 0-26.5-21.5-48-48-48S0 149.5 0 176s21.5 48 48 48c2.6 0 5.2-.4 7.7-.8L128 416h384l72.3-192.8c2.5.4 5.1.8 7.7.8 26.5 0 48-21.5 48-48s-21.5-48-48-48z"/></svg>`;
   function rankIndicator(idx, isObserver) {
     if (isObserver)  return `<div class="rank-row__pos">·</div>`;
     if (idx === 0)   return `<div class="rank-row__pos">${CROWN_SVG.replace('class="crown"', 'class="crown crown--gold"')}</div>`;
