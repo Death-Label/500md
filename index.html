@@ -1352,7 +1352,9 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   width: 0;
   background: linear-gradient(90deg, var(--accent-purple-deep), var(--accent-purple-bright));
   border-radius: var(--radius-pill);
-  box-shadow: 0 0 14px rgba(var(--accent-bright-rgb), 0.45);
+  box-shadow:
+    inset 0 0 6px rgba(var(--accent-bright-rgb), 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
   transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease;
   position: relative;
 }
@@ -1386,7 +1388,9 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 }
 .meta-counter[data-state="achieved"] .progress-fill {
   background: linear-gradient(90deg, var(--accent-green), #aef0bb);
-  box-shadow: 0 0 16px rgba(var(--accent-green-rgb), 0.5);
+  box-shadow:
+    inset 0 0 8px rgba(var(--accent-green-rgb), 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 .meta-counter[data-state="achieved"] .progress-meta .pct { color: var(--accent-green); }
 .meta-counter[data-state="achieved"] {
@@ -1409,7 +1413,9 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 }
 .meta-counter[data-state="exceeded"] .progress-fill {
   background: linear-gradient(90deg, var(--accent-purple), var(--accent-red));
-  box-shadow: 0 0 18px rgba(var(--accent-red-rgb), 0.4);
+  box-shadow:
+    inset 0 0 8px rgba(var(--accent-red-rgb), 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 .meta-counter[data-state="exceeded"] .progress-meta .pct { color: var(--accent-red); }
 .meta-counter[data-state="exceeded"] {
@@ -2205,7 +2211,9 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   height: 100%;
   background: linear-gradient(90deg, var(--accent-purple-deep), var(--accent-purple-bright));
   border-radius: var(--radius-pill);
-  box-shadow: 0 0 10px rgba(var(--accent-bright-rgb), 0.35);
+  box-shadow:
+    inset 0 0 5px rgba(var(--accent-bright-rgb), 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
   transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -2397,6 +2405,110 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 /* gráfico comparativo (Chart.js sob demanda) */
 .grupo-chart__canvas { position: relative; height: 240px; margin-top: 4px; }
 @media (max-width: 540px) { .grupo-chart__canvas { height: 200px; } }
+.grupo-chart__caption {
+  margin-top: 10px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  font-style: italic;
+  opacity: 0.8;
+}
+
+/* Rodada 7b — controles, sumário e legenda customizada do gráfico */
+.grupo-chart__header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+.grupo-chart__summary {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  margin-top: 2px;
+}
+.grupo-chart__summary strong {
+  color: var(--text-strong, var(--text));
+  font-size: 13px;
+  font-weight: 700;
+  margin-right: 4px;
+}
+.grupo-chart__controls {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  margin: 10px 0 6px;
+}
+.seg-group {
+  display: inline-flex;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.seg {
+  background: transparent;
+  border: none;
+  padding: 6px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.seg + .seg { border-left: 1px solid var(--border); }
+.seg:hover { color: var(--text); }
+.seg.is-active {
+  background: var(--accent-purple);
+  color: #ffffff;
+}
+.seg:focus-visible {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 1px;
+}
+.grupo-chart__legend {
+  display: flex; flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+@media (max-width: 540px) {
+  .grupo-chart__legend {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+.legend-item {
+  display: inline-flex; align-items: center;
+  gap: 7px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 4px 11px 4px 4px;
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.legend-item:hover {
+  border-color: var(--accent-purple);
+  transform: translateY(-1px);
+}
+.legend-item.is-me {
+  border-color: var(--accent-purple);
+}
+.legend-item.is-active {
+  background: var(--bg-card-hover);
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 2px rgba(154, 92, 200, 0.28);
+}
+.legend-avatar {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.legend-name { font-size: 11px; }
 /* ==========================================================
    Rodada 3.5 — Onboarding + edição de perfil
    ========================================================== */
@@ -2560,6 +2672,97 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 .toggle-input:focus-visible ~ .toggle-track {
   outline: 2px solid var(--accent-purple);
   outline-offset: 2px;
+}
+
+/* ==========================================================
+   Rodada 7 patch — Lock da coroa do 1º lugar
+   ========================================================== */
+.crown-lock {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  animation: crown-lock-in 220ms ease-out;
+}
+.crown-lock[hidden] { display: none; }
+.crown-lock__backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+[data-theme="cresselia"] .crown-lock__backdrop {
+  background: rgba(90, 47, 74, 0.32);
+}
+.crown-lock__card {
+  position: relative;
+  max-width: 380px; width: 100%;
+  background: var(--bg-card);
+  border: 1px solid rgba(244, 217, 138, 0.4);
+  border-radius: 14px;
+  padding: 28px 24px 22px;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(244, 217, 138, 0.15);
+}
+[data-theme="cresselia"] .crown-lock__card {
+  border-color: rgba(200, 154, 58, 0.5);
+  box-shadow: 0 10px 30px rgba(90, 47, 74, 0.18), 0 0 24px rgba(200, 154, 58, 0.15);
+}
+.crown-lock__icon {
+  display: flex; justify-content: center;
+  margin-bottom: 16px;
+}
+.crown-lock__icon .crown {
+  width: 64px; height: 42px;
+  color: #f4d98a;
+  filter:
+    drop-shadow(0 0 6px rgba(244, 217, 138, 0.75))
+    drop-shadow(0 0 18px rgba(244, 217, 138, 0.45));
+  animation: crown-glow 2.6s ease-in-out infinite;
+}
+[data-theme="cresselia"] .crown-lock__icon .crown {
+  color: #c89a3a;
+  filter:
+    drop-shadow(0 0 5px rgba(200, 154, 58, 0.6))
+    drop-shadow(0 0 14px rgba(200, 154, 58, 0.35));
+  animation: crown-glow-cresselia 2.6s ease-in-out infinite;
+}
+.crown-lock__title {
+  font-family: var(--font-display, inherit);
+  font-size: 17px; font-weight: 600;
+  color: var(--text-strong, #f4f4f8);
+  margin-bottom: 10px;
+  letter-spacing: 0.01em;
+}
+[data-theme="cresselia"] .crown-lock__title { color: #5a2f4a; }
+.crown-lock__msg {
+  font-size: 13px; line-height: 1.55;
+  color: var(--text-muted, #b0b0bc);
+  margin-bottom: 22px;
+}
+[data-theme="cresselia"] .crown-lock__msg { color: #7a4a6a; }
+.crown-lock__btn {
+  background: linear-gradient(135deg, #f4d98a, #c89a3a);
+  color: #2a1810;
+  border: none; padding: 10px 28px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; font-weight: 700;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+.crown-lock__btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(244, 217, 138, 0.35);
+}
+@keyframes crown-lock-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.crown-lock__card { animation: crown-lock-card-in 280ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes crown-lock-card-in {
+  from { opacity: 0; transform: scale(0.92) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 /* ==========================================================
@@ -3283,6 +3486,17 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   </div>
 </div>
 
+<!-- Modal-aviso: lock da coroa do 1º lugar -->
+<div class="crown-lock" id="crown-lock-modal" hidden role="dialog" aria-modal="true" aria-labelledby="crown-lock-title">
+  <div class="crown-lock__backdrop" data-crown-lock-dismiss></div>
+  <div class="crown-lock__card">
+    <div class="crown-lock__icon" id="crown-lock-icon"><!-- coroa injetada via JS --></div>
+    <div class="crown-lock__title" id="crown-lock-title">Você detém a coroa das decepções</div>
+    <div class="crown-lock__msg" id="crown-lock-msg">Essa responsabilidade vem com o peso de mostrar como os outros podem se afundar. Essa opção está bloqueada para você.</div>
+    <button type="button" class="crown-lock__btn" id="crown-lock-dismiss" data-crown-lock-dismiss>Entendi</button>
+  </div>
+</div>
+
 <!-- Modal de Editar Perfil -->
 <div class="modal-backdrop" id="profile-modal" hidden role="dialog" aria-modal="true" aria-labelledby="profile-title">
   <div class="modal">
@@ -3845,8 +4059,75 @@ async function submitOnboarding(e) {
 }
 
 // ---------- Editar perfil ----------
-function openProfileModal() {
+// Rodada 7 patch — Lock da coroa do 1º lugar.
+// Computa o rank na hora a partir do grupoCache e retorna true se o currentUser é o 1º.
+function _currentUserIsRankFirst() {
+  if (!currentUser) return false;
+  if (!grupoCache.profiles?.length) return false;
+  const agg = _grupoAgregado();
+  const rank = agg.slice().sort((a, b) => {
+    const aObs = (a.profile?.meta_total ?? 500) === 0;
+    const bObs = (b.profile?.meta_total ?? 500) === 0;
+    if (aObs !== bObs) return aObs ? 1 : -1;
+    return b.metaCount - a.metaCount ||
+           b.total - a.total ||
+           (a.profile?.display_name || '').localeCompare(b.profile?.display_name || '');
+  });
+  const top = rank[0];
+  if (!top || (top.profile?.meta_total ?? 500) === 0) return false; // só corredores valem
+  return top.profile?.id === currentUser.id;
+}
+
+function showCrownLock(mode = 'attempt') {
+  const m = $('#crown-lock-modal');
+  const slot = $('#crown-lock-icon');
+  const titleEl = $('#crown-lock-title');
+  const msgEl = $('#crown-lock-msg');
+  if (slot && !slot.firstChild) {
+    slot.innerHTML = CROWN_SVG.replace('class="crown"', 'class="crown"');
+  }
+  if (mode === 'auto' && titleEl && msgEl) {
+    // Caso: usuário acabou de assumir o 1º lugar com o valor oculto
+    titleEl.textContent = 'Você acaba de assumir a coroa das decepções';
+    msgEl.textContent = 'Essa responsabilidade vem com o peso de mostrar a todos como podem se afundar. Seu gasto voltou a aparecer no ranking.';
+  } else if (titleEl && msgEl) {
+    // Caso: usuário tentou esconder o valor enquanto está em 1º
+    titleEl.textContent = 'Você detém a coroa das decepções';
+    msgEl.textContent = 'Essa responsabilidade vem com o peso de mostrar como os outros podem se afundar. Essa opção está bloqueada para você.';
+  }
+  m.hidden = false;
+}
+function hideCrownLock() { $('#crown-lock-modal').hidden = true; }
+
+// Auto-correção: se o user logado é o 1º E está com valor oculto, força visível no banco.
+// Roda toda vez que o grupoCache atualiza (carregarGrupo termina). Idempotente.
+let _autoCorrigindoCoroa = false;
+async function _autoCorrigirCoroaDoLider() {
+  if (_autoCorrigindoCoroa) return;             // evita disparos paralelos
+  if (!currentUser || !currentProfile) return;
+  if (currentProfile.spent_visible !== false) return;  // já visível, nada a fazer
+  if (!_currentUserIsRankFirst()) return;       // só age se for o 1º
+  _autoCorrigindoCoroa = true;
+  try {
+    const { error } = await sb.from('profiles')
+      .update({ spent_visible: true })
+      .eq('id', currentUser.id);
+    if (error) throw error;
+    currentProfile.spent_visible = true;        // sync local
+    showCrownLock('auto');                      // notifica com texto contextual
+  } catch (e) {
+    console.warn('[500md] auto-correção da coroa falhou:', e);
+  } finally {
+    _autoCorrigindoCoroa = false;
+  }
+}
+
+async function openProfileModal() {
   if (!currentUser) return;
+  // Garante grupoCache pra avaliar se o user é 1º (caso ele nunca tenha entrado na aba Grupo)
+  if (!grupoCache.profiles?.length) {
+    try { await carregarGrupo({ silent: true }); } catch (_) {}
+  }
   const m = $('#profile-modal');
   const p = currentProfile || {};
   $('#prof-display-name').value = p.display_name || '';
@@ -3921,7 +4202,13 @@ async function submitProfile(e) {
       const { error: updErr } = await sb.auth.updateUser({ password: newPwd });
       if (updErr) throw updErr;
     }
-    const spentVisible = !!$('#prof-spent-visible').checked;
+    let spentVisible = !!$('#prof-spent-visible').checked;
+    // Lock da coroa: 1º lugar não pode ocultar; força true mesmo se vier desligado
+    if (!spentVisible && _currentUserIsRankFirst()) {
+      spentVisible = true;
+      $('#prof-spent-visible').checked = true;
+      showCrownLock();
+    }
     const { error: profErr } = await sb.from('profiles').update({
       display_name: name,
       avatar_color: color,
@@ -3956,6 +4243,18 @@ $('#profile-cancel')?.addEventListener('click', closeProfileModal);
 $('#prof-pwd-toggle')?.addEventListener('click', toggleProfilePwd);
 $('#user-tag-btn')?.addEventListener('click', openProfileModal);
 // O modal de perfil só fecha pelo X ou Cancelar — clique no backdrop e Esc foram desativados de propósito
+
+// Rodada 7 patch — Lock da coroa do 1º
+$('#prof-spent-visible')?.addEventListener('change', (ev) => {
+  const cb = ev.target;
+  if (!cb.checked && _currentUserIsRankFirst()) {
+    cb.checked = true;            // reverte visualmente
+    showCrownLock();
+  }
+});
+document.querySelectorAll('[data-crown-lock-dismiss]').forEach(el => {
+  el.addEventListener('click', hideCrownLock);
+});
 
 // ==========================================================
 // Esqueci a senha (Rodada 3.6)
@@ -4635,6 +4934,22 @@ let grupoLoading = false;
 let grupoChart   = null;
 let grupoChannel = null;
 
+// Rodada 7b — estado do gráfico (modo Y, agregação, destaque na legenda)
+const CHART_PREFS_KEY = '500md.chart';
+let chartMode = 'qtd';       // 'qtd' | 'rs'
+let chartAgg  = 'acum';      // 'acum' | 'mes'
+let highlightedUserId = null; // id do user destacado na legenda customizada
+(function loadChartPrefs(){
+  try {
+    const s = JSON.parse(localStorage.getItem(CHART_PREFS_KEY) || '{}');
+    if (s.mode === 'rs' || s.mode === 'qtd') chartMode = s.mode;
+    if (s.agg === 'mes' || s.agg === 'acum') chartAgg = s.agg;
+  } catch (_) {}
+})();
+function saveChartPrefs() {
+  try { localStorage.setItem(CHART_PREFS_KEY, JSON.stringify({ mode: chartMode, agg: chartAgg })); } catch (_) {}
+}
+
 function _corSegura(c) {
   return (typeof c === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(c.trim())) ? c.trim() : '#9a5cc8';
 }
@@ -4665,6 +4980,8 @@ async function carregarGrupo(opts = {}) {
     grupoLoaded = true;
     renderGrupo(opts.flashUserId);
     setupGrupoRealtime();
+    // Auto-correção da coroa: se o user logado virou 1º com valor oculto, força exibir.
+    _autoCorrigirCoroaDoLider();
   } catch (e) {
     console.warn('[500md] grupo:', e);
     if (content && !opts.silent) {
@@ -4716,30 +5033,69 @@ function _grupoComparativos(agg) {
 }
 
 // Série mensal acumulada por usuário (para o gráfico comparativo).
-function _serieGrupo(agg) {
+function _serieGrupo(agg, opts = {}) {
+  const mode = opts.mode === 'rs' ? 'rs' : 'qtd';
+  const aggregation = opts.aggregation === 'mes' ? 'mes' : 'acum';
+  const leaderId = opts.leaderId || null;
   const all = grupoCache.boosters;
-  if (!all.length) return { labels: [], datasets: [] };
-  let minYM = null;
-  all.forEach(b => { const ym = (b.data_compra || '').slice(0, 7); if (ym && (!minYM || ym < minYM)) minYM = ym; });
-  if (!minYM) return { labels: [], datasets: [] };
+  if (!all.length) return { labels: [], datasets: [], totalSerie: 0, mode, aggregation };
+  // Fix 3 (auditoria): fallback de data_compra pra created_at, pra não perder registros
+  const ymDe = (b) => ((b.data_compra || b.created_at || '')).slice(0, 7);
+  const valDe = (b) => mode === 'rs' ? (Number(b.valor_total) || 0) : (Number(b.quantidade) || 0);
+  let minYM = null, maxYM = null;
+  all.forEach(b => {
+    const ym = ymDe(b);
+    if (ym) {
+      if (!minYM || ym < minYM) minYM = ym;
+      if (!maxYM || ym > maxYM) maxYM = ym;
+    }
+  });
+  if (!minYM) return { labels: [], datasets: [], totalSerie: 0, mode, aggregation };
   const nowYM = _dataISO().slice(0, 7);
+  // Fix 4 (auditoria): eixo X estende até o maior entre "agora" e o último mês com dado
+  const lastYM = (maxYM && maxYM > nowYM) ? maxYM : nowYM;
   const axis = [];
   let [y, m] = minYM.split('-').map(Number);
-  const [ly, lm] = (nowYM > minYM ? nowYM : minYM).split('-').map(Number);
+  const [ly, lm] = lastYM.split('-').map(Number);
   let guard = 0;
   while ((y < ly || (y === ly && m <= lm)) && guard < 600) {
     axis.push(`${y}-${String(m).padStart(2, '0')}`);
     m++; if (m > 12) { m = 1; y++; }
     guard++;
   }
-  const datasets = agg.filter(u => u.boosters.length).map(u => {
+  // Filtros: sem observadores (Fix 2 auditoria); no modo R$, sem opt-out (exceto o líder do ranking)
+  const elegiveis = agg
+    .filter(u => u.boosters.length && (u.profile?.meta_total ?? 500) > 0)
+    .filter(u => {
+      if (mode !== 'rs') return true;
+      const isLeader = leaderId && u.profile?.id === leaderId;
+      return isLeader || u.profile?.spent_visible !== false;
+    });
+  const datasets = elegiveis.map(u => {
     const perMonth = new Map();
-    u.boosters.forEach(b => { const ym = (b.data_compra || '').slice(0, 7); if (ym) perMonth.set(ym, (perMonth.get(ym) || 0) + (Number(b.quantidade) || 0)); });
+    u.boosters.forEach(b => {
+      const ym = ymDe(b);
+      if (ym) perMonth.set(ym, (perMonth.get(ym) || 0) + valDe(b));
+    });
     let acum = 0;
-    const data = axis.map(ym => { acum += (perMonth.get(ym) || 0); return acum; });
-    return { nome: u.profile?.display_name || '—', cor: _corSegura(u.profile?.avatar_color), data };
+    const data = axis.map(ym => {
+      const v = perMonth.get(ym) || 0;
+      if (aggregation === 'acum') { acum += v; return acum; }
+      return v;
+    });
+    return {
+      nome: u.profile?.display_name || '—',
+      cor: _corSegura(u.profile?.avatar_color),
+      userId: u.profile?.id,
+      data,
+    };
   });
-  return { labels: axis.map(fmtMesCurto), datasets };
+  // Total da série visualizada (independe da agregação): soma de tudo dos users elegíveis
+  let totalSerie = 0;
+  elegiveis.forEach(u => {
+    u.boosters.forEach(b => { totalSerie += valDe(b); });
+  });
+  return { labels: axis.map(fmtMesCurto), datasets, totalSerie, mode, aggregation };
 }
 
 function renderGrupo(flashUserId) {
@@ -4774,7 +5130,13 @@ function renderGrupo(flashUserId) {
   });
 
   const comp  = _grupoComparativos(agg);
-  const serie = _serieGrupo(agg);
+  // Líder do ranking (1º corredor) — usado pra liberar o R$ dele no gráfico, mesmo se opt-out
+  const leaderId = rank.find(u => (u.profile?.meta_total ?? 500) > 0)?.profile?.id || null;
+  const serie = _serieGrupo(agg, { mode: chartMode, aggregation: chartAgg, leaderId });
+  // Se o user destacado não está mais visível no gráfico atual, descarta destaque
+  if (highlightedUserId && !serie.datasets.some(d => d.userId === highlightedUserId)) {
+    highlightedUserId = null;
+  }
 
   // Legenda do topo: descreve corredores e observadores
   let subText;
@@ -4813,9 +5175,9 @@ function renderGrupo(flashUserId) {
     const pct  = !isObserver ? (u.metaCount / meta) * 100 : 0;
     const isMe = u.profile?.id && u.profile.id === currentUser?.id;
     const isLead = i === 0 && !isObserver;
-    // Mostra valor gasto se: não-observador E perfil deixa (spent_visible !== false).
-    // Quando o user desliga pra outros, esconde pra ele mesmo também (sem distinção isMe).
-    const mostraValor = !isObserver && (u.profile?.spent_visible !== false);
+    // Mostra valor gasto se: não-observador E (é o 1º OU perfil deixa visível).
+    // 1º lugar sempre mostra: a coroa pesa. Auto-correção do DB acontece em paralelo via _autoCorrigirCoroaDoLider.
+    const mostraValor = !isObserver && (isLead || u.profile?.spent_visible !== false);
     const moneyHTML = mostraValor ? `<div class="rank-row__money">${fmtBRL(u.gasto)}</div>` : '';
     return `
       <div class="rank-row${isLead ? ' rank-row--lead' : ''}${isMe ? ' rank-row--me' : ''}${isObserver ? ' rank-row--observer' : ''}" data-uid="${u.profile?.id || ''}">
@@ -4857,8 +5219,45 @@ function renderGrupo(flashUserId) {
       </div>
     </div>`;
 
+  // Sumário do gráfico (varia conforme modo + agregação)
+  const summaryHTML = (() => {
+    if (!serie.datasets.length) return '';
+    if (serie.mode === 'rs') return `<strong>${fmtBRL(serie.totalSerie)}</strong> no total`;
+    return `<strong>${serie.totalSerie.toLocaleString('pt-BR')}</strong> boosters no total`;
+  })();
+
+  // Legenda customizada com avatar + clique pra destacar
+  const legendItemsHTML = serie.datasets.map(d => {
+    const isMe = d.userId && d.userId === currentUser?.id;
+    const isHi = highlightedUserId === d.userId;
+    return `<button type="button" class="legend-item${isMe ? ' is-me' : ''}${isHi ? ' is-active' : ''}" data-chart-user="${d.userId || ''}" aria-pressed="${isHi}">
+      <span class="legend-avatar" style="background:${d.cor}"></span>
+      <span class="legend-name">${escapeHtml(d.nome)}${isMe ? ' (você)' : ''}</span>
+    </button>`;
+  }).join('');
+
   const chartHTML = serie.datasets.length
-    ? `<div class="dash-panel"><div class="dash-label">Evolução comparativa</div><div class="grupo-chart__canvas"><canvas id="grupo-chart-canvas"></canvas></div></div>`
+    ? `<div class="dash-panel">
+        <div class="grupo-chart__header">
+          <div>
+            <div class="dash-label">Evolução comparativa</div>
+            <div class="grupo-chart__summary">${summaryHTML}</div>
+          </div>
+        </div>
+        <div class="grupo-chart__controls">
+          <div class="seg-group" role="group" aria-label="O que mostrar no eixo Y">
+            <button type="button" class="seg${chartMode === 'qtd' ? ' is-active' : ''}" data-chart-mode="qtd">Quantidade</button>
+            <button type="button" class="seg${chartMode === 'rs'  ? ' is-active' : ''}" data-chart-mode="rs">Gasto (R$)</button>
+          </div>
+          <div class="seg-group" role="group" aria-label="Como agregar">
+            <button type="button" class="seg${chartAgg === 'acum' ? ' is-active' : ''}" data-chart-agg="acum">Acumulado</button>
+            <button type="button" class="seg${chartAgg === 'mes'  ? ' is-active' : ''}" data-chart-agg="mes">Por mês</button>
+          </div>
+        </div>
+        <div class="grupo-chart__canvas"><canvas id="grupo-chart-canvas"></canvas></div>
+        <div class="grupo-chart__legend" id="grupo-chart-legend">${legendItemsHTML}</div>
+        <div class="grupo-chart__caption">Considera todos os boosters registrados pelo grupo, não apenas os que valem pra meta. Observadores ficam de fora.${chartMode === 'rs' ? ' No modo R$, quem ocultou o valor não aparece.' : ''}</div>
+      </div>`
     : '';
 
   content.innerHTML = `<div class="grupo">${totalHTML}${rankHTML}${compHTML}${chartHTML}</div>`;
@@ -4900,42 +5299,163 @@ function _themeChartColors() {
   };
 }
 
+// Helper pra converter hex em rgba com alpha — usado pra apagar linhas não destacadas
+function _hexToRgba(hex, alpha) {
+  if (typeof hex !== 'string' || hex[0] !== '#') return hex;
+  let h = hex.slice(1);
+  if (h.length === 3) h = h.split('').map(c => c + c).join('');
+  if (h.length !== 6) return hex;
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+// Plugin custom — linhas auxiliares (meta horizontal, cutoff vertical)
+const _auxLinesPlugin = {
+  id: 'auxLines',
+  afterDatasetsDraw(chart) {
+    const opts = chart.options.plugins?.auxLines;
+    if (!opts) return;
+    const { ctx, chartArea, scales } = chart;
+    ctx.save();
+    ctx.font = "10px 'JetBrains Mono', monospace";
+
+    // Linha da meta (horizontal) — só em modo qtd + acumulado
+    if (opts.metaLine != null && isFinite(opts.metaLine) && opts.metaLine > 0) {
+      const y = scales.y.getPixelForValue(opts.metaLine);
+      if (y >= chartArea.top && y <= chartArea.bottom) {
+        ctx.strokeStyle = opts.metaColor;
+        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(chartArea.left, y);
+        ctx.lineTo(chartArea.right, y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = opts.metaColor;
+        ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+        ctx.fillText(`sua meta: ${opts.metaLine.toLocaleString('pt-BR')}`, chartArea.left + 6, y - 3);
+      }
+    }
+
+    // Linha do cutoff (vertical) — quando o mês do cutoff existe no eixo
+    if (opts.cutoffIndex != null && opts.cutoffIndex >= 0) {
+      const x = scales.x.getPixelForValue(opts.cutoffIndex);
+      if (x >= chartArea.left && x <= chartArea.right) {
+        ctx.strokeStyle = opts.cutoffColor;
+        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x, chartArea.top);
+        ctx.lineTo(x, chartArea.bottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = opts.cutoffColor;
+        ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+        ctx.fillText('nova expansão →', x + 4, chartArea.top + 4);
+      }
+    }
+    ctx.restore();
+  },
+};
+
+function _chartTooltipLabel(ctx) {
+  const v = ctx.parsed.y;
+  if (v == null) return ctx.dataset.label;
+  const isRs = chartMode === 'rs';
+  return `${ctx.dataset.label}: ${isRs ? fmtBRL(v) : v.toLocaleString('pt-BR') + ' boosters'}`;
+}
+
 function buildGrupoChart(serie) {
   const canvas = $('#grupo-chart-canvas');
   if (!canvas || !window.Chart) return;
   if (grupoChart) { try { grupoChart.destroy(); } catch (_) {} grupoChart = null; }
   const col = _themeChartColors();
   const monoFont = "'JetBrains Mono', monospace";
-  const umMesSo = serie.labels.length === 1;
+
+  // Aux lines: meta do user logado (só em qtd+acum) e cutoff de expansão (sempre que o mês 2027-11 estiver no eixo)
+  const cs = getComputedStyle(document.documentElement);
+  const accentPurple = (cs.getPropertyValue('--accent-purple') || '#9a5cc8').trim();
+  const cutoffHex = '#cf8958'; // âmbar fixo (sem CSS var, mesma cor nos dois temas pro cutoff)
+  const showMetaLine = (chartMode === 'qtd' && chartAgg === 'acum');
+  const minhaMeta = showMetaLine ? Number(currentProfile?.meta_total ?? 500) : null;
+  const cutoffYM = META_CUTOFF.slice(0, 7); // '2027-11'
+  // Encontra o índice do cutoff no eixo (labels estão formatados com fmtMesCurto, então precisamos do índice do axis original)
+  // O serie.labels é o array de meses formatados; o cutoff está em série a partir do índice posicional.
+  // Como _serieGrupo gera labels lineares (1 por mês), basta calcular: meses entre minYM e cutoffYM.
+  const cutoffIndex = serie._cutoffIndex != null ? serie._cutoffIndex : _calcCutoffIndex(serie, cutoffYM);
+
   grupoChart = new window.Chart(canvas.getContext('2d'), {
     type: 'line',
     data: {
       labels: serie.labels,
-      datasets: serie.datasets.map(d => ({
-        label: d.nome,
-        data: d.data,
-        borderColor: d.cor,
-        backgroundColor: d.cor,
-        pointRadius: umMesSo ? 5 : 0,
-        pointHoverRadius: umMesSo ? 6 : 4,
-        borderWidth: 2,
-        tension: 0.25,
-        spanGaps: true,
-      })),
+      datasets: serie.datasets.map(d => {
+        const isHi = highlightedUserId === d.userId;
+        const dimmed = highlightedUserId && !isHi;
+        return {
+          label: d.nome,
+          data: d.data,
+          _baseColor: d.cor,
+          _userId: d.userId,
+          borderColor: dimmed ? _hexToRgba(d.cor, 0.18) : d.cor,
+          backgroundColor: dimmed ? _hexToRgba(d.cor, 0.18) : d.cor,
+          pointRadius: dimmed ? 1 : 2,
+          pointHoverRadius: dimmed ? 3 : 5,
+          borderWidth: isHi ? 3 : 2,
+          tension: 0.25,
+          spanGaps: true,
+        };
+      }),
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: { labels: { color: col.tick, font: { family: monoFont, size: 10 }, boxWidth: 10, boxHeight: 10, usePointStyle: true } },
+        legend: { display: false }, // usamos legenda customizada com avatares
+        tooltip: { callbacks: { label: _chartTooltipLabel } },
+        auxLines: {
+          metaLine: minhaMeta,
+          metaColor: _hexToRgba(accentPurple, 0.65),
+          cutoffIndex: cutoffIndex,
+          cutoffColor: _hexToRgba(cutoffHex, 0.7),
+        },
       },
       scales: {
         x: { grid: { color: col.grid }, ticks: { color: col.tick, font: { family: monoFont, size: 9 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 6 } },
-        y: { grid: { color: col.grid }, ticks: { color: col.tick, font: { family: monoFont, size: 9 }, precision: 0 }, beginAtZero: true },
+        y: {
+          grid: { color: col.grid },
+          ticks: {
+            color: col.tick, font: { family: monoFont, size: 9 },
+            callback: (v) => chartMode === 'rs' ? fmtBRL(v) : v.toLocaleString('pt-BR'),
+          },
+          beginAtZero: true,
+        },
       },
     },
+    plugins: [_auxLinesPlugin],
   });
+}
+
+// Calcula o índice do mês de cutoff dentro do array de labels (serie.labels segue ordem cronológica)
+// Recebe o YM do cutoff (ex '2027-11') e cruza com o min do eixo
+function _calcCutoffIndex(serie, cutoffYM) {
+  // Reconstrói o eixo bruto a partir das labels formatadas é frágil; melhor recalcular pela origem.
+  const all = grupoCache.boosters;
+  if (!all.length || !serie.labels.length) return -1;
+  let minYM = null;
+  all.forEach(b => {
+    const ym = ((b.data_compra || b.created_at || '')).slice(0, 7);
+    if (ym && (!minYM || ym < minYM)) minYM = ym;
+  });
+  if (!minYM) return -1;
+  // Conta meses entre minYM e cutoffYM
+  const [my, mm] = minYM.split('-').map(Number);
+  const [cy, cm] = cutoffYM.split('-').map(Number);
+  const diff = (cy - my) * 12 + (cm - mm);
+  if (diff < 0 || diff >= serie.labels.length) return -1;
+  return diff;
 }
 
 function refreshGrupoChartTheme() {
@@ -4944,7 +5464,27 @@ function refreshGrupoChartTheme() {
   const o = grupoChart.options;
   o.scales.x.grid.color = col.grid; o.scales.x.ticks.color = col.tick;
   o.scales.y.grid.color = col.grid; o.scales.y.ticks.color = col.tick;
-  o.plugins.legend.labels.color = col.tick;
+  // Recalcula cor da meta (vem da CSS var do tema). Cutoff usa cor fixa, não muda.
+  const cs = getComputedStyle(document.documentElement);
+  const accentPurple = (cs.getPropertyValue('--accent-purple') || '#9a5cc8').trim();
+  if (o.plugins?.auxLines) {
+    o.plugins.auxLines.metaColor = _hexToRgba(accentPurple, 0.65);
+  }
+  try { grupoChart.update('none'); } catch (_) {}
+}
+
+// Re-aplica destaque (escurece linhas não selecionadas) sem rebuild do chart
+function applyChartHighlight() {
+  if (!grupoChart) return;
+  grupoChart.data.datasets.forEach(d => {
+    const isHi = highlightedUserId === d._userId;
+    const dimmed = highlightedUserId && !isHi;
+    d.borderColor     = dimmed ? _hexToRgba(d._baseColor, 0.18) : d._baseColor;
+    d.backgroundColor = dimmed ? _hexToRgba(d._baseColor, 0.18) : d._baseColor;
+    d.pointRadius      = dimmed ? 1 : 2;
+    d.pointHoverRadius = dimmed ? 3 : 5;
+    d.borderWidth      = isHi ? 3 : 2;
+  });
   try { grupoChart.update('none'); } catch (_) {}
 }
 
@@ -5029,6 +5569,44 @@ $$('[data-tab]').forEach(btn => {
 
 // botão de atualizar o grupo
 $('#grupo-refresh')?.addEventListener('click', () => carregarGrupo());
+
+// Rodada 7b — clique nos toggles do gráfico + legenda customizada (event delegation, sobrevive ao re-render)
+document.addEventListener('click', (ev) => {
+  const modeBtn = ev.target.closest('[data-chart-mode]');
+  if (modeBtn) {
+    const v = modeBtn.dataset.chartMode;
+    if (v && v !== chartMode) {
+      chartMode = v;
+      saveChartPrefs();
+      renderGrupo();
+    }
+    return;
+  }
+  const aggBtn = ev.target.closest('[data-chart-agg]');
+  if (aggBtn) {
+    const v = aggBtn.dataset.chartAgg;
+    if (v && v !== chartAgg) {
+      chartAgg = v;
+      saveChartPrefs();
+      renderGrupo();
+    }
+    return;
+  }
+  const legendBtn = ev.target.closest('[data-chart-user]');
+  if (legendBtn) {
+    const uid = legendBtn.dataset.chartUser;
+    if (!uid) return;
+    highlightedUserId = (highlightedUserId === uid) ? null : uid;
+    // Atualiza visual dos botões da legenda sem rebuild total
+    document.querySelectorAll('[data-chart-user]').forEach(b => {
+      const on = b.dataset.chartUser === highlightedUserId;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    applyChartHighlight();
+    return;
+  }
+});
 
 // Reage a mudança de status (data_recebimento condicional)
 $$('input[name="status"]').forEach(r => {
