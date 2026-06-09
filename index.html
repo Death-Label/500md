@@ -1354,7 +1354,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   border-radius: var(--radius-pill);
   box-shadow:
     inset 0 0 6px rgba(var(--accent-bright-rgb), 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 0 6px rgba(var(--accent-bright-rgb), 0.2);
   transition: width 0.9s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease;
   position: relative;
 }
@@ -1390,7 +1391,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   background: linear-gradient(90deg, var(--accent-green), #aef0bb);
   box-shadow:
     inset 0 0 8px rgba(var(--accent-green-rgb), 0.65),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 0 8px rgba(var(--accent-green-rgb), 0.22);
 }
 .meta-counter[data-state="achieved"] .progress-meta .pct { color: var(--accent-green); }
 .meta-counter[data-state="achieved"] {
@@ -1415,7 +1417,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   background: linear-gradient(90deg, var(--accent-purple), var(--accent-red));
   box-shadow:
     inset 0 0 8px rgba(var(--accent-red-rgb), 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0 8px rgba(var(--accent-red-rgb), 0.2);
 }
 .meta-counter[data-state="exceeded"] .progress-meta .pct { color: var(--accent-red); }
 .meta-counter[data-state="exceeded"] {
@@ -1624,6 +1627,67 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 .booster-card--out:hover { opacity: 1; }
 .booster-card--out .booster-card__amount .qty,
 .booster-card--out .booster-card__title { color: var(--text-secondary); }
+
+/* Rodada 8 — toggle Booster/Avulsa no form, ocultação condicional de campos, badge avulsa */
+.tipo-toggle {
+  display: inline-flex;
+  gap: 8px;
+}
+.tipo-option {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 7px 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  user-select: none;
+  position: relative;
+}
+.tipo-option input { position: absolute; opacity: 0; pointer-events: none; }
+.tipo-option:hover {
+  border-color: var(--accent-purple);
+  color: var(--text);
+}
+.tipo-option:has(input:checked) {
+  background: var(--accent-purple);
+  border-color: var(--accent-purple);
+  color: #ffffff;
+}
+.tipo-option:has(input:focus-visible) {
+  outline: 2px solid var(--accent-purple);
+  outline-offset: 2px;
+}
+/* Quando o form está em modo "avulsa", esconde os campos exclusivos de booster */
+#booster-form[data-tipo="avulsa"] .only-booster { display: none; }
+
+/* Badge "avulsa" no card */
+.booster-card__type-badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(207, 137, 88, 0.18);
+  color: #cf8958;
+  border: 1px solid rgba(207, 137, 88, 0.45);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+  line-height: 1.4;
+}
+[data-theme="cresselia"] .booster-card__type-badge {
+  background: rgba(184, 94, 128, 0.12);
+  color: #b85e80;
+  border-color: rgba(184, 94, 128, 0.4);
+}
 
 /* Mobile: re-layout do card em 2 linhas */
 @media (max-width: 540px) {
@@ -2213,7 +2277,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   border-radius: var(--radius-pill);
   box-shadow:
     inset 0 0 5px rgba(var(--accent-bright-rgb), 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    0 0 4px rgba(var(--accent-bright-rgb), 0.18);
   transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -3371,23 +3436,40 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
     </header>
 
     <form id="booster-form" class="modal__body" novalidate>
+      <!-- Rodada 8 — toggle entre booster (default) e carta avulsa -->
       <div class="field-group">
-        <label for="f-produto">Produto</label>
-        <input id="f-produto" name="produto" type="text" required maxlength="120"
-               placeholder="Booster Box Paradox Rift" autocomplete="off" />
+        <div class="tipo-toggle" role="group" aria-label="Tipo de registro">
+          <label class="tipo-option">
+            <input type="radio" name="tipo" value="booster" checked />
+            <span>Booster</span>
+          </label>
+          <label class="tipo-option">
+            <input type="radio" name="tipo" value="avulsa" />
+            <span>Carta avulsa</span>
+          </label>
+        </div>
       </div>
 
       <div class="field-group">
+        <label for="f-produto"><span data-label-when="booster">Produto</span><span data-label-when="avulsa" hidden>Descrição da carta</span></label>
+        <input id="f-produto" name="produto" type="text" required maxlength="120"
+               placeholder="Booster Box Paradox Rift"
+               data-ph-booster="Booster Box Paradox Rift"
+               data-ph-avulsa="Mewtwo-V-ASTRO (GG44/GG70)"
+               autocomplete="off" />
+      </div>
+
+      <div class="field-group only-booster">
         <label for="f-colecao">Coleção</label>
-        <input id="f-colecao" name="colecao" type="text" required maxlength="80"
+        <input id="f-colecao" name="colecao" type="text" maxlength="80"
                placeholder="Paradox Rift" autocomplete="off" list="colecoes-list" />
         <datalist id="colecoes-list"></datalist>
       </div>
 
       <div class="form-grid">
-        <div class="field-group">
+        <div class="field-group only-booster">
           <label for="f-quantidade">Quantidade</label>
-          <input id="f-quantidade" name="quantidade" type="number" required
+          <input id="f-quantidade" name="quantidade" type="number"
                  min="1" step="1" inputmode="numeric" placeholder="36" />
         </div>
         <div class="field-group">
@@ -3402,13 +3484,13 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
           <label for="f-data-compra">Data da compra</label>
           <input id="f-data-compra" name="data_compra" type="date" required />
         </div>
-        <div class="field-group">
+        <div class="field-group only-booster">
           <label for="f-data-receb">Data de recebimento</label>
           <input id="f-data-receb" name="data_recebimento" type="date" />
         </div>
       </div>
 
-      <div class="field-group">
+      <div class="field-group only-booster">
         <label>Status</label>
         <div class="radio-group">
           <label class="radio-option">
@@ -4451,6 +4533,7 @@ function statusLabel(s) {
 // Usa updated_at como proxy do momento da abertura.
 const META_CUTOFF = '2027-11-01';
 function contaParaMeta(b) {
+  if (b.tipo === 'avulsa') return false; // avulsa nunca conta pra meta (Rodada 8)
   if (b.status !== 'aberto') return true;
   const quando = (b.updated_at || b.created_at || '').slice(0, 10);
   return quando >= META_CUTOFF;
@@ -4507,23 +4590,24 @@ function renderBoosterList() {
 
 function boosterCardHTML(b) {
   const d = fmtDataParts(b.data_compra);
+  const isAvulsa = b.tipo === 'avulsa';
   const foraDaMeta = !contaParaMeta(b);
   return `
-    <li class="booster-card${foraDaMeta ? ' booster-card--out' : ''}" data-id="${b.id}" tabindex="0" role="button" aria-label="Editar ${escapeHtml(b.produto)}">
+    <li class="booster-card${foraDaMeta ? ' booster-card--out' : ''}${isAvulsa ? ' booster-card--avulsa' : ''}" data-id="${b.id}" tabindex="0" role="button" aria-label="Editar ${escapeHtml(b.produto)}">
       <div class="booster-card__date">
         <span class="dm">${d.dm}</span>
         <span class="y">${d.y}</span>
       </div>
       <div class="booster-card__main">
-        <div class="booster-card__title">${escapeHtml(b.produto)}</div>
-        <div class="booster-card__sub">${escapeHtml(b.colecao)}</div>
+        <div class="booster-card__title">${escapeHtml(b.produto)}${isAvulsa ? '<span class="booster-card__type-badge">avulsa</span>' : ''}</div>
+        ${isAvulsa ? '' : `<div class="booster-card__sub">${escapeHtml(b.colecao)}</div>`}
         <div class="booster-card__badges">
-          <span class="status-badge status-badge--${b.status}">${statusLabel(b.status)}</span>
-          ${foraDaMeta ? '<span class="out-badge" title="Aberto antes do encontro — não conta na meta">Fora da meta</span>' : ''}
+          ${isAvulsa ? '' : `<span class="status-badge status-badge--${b.status}">${statusLabel(b.status)}</span>`}
+          ${(!isAvulsa && foraDaMeta) ? '<span class="out-badge" title="Aberto antes do encontro — não conta na meta">Fora da meta</span>' : ''}
         </div>
       </div>
       <div class="booster-card__amount">
-        <div class="qty">${b.quantidade}<span class="lbl">boosters</span></div>
+        ${isAvulsa ? '' : `<div class="qty">${b.quantidade}<span class="lbl">boosters</span></div>`}
         <div class="value">${fmtBRL(b.valor_total)}</div>
       </div>
     </li>`;
@@ -4554,6 +4638,7 @@ function fmtMesCurto(ym) {
 function _serieMensal() {
   const mapa = new Map();
   boostersCache.forEach(b => {
+    if (b.tipo === 'avulsa') return; // Rodada 8 — gráfico pessoal soma só boosters
     const ym = (b.data_compra || '').slice(0, 7);
     if (!ym) return;
     mapa.set(ym, (mapa.get(ym) || 0) + (Number(b.quantidade) || 0));
@@ -4632,19 +4717,22 @@ function renderDashboard() {
   if (!boostersCache.length) { el.hidden = true; el.innerHTML = ''; return; }
   el.hidden = false;
 
-  const totalBoosters = boostersCache.reduce((s, b) => s + (Number(b.quantidade) || 0), 0);
-  const totalGasto    = boostersCache.reduce((s, b) => s + (Number(b.valor_total) || 0), 0);
-  const custoMedio    = totalBoosters > 0 ? totalGasto / totalBoosters : 0;
+  // Rodada 8 — avulsas só impactam gasto. Toda métrica de quantidade/status/coleção usa só boosters.
+  const boostersOnly = boostersCache.filter(b => b.tipo !== 'avulsa');
+  const totalBoosters    = boostersOnly.reduce((s, b) => s + (Number(b.quantidade) || 0), 0);
+  const gastoEmBoosters  = boostersOnly.reduce((s, b) => s + (Number(b.valor_total) || 0), 0);
+  const totalGasto       = boostersCache.reduce((s, b) => s + (Number(b.valor_total) || 0), 0); // inclui avulsas
+  const custoMedio    = totalBoosters > 0 ? gastoEmBoosters / totalBoosters : 0;
   const meta          = currentProfile?.meta_total ?? 500;
   const metaCount     = boostersCache.reduce((s, b) => contaParaMeta(b) ? s + (Number(b.quantidade) || 0) : s, 0);
 
-  // por status (em boosters)
+  // por status (em boosters) — avulsas fora
   const st = { encomendado: 0, recebido: 0, aberto: 0 };
-  boostersCache.forEach(b => { if (st[b.status] != null) st[b.status] += (Number(b.quantidade) || 0); });
+  boostersOnly.forEach(b => { if (st[b.status] != null) st[b.status] += (Number(b.quantidade) || 0); });
 
-  // por coleção
+  // por coleção — avulsas fora (cada avulsa tem `colecao` = descrição da carta, não é coleção real)
   const colMap = new Map();
-  boostersCache.forEach(b => {
+  boostersOnly.forEach(b => {
     const k = (b.colecao || '—').trim() || '—';
     const cur = colMap.get(k) || { qtd: 0, gasto: 0 };
     cur.qtd += (Number(b.quantidade) || 0);
@@ -4780,6 +4868,10 @@ function openModal(booster = null) {
 
   $form.reset();
   if (booster) {
+    const tipo = booster.tipo === 'avulsa' ? 'avulsa' : 'booster';
+    const tipoRadio = $form.querySelector(`input[name="tipo"][value="${tipo}"]`);
+    if (tipoRadio) tipoRadio.checked = true;
+    aplicarTipoNoForm(tipo);
     $form.elements.produto.value          = booster.produto || '';
     $form.elements.colecao.value          = booster.colecao || '';
     $form.elements.quantidade.value       = booster.quantidade || '';
@@ -4792,6 +4884,9 @@ function openModal(booster = null) {
     if (radio) radio.checked = true;
     $form.elements.notas.value = booster.notas || '';
   } else {
+    const tipoRadio = $form.querySelector(`input[name="tipo"][value="booster"]`);
+    if (tipoRadio) tipoRadio.checked = true;
+    aplicarTipoNoForm('booster');
     $form.elements.data_compra.value = _dataISO();
     const r = $form.querySelector('input[name="status"][value="encomendado"]');
     if (r) r.checked = true;
@@ -4831,30 +4926,40 @@ function setSaving(isSaving) {
 
 // ---------- validação ----------
 function readFormValues() {
+  const tipo = $form.querySelector('input[name="tipo"]:checked')?.value === 'avulsa' ? 'avulsa' : 'booster';
+  const isAvulsa = tipo === 'avulsa';
+  const produto = $form.elements.produto.value.trim();
   return {
-    produto:          $form.elements.produto.value.trim(),
-    colecao:          $form.elements.colecao.value.trim(),
-    quantidade:       parseInt($form.elements.quantidade.value, 10),
+    tipo,
+    produto,
+    // Avulsa: reusa produto como colecao pra satisfazer NOT NULL e simplificar render.
+    colecao:          isAvulsa ? produto : $form.elements.colecao.value.trim(),
+    quantidade:       isAvulsa ? 1 : parseInt($form.elements.quantidade.value, 10),
     valor_total:      parseBRLValue($form.elements.valor_total.value),
     data_compra:      $form.elements.data_compra.value,
-    data_recebimento: $form.elements.data_recebimento.value || null,
-    status:           $form.querySelector('input[name="status"]:checked')?.value || 'encomendado',
+    data_recebimento: isAvulsa ? null : ($form.elements.data_recebimento.value || null),
+    status:           isAvulsa ? 'aberto' : ($form.querySelector('input[name="status"]:checked')?.value || 'encomendado'),
     notas:            $form.elements.notas.value.trim() || null,
   };
 }
 
 function validateForm(v) {
-  if (!v.produto) return 'Produto é obrigatório.';
-  if (!v.colecao) return 'Coleção é obrigatória.';
-  if (!Number.isFinite(v.quantidade) || v.quantidade < 1) return 'Quantidade deve ser maior que zero.';
+  const isAvulsa = v.tipo === 'avulsa';
+  if (!v.produto) return isAvulsa ? 'Descrição da carta é obrigatória.' : 'Produto é obrigatório.';
+  if (!isAvulsa) {
+    if (!v.colecao) return 'Coleção é obrigatória.';
+    if (!Number.isFinite(v.quantidade) || v.quantidade < 1) return 'Quantidade deve ser maior que zero.';
+  }
   if (!Number.isFinite(v.valor_total) || v.valor_total < 0) return 'Valor não pode ser negativo.';
   if (!v.data_compra) return 'Data da compra é obrigatória.';
   if (v.data_compra > _dataISO()) return 'Data da compra não pode ser no futuro.';
-  if ((v.status === 'recebido' || v.status === 'aberto') && !v.data_recebimento) {
-    return `Status "${statusLabel(v.status).toLowerCase()}" exige data de recebimento.`;
-  }
-  if (v.data_recebimento && v.data_recebimento < v.data_compra) {
-    return 'Recebimento não pode ser antes da compra.';
+  if (!isAvulsa) {
+    if ((v.status === 'recebido' || v.status === 'aberto') && !v.data_recebimento) {
+      return `Status "${statusLabel(v.status).toLowerCase()}" exige data de recebimento.`;
+    }
+    if (v.data_recebimento && v.data_recebimento < v.data_compra) {
+      return 'Recebimento não pode ser antes da compra.';
+    }
   }
   return null;
 }
@@ -4994,6 +5099,7 @@ async function carregarGrupo(opts = {}) {
 }
 
 // Agrega por usuário: { profile, metaCount, total, gasto, boosters[] }
+// total e metaCount = só boosters (avulsas não contam). gasto = inclui avulsas.
 function _grupoAgregado() {
   const { profiles, boosters } = grupoCache;
   const byUser = new Map();
@@ -5005,24 +5111,26 @@ function _grupoAgregado() {
       byUser.set(b.user_id, u);
     }
     const q = Number(b.quantidade) || 0;
-    u.total += q;
-    u.gasto += Number(b.valor_total) || 0;
-    if (contaParaMeta(b)) u.metaCount += q;
-    u.boosters.push(b);
+    if (b.tipo !== 'avulsa') u.total += q;            // total = só boosters
+    u.gasto += Number(b.valor_total) || 0;            // gasto = tudo (avulsa é gasto)
+    if (contaParaMeta(b)) u.metaCount += q;           // já filtra avulsa via contaParaMeta
+    u.boosters.push(b);                               // série mensal trata avulsa via valDe()
   });
   return Array.from(byUser.values());
 }
 
 function _grupoComparativos(agg) {
+  // Coleção mais popular e melhor R$/booster: só boosters reais (avulsas têm `colecao` como descrição da carta, não é coleção)
+  const onlyBoosters = grupoCache.boosters.filter(b => b.tipo !== 'avulsa');
   const colMap = new Map();
-  grupoCache.boosters.forEach(b => {
+  onlyBoosters.forEach(b => {
     const k = (b.colecao || '—').trim() || '—';
     colMap.set(k, (colMap.get(k) || 0) + (Number(b.quantidade) || 0));
   });
   let colPop = null;
   colMap.forEach((q, k) => { if (!colPop || q > colPop.qtd) colPop = { nome: k, qtd: q }; });
   let melhor = null;
-  grupoCache.boosters.forEach(b => {
+  onlyBoosters.forEach(b => {
     const q = Number(b.quantidade) || 0, v = Number(b.valor_total) || 0;
     if (q > 0 && v > 0) {
       const up = v / q;
@@ -5041,7 +5149,12 @@ function _serieGrupo(agg, opts = {}) {
   if (!all.length) return { labels: [], datasets: [], totalSerie: 0, mode, aggregation };
   // Fix 3 (auditoria): fallback de data_compra pra created_at, pra não perder registros
   const ymDe = (b) => ((b.data_compra || b.created_at || '')).slice(0, 7);
-  const valDe = (b) => mode === 'rs' ? (Number(b.valor_total) || 0) : (Number(b.quantidade) || 0);
+  const valDe = (b) => {
+    if (mode === 'rs') return Number(b.valor_total) || 0;
+    // Modo qtd: avulsa não soma (Rodada 8 — avulsa só impacta R$)
+    if (b.tipo === 'avulsa') return 0;
+    return Number(b.quantidade) || 0;
+  };
   let minYM = null, maxYM = null;
   all.forEach(b => {
     const ym = ymDe(b);
@@ -5618,6 +5731,29 @@ $$('input[name="status"]').forEach(r => {
       $form.elements.data_recebimento.value = _dataISO();
     }
   });
+});
+
+// Rodada 8 — toggle Booster/Avulsa: muda o data-tipo do form (CSS reage), placeholder, label visível
+function aplicarTipoNoForm(tipo, opts = {}) {
+  const t = tipo === 'avulsa' ? 'avulsa' : 'booster';
+  $form.dataset.tipo = t;
+  const produto = $form.elements.produto;
+  if (produto) {
+    const ph = produto.dataset[t === 'avulsa' ? 'phAvulsa' : 'phBooster'];
+    if (ph) produto.placeholder = ph;
+  }
+  // Troca o texto do label entre "Produto" e "Descrição da carta"
+  $form.querySelectorAll('[data-label-when]').forEach(el => {
+    el.hidden = (el.dataset.labelWhen !== t);
+  });
+  if (t === 'avulsa' && opts.limparBooster) {
+    $form.elements.colecao.value = '';
+    $form.elements.quantidade.value = '';
+    $form.elements.data_recebimento.value = '';
+  }
+}
+$$('input[name="tipo"]').forEach(r => {
+  r.addEventListener('change', () => aplicarTipoNoForm(r.value, { limparBooster: true }));
 });
 
 // Formata o input de valor como BRL enquanto o usuário digita
