@@ -1440,6 +1440,12 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 /* ==========================================================
    Lista de boosters
    ========================================================== */
+/* Rodada 9a.1 — botão "Ver tudo" abaixo da lista limitada */
+.list-more {
+  display: flex;
+  justify-content: center;
+  padding: 14px 0 4px;
+}
 .booster-list {
   list-style: none;
   display: flex;
@@ -2234,6 +2240,11 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 .dash-chip--recebido .dash-chip__n { color: var(--accent-green); }
 .dash-chip--aberto { border-color: rgba(var(--accent-rgb), 0.55); background: rgba(var(--accent-rgb), 0.2); }
 .dash-chip--aberto .dash-chip__n { color: var(--accent-purple-bright); }
+/* Rodada 9a — chip de cartas avulsas (âmbar, mesma família do badge da lista) */
+.dash-chip--avulsa { border-color: rgba(207, 137, 88, 0.45); background: rgba(207, 137, 88, 0.18); }
+.dash-chip--avulsa .dash-chip__n { color: #cf8958; }
+[data-theme="cresselia"] .dash-chip--avulsa { border-color: rgba(184, 94, 128, 0.4); background: rgba(184, 94, 128, 0.12); }
+[data-theme="cresselia"] .dash-chip--avulsa .dash-chip__n { color: #b85e80; }
 
 /* lista por coleção */
 .dash-col {
@@ -2574,6 +2585,57 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   flex-shrink: 0;
 }
 .legend-name { font-size: 11px; }
+/* ==========================================================
+   Rodada 9b — avatar com foto (Supabase Storage)
+   ========================================================== */
+.avatar-dot, .rank-row__avatar, .legend-avatar {
+  position: relative;
+  overflow: hidden;
+}
+.avatar-dot img, .rank-row__avatar img, .legend-avatar img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+.avatar-upload {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.avatar-upload__preview {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--accent-purple);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+.avatar-upload__preview img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.avatar-upload__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.avatar-upload__hint {
+  display: block;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
 /* ==========================================================
    Rodada 3.5 — Onboarding + edição de perfil
    ========================================================== */
@@ -3467,10 +3529,11 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
       </div>
 
       <div class="form-grid">
-        <div class="field-group only-booster">
+        <div class="field-group">
           <label for="f-quantidade">Quantidade</label>
           <input id="f-quantidade" name="quantidade" type="number"
-                 min="1" step="1" inputmode="numeric" placeholder="36" />
+                 min="1" step="1" inputmode="numeric" placeholder="36"
+                 data-ph-booster="36" data-ph-avulsa="1" />
         </div>
         <div class="field-group">
           <label for="f-valor">Valor total</label>
@@ -3592,6 +3655,20 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
         <input id="prof-display-name" name="display_name" type="text" required maxlength="40" autocomplete="off" />
       </div>
 
+      <!-- Rodada 9b — foto de avatar via Supabase Storage -->
+      <div class="field-group">
+        <label>Foto de avatar</label>
+        <div class="avatar-upload">
+          <div class="avatar-upload__preview" id="prof-avatar-preview"></div>
+          <div class="avatar-upload__actions">
+            <button type="button" class="btn-ghost" id="prof-avatar-pick">Enviar foto</button>
+            <button type="button" class="btn-ghost" id="prof-avatar-remove" hidden>Remover foto</button>
+            <input type="file" id="prof-avatar-file" accept="image/*" hidden />
+          </div>
+        </div>
+        <span class="avatar-upload__hint">A foto é recortada em quadrado e comprimida antes de subir. Sem foto, a cor abaixo identifica você.</span>
+      </div>
+
       <div class="field-group">
         <label>Cor de avatar</label>
         <div class="color-grid" id="prof-color-grid" role="radiogroup" aria-label="Escolha uma cor"></div>
@@ -3600,6 +3677,21 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
       <div class="field-group">
         <label for="prof-meta">Meta pessoal (em boosters)</label>
         <input id="prof-meta" name="meta_total" type="number" required min="0" max="100000" step="1" inputmode="numeric" placeholder="500" />
+      </div>
+
+      <!-- Rodada 9a — seletor de tema dentro do perfil (mesmo estilo do toggle Booster/Avulsa) -->
+      <div class="field-group">
+        <label>Aparência</label>
+        <div class="tipo-toggle" role="group" aria-label="Tema do app">
+          <label class="tipo-option">
+            <input type="radio" name="tema" value="cresselia" />
+            <span>Cresselia (claro)</span>
+          </label>
+          <label class="tipo-option">
+            <input type="radio" name="tema" value="darkrai" />
+            <span>Darkrai (escuro)</span>
+          </label>
+        </div>
       </div>
 
       <div class="profile-section-divider"></div>
@@ -3824,8 +3916,14 @@ function aplicarPerfilNaUI(profile, user) {
   const nameEl   = $('#user-display-name');
   const avatarEl = $('#user-avatar');
   if (nameEl)   nameEl.textContent = profile.display_name || (user?.email ?? '…');
-  if (avatarEl) avatarEl.style.background = profile.avatar_color || 'var(--accent-purple)';
-  if (avatarEl) avatarEl.style.boxShadow  = `0 0 12px ${profile.avatar_color || 'rgba(var(--accent-rgb), 0.4)'}66`;
+  if (avatarEl) {
+    avatarEl.style.background = profile.avatar_color || 'var(--accent-purple)';
+    avatarEl.style.boxShadow  = `0 0 12px ${profile.avatar_color || 'rgba(var(--accent-rgb), 0.4)'}66`;
+    // Rodada 9b — foto por cima da cor; se não tiver, limpa
+    avatarEl.innerHTML = profile.avatar_url
+      ? `<img src="${escapeHtml(profile.avatar_url)}" alt="" onerror="this.remove()">`
+      : '';
+  }
 }
 
 // ----------------------------------------------------------
@@ -3924,6 +4022,7 @@ function entrarComoDeslogado() {
   currentProfile = null;
   boostersCache  = [];
   if ($boosterList) $boosterList.innerHTML = '';
+  const _av = $('#user-avatar'); if (_av) _av.innerHTML = '';
   const _dash = $('#dash');
   if (_dash) { _dash.hidden = true; _dash.innerHTML = ''; }
   teardownGrupoRealtime();
@@ -4011,6 +4110,13 @@ if ($eclipseToggle) {
     showToast(next === 'cresselia' ? 'Cresselia desperta.' : 'Darkrai retorna.');
   });
 }
+// Rodada 9a — pills de tema dentro do modal de perfil (aplicação instantânea, sem precisar salvar)
+$$('#profile-form input[name="tema"]').forEach(r => {
+  r.addEventListener('change', () => {
+    aplicarTema(r.value);
+    if (typeof dismissThemeHint === 'function') dismissThemeHint();
+  });
+});
 
 // ----------------------------------------------------------
 // Hint de primeiro acesso pro toggle de tema
@@ -4216,6 +4322,13 @@ async function openProfileModal() {
   $('#prof-meta').value = p.meta_total ?? 500;
   $('#prof-spent-visible').checked = p.spent_visible !== false;  // default visível
   buildColorGrid($('#prof-color-grid'), p.avatar_color);
+  // Rodada 9b — reseta estado de foto pendente e mostra o avatar atual no preview
+  _avatarPendente = null;
+  _avatarRemover = false;
+  _renderAvatarPreview(p.avatar_url || null, p.avatar_color);
+  // Rodada 9a — marca a pill do tema vigente
+  const temaRadio = m.querySelector(`input[name="tema"][value="${temaAtual()}"]`);
+  if (temaRadio) temaRadio.checked = true;
   $('#prof-pwd-current').value = '';
   $('#prof-pwd-new').value = '';
   $('#prof-pwd-fields').hidden = true;
@@ -4226,6 +4339,112 @@ async function openProfileModal() {
 }
 
 function closeProfileModal() { $('#profile-modal').hidden = true; }
+
+// ----------------------------------------------------------
+// Rodada 9b — foto de avatar (Supabase Storage, bucket "avatars")
+// ----------------------------------------------------------
+const AVATAR_SIZE = 256;          // lado do quadrado final
+const AVATAR_QUALITY = 0.85;      // compressão JPEG
+let _avatarPendente = null;       // Blob comprimido aguardando o Salvar
+let _avatarRemover = false;       // usuário pediu remoção (efetiva no Salvar)
+
+function _avatarStoragePath(uid) { return `${uid}/avatar.jpg`; }
+
+function _renderAvatarPreview(url, cor) {
+  const prev = $('#prof-avatar-preview');
+  const btnRemove = $('#prof-avatar-remove');
+  if (!prev) return;
+  prev.style.background = _corSegura(cor || currentProfile?.avatar_color);
+  prev.innerHTML = url ? `<img src="${escapeHtml(url)}" alt="">` : '';
+  if (btnRemove) btnRemove.hidden = !url;
+}
+
+// Decodifica a imagem respeitando orientação EXIF quando o navegador suporta
+async function _decodificarImagem(file) {
+  if (window.createImageBitmap) {
+    try { return await createImageBitmap(file, { imageOrientation: 'from-image' }); }
+    catch (_) { /* cai pro fallback */ }
+  }
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error('decode'));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+// Recorta no centro (cover), redimensiona pra AVATAR_SIZE e comprime em JPEG
+async function _comprimirAvatar(file) {
+  const src = await _decodificarImagem(file);
+  const w = src.width, h = src.height;
+  if (!w || !h) throw new Error('decode');
+  const lado = Math.min(w, h);
+  const sx = (w - lado) / 2, sy = (h - lado) / 2;
+  const canvas = document.createElement('canvas');
+  canvas.width = AVATAR_SIZE; canvas.height = AVATAR_SIZE;
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  // Fundo branco por trás de PNGs transparentes (JPEG não tem alpha)
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, AVATAR_SIZE, AVATAR_SIZE);
+  ctx.drawImage(src, sx, sy, lado, lado, 0, 0, AVATAR_SIZE, AVATAR_SIZE);
+  if (src.close) try { src.close(); } catch (_) {}
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(b => b ? resolve(b) : reject(new Error('blob')), 'image/jpeg', AVATAR_QUALITY);
+  });
+}
+
+async function _escolherAvatar(file) {
+  const err = $('#profile-error');
+  if (err) err.textContent = '';
+  if (!file) return;
+  if (file.size > 15 * 1024 * 1024) {
+    if (err) err.textContent = 'Imagem muito grande (máx. 15 MB antes da compressão).';
+    return;
+  }
+  try {
+    const blob = await _comprimirAvatar(file);
+    _avatarPendente = blob;
+    _avatarRemover = false;
+    _renderAvatarPreview(URL.createObjectURL(blob));
+  } catch (_) {
+    if (err) err.textContent = 'Não consegui ler essa imagem. Tenta um arquivo JPG ou PNG.';
+  }
+}
+
+$('#prof-avatar-pick')?.addEventListener('click', () => $('#prof-avatar-file')?.click());
+$('#prof-avatar-file')?.addEventListener('change', (e) => {
+  _escolherAvatar(e.target.files?.[0]);
+  e.target.value = ''; // permite re-escolher o mesmo arquivo
+});
+$('#prof-avatar-remove')?.addEventListener('click', () => {
+  _avatarPendente = null;
+  _avatarRemover = true;
+  _renderAvatarPreview(null);
+});
+
+// Sobe/remove no Storage e devolve o avatar_url final (string, null pra remover, undefined pra não mexer)
+async function _persistirAvatar() {
+  const uid = currentUser.id;
+  const path = _avatarStoragePath(uid);
+  if (_avatarPendente) {
+    const { error } = await sb.storage.from('avatars')
+      .upload(path, _avatarPendente, { upsert: true, contentType: 'image/jpeg', cacheControl: '3600' });
+    if (error) throw new Error('Falha ao subir a foto: ' + (error.message || 'erro do Storage'));
+    const { data } = sb.storage.from('avatars').getPublicUrl(path);
+    // ?v= força os navegadores de todo mundo a buscarem a versão nova
+    return `${data.publicUrl}?v=${Date.now()}`;
+  }
+  if (_avatarRemover) {
+    const { error } = await sb.storage.from('avatars').remove([path]);
+    if (error && !/not.*found/i.test(error.message || '')) {
+      throw new Error('Falha ao remover a foto: ' + (error.message || 'erro do Storage'));
+    }
+    return null;
+  }
+  return undefined;
+}
 
 function toggleProfilePwd() {
   const fields = $('#prof-pwd-fields');
@@ -4291,12 +4510,16 @@ async function submitProfile(e) {
       $('#prof-spent-visible').checked = true;
       showCrownLock();
     }
-    const { error: profErr } = await sb.from('profiles').update({
+    // Rodada 9b — sobe/remove a foto antes do update do profile
+    const novoAvatarUrl = await _persistirAvatar();
+    const updatePayload = {
       display_name: name,
       avatar_color: color,
       meta_total: meta,
       spent_visible: spentVisible,
-    }).eq('id', currentUser.id);
+    };
+    if (novoAvatarUrl !== undefined) updatePayload.avatar_url = novoAvatarUrl;
+    const { error: profErr } = await sb.from('profiles').update(updatePayload).eq('id', currentUser.id);
     if (profErr) throw profErr;
 
     const fresh = await carregarProfile(currentUser.id);
@@ -4471,6 +4694,9 @@ let saving        = false;
 let pendingDelete = false;
 
 const $boosterList     = $('#booster-list-container');
+// Rodada 9a.1 — limite de cards visíveis na lista antes do "Ver tudo"
+const LISTA_LIMITE = 10;
+let listaExpandida = false;
 const $modal           = $('#booster-modal');
 const $modalTitle      = $('#modal-title');
 const $form            = $('#booster-form');
@@ -4584,8 +4810,18 @@ function renderBoosterList() {
     if (cta) cta.addEventListener('click', () => openModal());
     return;
   }
-  const html = boostersCache.map(boosterCardHTML).join('');
-  $boosterList.innerHTML = `<ul class="booster-list">${html}</ul>`;
+  // Rodada 9a.1 — lista limitada: acima de LISTA_LIMITE itens, o resto fica atrás de "Ver tudo"
+  const total = boostersCache.length;
+  const visiveis = listaExpandida ? boostersCache : boostersCache.slice(0, LISTA_LIMITE);
+  const restantes = total - visiveis.length;
+  const html = visiveis.map(boosterCardHTML).join('');
+  let moreBtn = '';
+  if (total > LISTA_LIMITE) {
+    moreBtn = listaExpandida
+      ? `<div class="list-more"><button type="button" class="btn-ghost" id="lista-ver-tudo">Mostrar menos ▴</button></div>`
+      : `<div class="list-more"><button type="button" class="btn-ghost" id="lista-ver-tudo">Ver tudo (+${restantes.toLocaleString('pt-BR')}) ▾</button></div>`;
+  }
+  $boosterList.innerHTML = `<ul class="booster-list">${html}</ul>${moreBtn}`;
 }
 
 function boosterCardHTML(b) {
@@ -4607,7 +4843,9 @@ function boosterCardHTML(b) {
         </div>
       </div>
       <div class="booster-card__amount">
-        ${isAvulsa ? '' : `<div class="qty">${b.quantidade}<span class="lbl">boosters</span></div>`}
+        ${isAvulsa
+          ? `<div class="qty">${b.quantidade}<span class="lbl">${Number(b.quantidade) === 1 ? 'carta' : 'cartas'}</span></div>`
+          : `<div class="qty">${b.quantidade}<span class="lbl">boosters</span></div>`}
         <div class="value">${fmtBRL(b.valor_total)}</div>
       </div>
     </li>`;
@@ -4729,6 +4967,8 @@ function renderDashboard() {
   // por status (em boosters) — avulsas fora
   const st = { encomendado: 0, recebido: 0, aberto: 0 };
   boostersOnly.forEach(b => { if (st[b.status] != null) st[b.status] += (Number(b.quantidade) || 0); });
+  // Rodada 9a — cartas avulsas: soma de quantidade, chip próprio (fora dos 3 status de booster)
+  const avulsasQtd = boostersCache.reduce((s, b) => b.tipo === 'avulsa' ? s + (Number(b.quantidade) || 0) : s, 0);
 
   // por coleção — avulsas fora (cada avulsa tem `colecao` = descrição da carta, não é coleção real)
   const colMap = new Map();
@@ -4772,6 +5012,7 @@ function renderDashboard() {
         <span class="dash-chip dash-chip--encomendado"><span class="dash-chip__n">${st.encomendado.toLocaleString('pt-BR')}</span><span class="dash-chip__l">Encomendados</span></span>
         <span class="dash-chip dash-chip--recebido"><span class="dash-chip__n">${st.recebido.toLocaleString('pt-BR')}</span><span class="dash-chip__l">Recebidos</span></span>
         <span class="dash-chip dash-chip--aberto"><span class="dash-chip__n">${st.aberto.toLocaleString('pt-BR')}</span><span class="dash-chip__l">Abertos</span></span>
+        <span class="dash-chip dash-chip--avulsa"><span class="dash-chip__n">${avulsasQtd.toLocaleString('pt-BR')}</span><span class="dash-chip__l">Cartas avulsas</span></span>
       </div>
     </div>`;
 
@@ -4934,7 +5175,7 @@ function readFormValues() {
     produto,
     // Avulsa: reusa produto como colecao pra satisfazer NOT NULL e simplificar render.
     colecao:          isAvulsa ? produto : $form.elements.colecao.value.trim(),
-    quantidade:       isAvulsa ? 1 : parseInt($form.elements.quantidade.value, 10),
+    quantidade:       parseInt($form.elements.quantidade.value, 10),
     valor_total:      parseBRLValue($form.elements.valor_total.value),
     data_compra:      $form.elements.data_compra.value,
     data_recebimento: isAvulsa ? null : ($form.elements.data_recebimento.value || null),
@@ -4946,9 +5187,9 @@ function readFormValues() {
 function validateForm(v) {
   const isAvulsa = v.tipo === 'avulsa';
   if (!v.produto) return isAvulsa ? 'Descrição da carta é obrigatória.' : 'Produto é obrigatório.';
+  if (!Number.isFinite(v.quantidade) || v.quantidade < 1) return 'Quantidade deve ser maior que zero.';
   if (!isAvulsa) {
     if (!v.colecao) return 'Coleção é obrigatória.';
-    if (!Number.isFinite(v.quantidade) || v.quantidade < 1) return 'Quantidade deve ser maior que zero.';
   }
   if (!Number.isFinite(v.valor_total) || v.valor_total < 0) return 'Valor não pode ser negativo.';
   if (!v.data_compra) return 'Data da compra é obrigatória.';
@@ -5057,6 +5298,14 @@ function saveChartPrefs() {
 
 function _corSegura(c) {
   return (typeof c === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(c.trim())) ? c.trim() : '#9a5cc8';
+}
+// Rodada 9b — avatar com foto: gera o círculo com a cor de fallback e, se houver foto, a <img> por cima.
+// Se a imagem falhar ao carregar, ela se remove e a cor aparece (onerror inline pq o HTML é gerado por template).
+function avatarHTML(profile, cls) {
+  const cor = _corSegura(profile?.avatar_color);
+  const url = profile?.avatar_url;
+  const img = url ? `<img src="${escapeHtml(url)}" alt="" loading="lazy" onerror="this.remove()">` : '';
+  return `<span class="${cls}" style="background:${cor}">${img}</span>`;
 }
 function _grupoNomeDe(uid) {
   const p = grupoCache.profiles.find(x => x.id === uid);
@@ -5199,6 +5448,7 @@ function _serieGrupo(agg, opts = {}) {
     return {
       nome: u.profile?.display_name || '—',
       cor: _corSegura(u.profile?.avatar_color),
+      avatarUrl: u.profile?.avatar_url || null,
       userId: u.profile?.id,
       data,
     };
@@ -5295,7 +5545,7 @@ function renderGrupo(flashUserId) {
     return `
       <div class="rank-row${isLead ? ' rank-row--lead' : ''}${isMe ? ' rank-row--me' : ''}${isObserver ? ' rank-row--observer' : ''}" data-uid="${u.profile?.id || ''}">
         ${rankIndicator(i, isObserver)}
-        <div class="rank-row__avatar" style="background:${_corSegura(u.profile?.avatar_color)}"></div>
+        ${avatarHTML(u.profile, 'rank-row__avatar')}
         <div class="rank-row__center">
           <div class="rank-row__nameline">
             <div class="rank-row__name">${escapeHtml(u.profile?.display_name || '—')}${isMe ? ' <span class="me-tag">você</span>' : ''}${isObserver ? ' <span class="me-tag observer-tag">observador</span>' : ''}</div>
@@ -5344,7 +5594,7 @@ function renderGrupo(flashUserId) {
     const isMe = d.userId && d.userId === currentUser?.id;
     const isHi = highlightedUserId === d.userId;
     return `<button type="button" class="legend-item${isMe ? ' is-me' : ''}${isHi ? ' is-active' : ''}" data-chart-user="${d.userId || ''}" aria-pressed="${isHi}">
-      <span class="legend-avatar" style="background:${d.cor}"></span>
+      <span class="legend-avatar" style="background:${d.cor}">${d.avatarUrl ? `<img src="${escapeHtml(d.avatarUrl)}" alt="" loading="lazy" onerror="this.remove()">` : ''}</span>
       <span class="legend-name">${escapeHtml(d.nome)}${isMe ? ' (você)' : ''}</span>
     </button>`;
   }).join('');
@@ -5434,24 +5684,6 @@ const _auxLinesPlugin = {
     ctx.save();
     ctx.font = "10px 'JetBrains Mono', monospace";
 
-    // Linha da meta (horizontal) — só em modo qtd + acumulado
-    if (opts.metaLine != null && isFinite(opts.metaLine) && opts.metaLine > 0) {
-      const y = scales.y.getPixelForValue(opts.metaLine);
-      if (y >= chartArea.top && y <= chartArea.bottom) {
-        ctx.strokeStyle = opts.metaColor;
-        ctx.setLineDash([4, 4]);
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(chartArea.left, y);
-        ctx.lineTo(chartArea.right, y);
-        ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.fillStyle = opts.metaColor;
-        ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
-        ctx.fillText(`sua meta: ${opts.metaLine.toLocaleString('pt-BR')}`, chartArea.left + 6, y - 3);
-      }
-    }
-
     // Linha do cutoff (vertical) — quando o mês do cutoff existe no eixo
     if (opts.cutoffIndex != null && opts.cutoffIndex >= 0) {
       const x = scales.x.getPixelForValue(opts.cutoffIndex);
@@ -5487,12 +5719,9 @@ function buildGrupoChart(serie) {
   const col = _themeChartColors();
   const monoFont = "'JetBrains Mono', monospace";
 
-  // Aux lines: meta do user logado (só em qtd+acum) e cutoff de expansão (sempre que o mês 2027-11 estiver no eixo)
-  const cs = getComputedStyle(document.documentElement);
-  const accentPurple = (cs.getPropertyValue('--accent-purple') || '#9a5cc8').trim();
+  // Aux line: cutoff de expansão (sempre que o mês 2027-11 estiver no eixo).
+  // Rodada 9a — a linha "sua meta" foi removida: meta conta só "abertos válidos", o gráfico acumula tudo; misturar as duas escalas confundia.
   const cutoffHex = '#cf8958'; // âmbar fixo (sem CSS var, mesma cor nos dois temas pro cutoff)
-  const showMetaLine = (chartMode === 'qtd' && chartAgg === 'acum');
-  const minhaMeta = showMetaLine ? Number(currentProfile?.meta_total ?? 500) : null;
   const cutoffYM = META_CUTOFF.slice(0, 7); // '2027-11'
   // Encontra o índice do cutoff no eixo (labels estão formatados com fmtMesCurto, então precisamos do índice do axis original)
   // O serie.labels é o array de meses formatados; o cutoff está em série a partir do índice posicional.
@@ -5529,8 +5758,6 @@ function buildGrupoChart(serie) {
         legend: { display: false }, // usamos legenda customizada com avatares
         tooltip: { callbacks: { label: _chartTooltipLabel } },
         auxLines: {
-          metaLine: minhaMeta,
-          metaColor: _hexToRgba(accentPurple, 0.65),
           cutoffIndex: cutoffIndex,
           cutoffColor: _hexToRgba(cutoffHex, 0.7),
         },
@@ -5577,12 +5804,7 @@ function refreshGrupoChartTheme() {
   const o = grupoChart.options;
   o.scales.x.grid.color = col.grid; o.scales.x.ticks.color = col.tick;
   o.scales.y.grid.color = col.grid; o.scales.y.ticks.color = col.tick;
-  // Recalcula cor da meta (vem da CSS var do tema). Cutoff usa cor fixa, não muda.
-  const cs = getComputedStyle(document.documentElement);
-  const accentPurple = (cs.getPropertyValue('--accent-purple') || '#9a5cc8').trim();
-  if (o.plugins?.auxLines) {
-    o.plugins.auxLines.metaColor = _hexToRgba(accentPurple, 0.65);
-  }
+  // Rodada 9a — metaLine removida; o cutoff usa cor fixa, nada de tema pra recalcular nas aux lines.
   try { grupoChart.update('none'); } catch (_) {}
 }
 
@@ -5658,6 +5880,14 @@ $form.addEventListener('submit', (e) => { e.preventDefault(); saveBooster(); });
 
 // click em booster abre edição
 $boosterList.addEventListener('click', (e) => {
+  // Rodada 9a.1 — toggle do "Ver tudo / Mostrar menos"
+  if (e.target.closest('#lista-ver-tudo')) {
+    listaExpandida = !listaExpandida;
+    renderBoosterList();
+    // Ao recolher, volta o scroll pro topo da lista pra não deixar o usuário perdido no fim da página
+    if (!listaExpandida) $boosterList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
   const card = e.target.closest('.booster-card');
   if (!card) return;
   const b = boostersCache.find(x => x.id === card.dataset.id);
@@ -5742,13 +5972,19 @@ function aplicarTipoNoForm(tipo, opts = {}) {
     const ph = produto.dataset[t === 'avulsa' ? 'phAvulsa' : 'phBooster'];
     if (ph) produto.placeholder = ph;
   }
+  const qtd = $form.elements.quantidade;
+  if (qtd) {
+    const phQ = qtd.dataset[t === 'avulsa' ? 'phAvulsa' : 'phBooster'];
+    if (phQ) qtd.placeholder = phQ;
+    // Rodada 9a — avulsa também tem quantidade; default 1 quando o campo está vazio
+    if (t === 'avulsa' && !qtd.value) qtd.value = 1;
+  }
   // Troca o texto do label entre "Produto" e "Descrição da carta"
   $form.querySelectorAll('[data-label-when]').forEach(el => {
     el.hidden = (el.dataset.labelWhen !== t);
   });
   if (t === 'avulsa' && opts.limparBooster) {
     $form.elements.colecao.value = '';
-    $form.elements.quantidade.value = '';
     $form.elements.data_recebimento.value = '';
   }
 }
