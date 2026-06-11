@@ -521,6 +521,7 @@ html.theme-switching *::after {
     fill            0.5s ease,
     stroke          0.5s ease,
     box-shadow      0.5s ease,
+    opacity         0.5s ease,
     filter          0.5s ease !important;
 }
 
@@ -4518,9 +4519,31 @@ function _atualizarIconeTema(t) {
   alvos.forEach(a => {
     const svg = a.btn?.querySelector('svg');
     if (!svg) return;
-    svg.innerHTML = (t === 'leafeon') ? a.folha : a.lua;
+    const forma = (t === 'leafeon') ? 'folha' : 'lua';
+    const inner = (forma === 'folha') ? a.folha : a.lua;
+    const formaAtual = svg.dataset.forma || 'lua';
+    // 11.5 — mesma forma (lua<->lua): troca direta. Forma diferente: crossfade rápido
+    const timerAntigo = _iconeTimers.get(svg);
+    if (timerAntigo) clearTimeout(timerAntigo);
+    if (forma === formaAtual) {
+      svg.innerHTML = inner;
+      svg.style.opacity = '';
+      return;
+    }
+    svg.style.transition = 'opacity 0.22s ease';
+    svg.style.opacity = '0';
+    const tm = setTimeout(() => {
+      svg.innerHTML = inner;
+      svg.dataset.forma = forma;
+      svg.style.opacity = '1';
+      _iconeTimers.delete(svg);
+    }, 220);
+    _iconeTimers.set(svg, tm);
+    svg.dataset.forma = forma; // já reserva a forma-alvo (cliques rápidos não bagunçam)
   });
 }
+// 11.5 — timers do crossfade do ícone (um por botão, cancela troca pendente em cliques rápidos)
+const _iconeTimers = new WeakMap();
 // Aplica tema salvo ANTES do app inicializar (evita flash)
 (function bootTheme() {
   let saved = null;
