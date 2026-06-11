@@ -191,6 +191,176 @@
   opacity: 0.5;
 }
 
+/* ==========================================================
+   Tema Leafeon — clareira verde (claro)
+   ========================================================== */
+[data-theme="leafeon"] {
+  /* Fundos — sálvia suave (paleta 11.1: base da prévia aprovada, um degrau mais verde) */
+  --bg-deep:        #dfe9cf;
+  --bg-primary:     #e9f0dc;
+  --bg-card:        #f8fbf1;
+  --bg-card-hover:  #eef4e0;
+  --bg-input:       #f3f8e9;
+  --bg-elevated:    #f8fbf1;
+
+  /* Bordas — verde-seco */
+  --border:         #c6d4ab;
+  --border-hover:   #a9bd87;
+  --border-focus:   #5d8c43;
+
+  /* Texto — verde-musgo, NUNCA preto */
+  --text-primary:   #2e4424;
+  --text-secondary: #5c7a48;
+  --text-muted:     #87a071;
+
+  /* Acentos — Leafeon canônico
+     PRIMARY: verde-folha (#6f9e4f) | SECONDARY: terracota folha-seca (#b3593c)
+     SUCCESS: dourado sol-na-copa (#d4b85a) */
+  --accent-purple:        #6f9e4f;
+  --accent-purple-bright: #4a7a33;
+  --accent-purple-deep:   #3b6326;
+  --accent-purple-dim:    rgba(111, 158, 79, 0.16);
+  --accent-red:           #b3593c;
+  --accent-red-dim:       rgba(179, 89, 60, 0.12);
+  --accent-green:         #d4b85a;
+  --accent-green-dim:     rgba(212, 184, 90, 0.18);
+
+  /* RGB tuples — sobrescreve para Leafeon */
+  --accent-rgb:        111, 158, 79;
+  --accent-bright-rgb: 74, 122, 51;
+  --accent-deep-rgb:   59, 99, 38;
+  --accent-red-rgb:    179, 89, 60;
+  --accent-green-rgb:  212, 184, 90;
+
+  /* Overlays no tema claro-verde (seguem deep/primary/card) */
+  --bg-overlay-rgb:      223, 233, 207;
+  --bg-overlay-mid-rgb:  233, 240, 220;
+  --bg-overlay-elev-rgb: 248, 251, 241;
+  --bg-shadow-rgb:       70, 95, 50;
+  --bg-tendril-rgb:      160, 190, 130;
+
+  /* Gradientes de texto: CLARO → FOLHA → MUSGO (sem preto) */
+  --num-grad-start: #f2f7e6;
+  --num-grad-mid:   #9dbd7e;
+  --num-grad-end:   #4a7a33;
+
+  /* Sombras suaves esverdeadas */
+  --shadow-sm:   0 2px 12px rgba(70, 95, 50, 0.10);
+  --shadow-md:   0 4px 24px rgba(70, 95, 50, 0.12);
+  --shadow-lg:   0 8px 48px rgba(70, 95, 50, 0.16);
+  --shadow-glow: 0 0 24px rgba(111, 158, 79, 0.35);
+
+  /* Tint do topo do card: verde sutil */
+  --card-top-tint: rgba(var(--accent-rgb), 0.10);
+}
+
+/* Leafeon: camadas atmosféricas (sol dourado entre folhas, sem névoa nem estrela cadente) */
+[data-theme="leafeon"] .bg-tendrils { opacity: 0.15; }
+[data-theme="leafeon"] .bg-eye {
+  background: #e3cd82;
+  box-shadow: 0 0 18px rgba(227, 205, 130, 0.9), 0 0 36px rgba(227, 205, 130, 0.4);
+  opacity: 0.8;
+}
+[data-theme="leafeon"] .bg-vignette {
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(46, 107, 40, 0.10) 100%);
+}
+[data-theme="leafeon"] .bg-noise { opacity: 0.025; mix-blend-mode: multiply; }
+[data-theme="leafeon"] .bg-stars span {
+  background: #e3cd82;
+  box-shadow: 0 0 10px rgba(227, 205, 130, 0.6);
+  opacity: 0.45;
+}
+[data-theme="leafeon"] .bg-fog      { opacity: 0; }
+[data-theme="leafeon"] .bg-shooting { opacity: 0; }
+
+/* Folhas caindo — só no Leafeon, CSS puro, atrás de tudo */
+/* 11.2 — mesmo esquema das estrelas cadentes (z-index 0 + toggle por opacidade):
+   z negativo pinta ATRÁS do conteúdo da página; pra atravessar a tela inteira
+   o efeito precisa viver na camada das atmosferas globais (vide .bg-fog/.bg-shooting) */
+.bg-leaves {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.7s ease, visibility 0.7s;
+}
+[data-theme="leafeon"] .bg-leaves { opacity: 1; visibility: visible; }
+/* 11.1 — folha agora é SVG inline injetado via JS (sem mask/data-URI; à prova de parser) */
+.bg-leaves span {
+  position: absolute;
+  top: -36px;
+  width: 18px;
+  height: 18px;
+  color: #6f9e4f;
+}
+/* 11.4 — rastro de luz: a folha brilha na própria cor e deixa atrás
+   três orbes de luz (gradiente radial) no mesmo caminho, encolhendo e apagando. */
+.bg-leaves span svg {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: var(--opa, 0.45);
+  filter: drop-shadow(0 0 5px currentColor);
+  animation: var(--anim, leaf-fall) var(--dur, 16s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+.bg-leaves span i {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background: radial-gradient(circle, currentColor 0%, transparent 70%);
+  pointer-events: none;
+  animation: var(--anim, leaf-fall) var(--dur, 16s) linear infinite;
+}
+.bg-leaves span i:nth-of-type(1) {
+  inset: 20%;
+  animation-delay: calc(var(--delay, 0s) + 0.16s);
+  opacity: calc(var(--opa, 0.45) * 0.6);
+}
+.bg-leaves span i:nth-of-type(2) {
+  inset: 28%;
+  animation-delay: calc(var(--delay, 0s) + 0.32s);
+  opacity: calc(var(--opa, 0.45) * 0.35);
+}
+.bg-leaves span i:nth-of-type(3) {
+  inset: 36%;
+  animation-delay: calc(var(--delay, 0s) + 0.5s);
+  opacity: calc(var(--opa, 0.45) * 0.18);
+}
+@keyframes leaf-fall {
+  0%   { transform: translate(0, -8vh)  rotate(0deg); }
+  25%  { transform: translate(22px, 22vh) rotate(75deg); }
+  50%  { transform: translate(-14px, 50vh) rotate(165deg); }
+  75%  { transform: translate(26px, 78vh) rotate(255deg); }
+  100% { transform: translate(0, 108vh) rotate(345deg); }
+}
+@keyframes leaf-fall-b {
+  0%   { transform: translate(0, -8vh)  rotate(20deg); }
+  25%  { transform: translate(-24px, 24vh) rotate(-60deg); }
+  50%  { transform: translate(12px, 52vh) rotate(-150deg); }
+  75%  { transform: translate(-26px, 80vh) rotate(-240deg); }
+  100% { transform: translate(0, 108vh) rotate(-330deg); }
+}
+.bg-leaves span:nth-child(1)  { left: 4%;  --dur: 17s; --delay: -2s;  width: 16px; height: 16px; }
+.bg-leaves span:nth-child(2)  { left: 13%; --anim: leaf-fall-b; --dur: 21s; --delay: -9s;  color: #8fb96e; width: 13px; height: 13px; --opa: 0.38; }
+.bg-leaves span:nth-child(3)  { left: 21%; --dur: 14s; --delay: -6s;  color: #4a7a33; width: 20px; height: 20px; }
+.bg-leaves span:nth-child(4)  { left: 30%; --anim: leaf-fall-b; --dur: 19s; --delay: -13s; width: 15px; height: 15px; --opa: 0.4; }
+.bg-leaves span:nth-child(5)  { left: 38%; --dur: 23s; --delay: -4s;  color: #c9a84d; width: 14px; height: 14px; --opa: 0.35; }
+.bg-leaves span:nth-child(6)  { left: 46%; --anim: leaf-fall-b; --dur: 15s; --delay: -11s; color: #8fb96e; width: 18px; height: 18px; }
+.bg-leaves span:nth-child(7)  { left: 54%; --dur: 20s; --delay: -7s;  width: 13px; height: 13px; --opa: 0.38; }
+.bg-leaves span:nth-child(8)  { left: 61%; --anim: leaf-fall-b; --dur: 24s; --delay: -17s; color: #4a7a33; width: 22px; height: 22px; --opa: 0.4; }
+.bg-leaves span:nth-child(9)  { left: 69%; --dur: 16s; --delay: -1s;  color: #8fb96e; width: 15px; height: 15px; }
+.bg-leaves span:nth-child(10) { left: 76%; --anim: leaf-fall-b; --dur: 18s; --delay: -10s; width: 17px; height: 17px; --opa: 0.42; }
+.bg-leaves span:nth-child(11) { left: 84%; --dur: 22s; --delay: -15s; color: #c9a84d; width: 13px; height: 13px; --opa: 0.34; }
+.bg-leaves span:nth-child(12) { left: 91%; --anim: leaf-fall-b; --dur: 14s; --delay: -5s;  color: #4a7a33; width: 16px; height: 16px; }
+.bg-leaves span:nth-child(13) { left: 96%; --dur: 19s; --delay: -12s; color: #8fb96e; width: 14px; height: 14px; --opa: 0.38; }
+.bg-leaves span:nth-child(14) { left: 9%;  --anim: leaf-fall-b; --dur: 25s; --delay: -19s; width: 21px; height: 21px; --opa: 0.4; }
+
 /* Botão de tema (ícone de lua/sol no header) */
 .theme-toggle-wrap {
   position: relative;
@@ -224,6 +394,11 @@
   transform: scaleX(-1);
   color: var(--accent-purple-bright);
   filter: drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.6)) drop-shadow(0 0 4px rgba(224, 196, 125, 0.4));
+}
+[data-theme="leafeon"] .theme-toggle svg {
+  transform: none;
+  color: var(--accent-purple-bright);
+  filter: drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.55)) drop-shadow(0 0 4px rgba(227, 205, 130, 0.4));
 }
 
 /* Hint de primeiro acesso: anel pulsante + tooltip */
@@ -1440,6 +1615,36 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 /* ==========================================================
    Lista de boosters
    ========================================================== */
+/* Rodada 11 — filtros do histórico (pills acima da lista) */
+.list-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.list-filter__pill {
+  appearance: none;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.list-filter__pill:hover {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+}
+.list-filter__pill.is-active {
+  border-color: rgba(var(--accent-rgb), 0.55);
+  background: rgba(var(--accent-rgb), 0.16);
+  color: var(--accent-purple-bright);
+}
 /* Rodada 9a.1 — botão "Ver tudo" abaixo da lista limitada */
 .list-more {
   display: flex;
@@ -1693,6 +1898,11 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   background: rgba(184, 94, 128, 0.12);
   color: #b85e80;
   border-color: rgba(184, 94, 128, 0.4);
+}
+[data-theme="leafeon"] .booster-card__type-badge {
+  background: rgba(168, 101, 58, 0.12);
+  color: #a8653a;
+  border-color: rgba(168, 101, 58, 0.4);
 }
 
 /* Mobile: re-layout do card em 2 linhas */
@@ -2081,6 +2291,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   .fog-layer, .shooting-star, .install-icon-wrap.hint-active .install-icon::after {
     animation: none !important;
   }
+  .bg-leaves { display: none !important; }
 }
 /* ==========================================================
    Dashboard "Meu" (Rodada 2) — usa só tokens temáveis
@@ -2245,6 +2456,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 .dash-chip--avulsa .dash-chip__n { color: #cf8958; }
 [data-theme="cresselia"] .dash-chip--avulsa { border-color: rgba(184, 94, 128, 0.4); background: rgba(184, 94, 128, 0.12); }
 [data-theme="cresselia"] .dash-chip--avulsa .dash-chip__n { color: #b85e80; }
+[data-theme="leafeon"] .dash-chip--avulsa { border-color: rgba(168, 101, 58, 0.4); background: rgba(168, 101, 58, 0.12); }
+[data-theme="leafeon"] .dash-chip--avulsa .dash-chip__n { color: #a8653a; }
 
 /* lista por coleção */
 .dash-col {
@@ -2429,7 +2642,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   white-space: nowrap; overflow: hidden;
   flex: 0 1 auto; min-width: 0;   /* encolhe e some quando não cabe */
 }
-.rank-row__name .me-tag {
+.rank-row__name .me-tag,
+.friend-head__name .me-tag {
   margin-left: 7px; font-family: var(--font-mono);
   font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--accent-purple-bright);
@@ -2461,6 +2675,12 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 }
 [data-theme="cresselia"] .crown--silver { color: #8a8d92; }
 [data-theme="cresselia"] .crown--bronze { color: #8a5028; }
+[data-theme="leafeon"] .crown--gold {
+  color: #c89a3a;
+  animation: crown-glow-cresselia 2.6s ease-in-out infinite;
+}
+[data-theme="leafeon"] .crown--silver { color: #84887e; }
+[data-theme="leafeon"] .crown--bronze { color: #8a5028; }
 @keyframes crown-glow-cresselia {
   0%, 100% { filter: drop-shadow(0 0 3px rgba(200, 154, 58, 0.5)) drop-shadow(0 0 7px rgba(200, 154, 58, 0.25)); }
   50%      { filter: drop-shadow(0 0 5px rgba(200, 154, 58, 0.8)) drop-shadow(0 0 14px rgba(200, 154, 58, 0.45)); }
@@ -2586,13 +2806,116 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 }
 .legend-name { font-size: 11px; }
 /* ==========================================================
+   Rodada 10 — perfil dos amigos (clique no ranking)
+   ========================================================== */
+.rank-row { cursor: pointer; }
+.modal--compact { max-width: 380px; }
+.friend-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.friend-head__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+  border: 1px solid rgba(var(--accent-rgb), 0.3);
+}
+.friend-head__name {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.friend-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.friend-stat {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-elevated);
+}
+.friend-stat__label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+.friend-stat__value {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-feature-settings: "tnum";
+}
+.friend-recent__label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+.friend-recent__row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.friend-recent__row:last-child { border-bottom: 0; }
+.friend-recent__dt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.friend-recent__nm {
+  flex: 1;
+  min-width: 0;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.friend-recent__vl {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  font-feature-settings: "tnum";
+}
+.friend-empty {
+  text-align: center;
+  padding: 28px 12px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.friend-empty--eyes { font-size: 40px; padding: 36px 12px; }
+.booster-card--ro { cursor: default; }
+.booster-card--ro:hover { transform: none; }
+.booster-card--ro:hover::before { opacity: 0; }
+/* ==========================================================
    Rodada 9b — avatar com foto (Supabase Storage)
    ========================================================== */
-.avatar-dot, .rank-row__avatar, .legend-avatar {
+.avatar-dot, .rank-row__avatar, .legend-avatar, .friend-head__avatar {
   position: relative;
   overflow: hidden;
 }
-.avatar-dot img, .rank-row__avatar img, .legend-avatar img {
+.avatar-dot img, .rank-row__avatar img, .legend-avatar img, .friend-head__avatar img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -2820,6 +3143,9 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 [data-theme="cresselia"] .crown-lock__backdrop {
   background: rgba(90, 47, 74, 0.32);
 }
+[data-theme="leafeon"] .crown-lock__backdrop {
+  background: rgba(35, 77, 30, 0.32);
+}
 .crown-lock__card {
   position: relative;
   max-width: 380px; width: 100%;
@@ -2833,6 +3159,10 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 [data-theme="cresselia"] .crown-lock__card {
   border-color: rgba(200, 154, 58, 0.5);
   box-shadow: 0 10px 30px rgba(90, 47, 74, 0.18), 0 0 24px rgba(200, 154, 58, 0.15);
+}
+[data-theme="leafeon"] .crown-lock__card {
+  border-color: rgba(200, 154, 58, 0.5);
+  box-shadow: 0 10px 30px rgba(35, 77, 30, 0.18), 0 0 24px rgba(200, 154, 58, 0.15);
 }
 .crown-lock__icon {
   display: flex; justify-content: center;
@@ -2853,6 +3183,13 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
     drop-shadow(0 0 14px rgba(200, 154, 58, 0.35));
   animation: crown-glow-cresselia 2.6s ease-in-out infinite;
 }
+[data-theme="leafeon"] .crown-lock__icon .crown {
+  color: #c89a3a;
+  filter:
+    drop-shadow(0 0 5px rgba(200, 154, 58, 0.6))
+    drop-shadow(0 0 14px rgba(200, 154, 58, 0.35));
+  animation: crown-glow-cresselia 2.6s ease-in-out infinite;
+}
 .crown-lock__title {
   font-family: var(--font-display, inherit);
   font-size: 17px; font-weight: 600;
@@ -2861,12 +3198,14 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   letter-spacing: 0.01em;
 }
 [data-theme="cresselia"] .crown-lock__title { color: #5a2f4a; }
+[data-theme="leafeon"] .crown-lock__title { color: #234d1e; }
 .crown-lock__msg {
   font-size: 13px; line-height: 1.55;
   color: var(--text-muted, #b0b0bc);
   margin-bottom: 22px;
 }
 [data-theme="cresselia"] .crown-lock__msg { color: #7a4a6a; }
+[data-theme="leafeon"] .crown-lock__msg { color: #4a7a44; }
 .crown-lock__btn {
   background: linear-gradient(135deg, #f4d98a, #c89a3a);
   color: #2a1810;
@@ -3236,6 +3575,8 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 <div class="bg-mist"></div>
 <div class="bg-wisps"><span></span><span></span><span></span></div>
 <div class="bg-stars"><span></span><span></span><span></span><span></span><span></span></div>
+<!-- Rodada 11 — folhas caindo (só visíveis no tema Leafeon) -->
+<div class="bg-leaves" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
 <div class="bg-shimmer"></div>
 <div class="bg-tendrils"></div>
 <div class="bg-smoke">
@@ -3309,7 +3650,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 
     <div class="login-header">
       <!-- Ícone eclipse (lua minguante com halos) — também alterna o tema -->
-      <button type="button" class="eclipse" id="eclipse-toggle" aria-label="Alternar tema (Darkrai / Cresselia)" title="Alternar tema">
+      <button type="button" class="eclipse" id="eclipse-toggle" aria-label="Alternar tema (Darkrai / Cresselia / Leafeon)" title="Alternar tema">
         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M33 24 A12 12 0 1 1 21 12 A9 9 0 1 0 33 24 Z" fill="currentColor"/>
         </svg>
@@ -3375,7 +3716,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   <header class="app-header">
     <div class="brand">
       <div class="theme-toggle-wrap" id="theme-toggle-wrap">
-        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Alternar tema (Darkrai / Cresselia)" title="Alternar tema">
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Alternar tema (Darkrai / Cresselia / Leafeon)" title="Alternar tema">
           <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M22 16 A8 8 0 1 1 14 8 A6 6 0 1 0 22 16 Z" fill="currentColor"/>
           </svg>
@@ -3441,6 +3782,15 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 
       <section id="dash" class="dash" aria-live="polite" hidden></section>
 
+      <!-- Rodada 11 — filtros do histórico -->
+      <div class="list-filter" id="list-filter" role="group" aria-label="Filtrar compras" hidden>
+        <button type="button" class="list-filter__pill is-active" data-filtro="tudo">Tudo</button>
+        <button type="button" class="list-filter__pill" data-filtro="boosters">Boosters</button>
+        <button type="button" class="list-filter__pill" data-filtro="avulsas">Avulsas</button>
+        <button type="button" class="list-filter__pill" data-filtro="encomendado">Encomendados</button>
+        <button type="button" class="list-filter__pill" data-filtro="recebido">Recebidos</button>
+        <button type="button" class="list-filter__pill" data-filtro="aberto">Abertos</button>
+      </div>
       <div id="booster-list-container" aria-live="polite"></div>
     </section>
 
@@ -3691,6 +4041,10 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
             <input type="radio" name="tema" value="darkrai" />
             <span>Darkrai (escuro)</span>
           </label>
+          <label class="tipo-option">
+            <input type="radio" name="tema" value="leafeon" />
+            <span>Leafeon (verde)</span>
+          </label>
         </div>
       </div>
 
@@ -3702,6 +4056,16 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
           <span class="toggle-row__sub">Quando desligado, ninguém vê seu gasto total (nem você).</span>
         </span>
         <input id="prof-spent-visible" name="spent_visible" type="checkbox" class="toggle-input" />
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+      </label>
+
+      <!-- Rodada 10 — privacidade do histórico de compras -->
+      <label class="toggle-row" for="prof-profile-visible">
+        <span class="toggle-row__text">
+          <span class="toggle-row__label">Permitir que vejam meu histórico</span>
+          <span class="toggle-row__sub">Quando desligado, clicar em você no ranking não mostra suas compras.</span>
+        </span>
+        <input id="prof-profile-visible" name="profile_visible" type="checkbox" class="toggle-input" />
         <span class="toggle-track"><span class="toggle-thumb"></span></span>
       </label>
 
@@ -3731,6 +4095,34 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
         <span class="btn-label">Salvar</span>
       </button>
     </footer>
+  </div>
+</div>
+
+<!-- Rodada 10 — card flutuante do amigo (clique no ranking) -->
+<div class="modal-backdrop" id="friend-card-modal" hidden role="dialog" aria-modal="true" aria-labelledby="friend-card-name">
+  <div class="modal modal--compact">
+    <header class="modal__header">
+      <div class="friend-head" id="friend-card-head"></div>
+      <button type="button" class="modal__close" id="friend-card-close" aria-label="Fechar">×</button>
+    </header>
+    <div class="modal__body" id="friend-card-body"></div>
+    <footer class="modal__footer" id="friend-card-footer" hidden>
+      <div class="modal__footer-spacer"></div>
+      <button type="button" class="btn-primary btn-primary--compact" id="friend-card-full" style="display:inline-flex;">
+        <span class="btn-label">Ver perfil completo</span>
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- Rodada 10 — perfil completo do amigo (todas as compras) -->
+<div class="modal-backdrop" id="friend-profile-modal" hidden role="dialog" aria-modal="true" aria-labelledby="friend-profile-name">
+  <div class="modal">
+    <header class="modal__header">
+      <div class="friend-head" id="friend-profile-head"></div>
+      <button type="button" class="modal__close" id="friend-profile-close" aria-label="Fechar">×</button>
+    </header>
+    <div class="modal__body" id="friend-profile-body"></div>
   </div>
 </div>
 
@@ -4034,6 +4426,8 @@ function entrarComoDeslogado() {
   if ($modal && !$modal.hidden) closeModal();
   const _onb = $('#onboarding-modal'); if (_onb) _onb.hidden = true;
   const _prof = $('#profile-modal'); if (_prof) _prof.hidden = true;
+  const _fc = $('#friend-card-modal'); if (_fc) _fc.hidden = true;
+  const _fpm = $('#friend-profile-modal'); if (_fpm) _fpm.hidden = true;
   const _fp = $('#forgot-password-modal'); if (_fp) _fp.hidden = true;
   const _rp = $('#reset-password-modal'); if (_rp) _rp.hidden = true;
   recoveryMode = false;
@@ -4066,7 +4460,7 @@ setTimeout(() => hideBoot(), 4000);
 // ----------------------------------------------------------
 const THEME_KEY = '500md.theme';
 function aplicarTema(tema) {
-  const t = (tema === 'cresselia') ? 'cresselia' : 'darkrai';
+  const t = (tema === 'cresselia' || tema === 'leafeon') ? tema : 'darkrai';
   // Ativa transição sincronizada (só durante a troca)
   const root = document.documentElement;
   root.classList.add('theme-switching');
@@ -4077,13 +4471,55 @@ function aplicarTema(tema) {
   }
   // Atualiza theme-color do navegador (barra de status mobile)
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute('content', t === 'cresselia' ? '#fbf3ed' : '#0a0c12');
+  if (meta) meta.setAttribute('content', t === 'cresselia' ? '#fbf3ed' : t === 'leafeon' ? '#e9f0dc' : '#0a0c12');
+  // Rodada 11 — ícone do botão acompanha o tema (lua / lua / folha)
+  _atualizarIconeTema(t);
   try { localStorage.setItem(THEME_KEY, t); } catch (_) {}
   // Remove a classe após a transição pra não atrapalhar hovers
   setTimeout(() => { root.classList.remove('theme-switching'); refreshGrupoChartTheme(); }, 550);
 }
 function temaAtual() {
-  return document.documentElement.getAttribute('data-theme') === 'cresselia' ? 'cresselia' : 'darkrai';
+  const t = document.documentElement.getAttribute('data-theme');
+  return (t === 'cresselia' || t === 'leafeon') ? t : 'darkrai';
+}
+// Rodada 11.1 — injeta o SVG da folha em cada span do .bg-leaves (inline = sem dependência de mask CSS)
+(function _plantarFolhas() {
+  const cont = document.querySelector('.bg-leaves');
+  if (!cont) return;
+  const d = 'M17,8C8,10,5.9,16.17,3.82,21.34L5.71,22l1-2.3A4.49,4.49,0,0,0,8,20C19,20,22,3,22,3,21,5,14,5.25,9,6.25S2,11.5,2,13.5a6.22,6.22,0,0,0,1.75,3.75C7,8,17,8,17,8Z';
+  const folhaSvg = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="currentColor"/></svg>`;
+  cont.querySelectorAll('span').forEach(s => {
+    // 11.4 — folha líder + três orbes de luz que formam o rastro
+    s.innerHTML = folhaSvg + '<i></i><i></i><i></i>';
+  });
+})();
+// Rodada 11 — ciclo dos 3 temas + textos dos toasts
+function _proximoTema(t) {
+  return t === 'darkrai' ? 'cresselia' : t === 'cresselia' ? 'leafeon' : 'darkrai';
+}
+const _TEMA_TOAST = {
+  darkrai: 'Darkrai retorna.',
+  cresselia: 'Cresselia desperta.',
+  leafeon: 'Leafeon floresce.',
+};
+// Troca o SVG dos botões de tema: lua (Darkrai/Cresselia — o CSS flipa na Cresselia) ou folha (Leafeon).
+// A folha fica DENTRO do viewBox nativo de cada botão, escalada pra ocupar a mesma proporção da lua
+// (o svg do login é width:100%, então trocar o viewBox mudaria o tamanho aparente — bug da Rodada 11).
+function _atualizarIconeTema(t) {
+  const folhaPath = 'M17,8C8,10,5.9,16.17,3.82,21.34L5.71,22l1-2.3A4.49,4.49,0,0,0,8,20C19,20,22,3,22,3,21,5,14,5.25,9,6.25S2,11.5,2,13.5a6.22,6.22,0,0,0,1.75,3.75C7,8,17,8,17,8Z';
+  const alvos = [
+    { btn: $('#theme-toggle'),
+      lua: '<path d="M22 16 A8 8 0 1 1 14 8 A6 6 0 1 0 22 16 Z" fill="currentColor"/>',
+      folha: `<g transform="translate(7,7) scale(0.75)"><path d="${folhaPath}" fill="currentColor"/></g>` },
+    { btn: $('#eclipse-toggle'),
+      lua: '<path d="M33 24 A12 12 0 1 1 21 12 A9 9 0 1 0 33 24 Z" fill="currentColor"/>',
+      folha: `<g transform="translate(10.2,10.2) scale(1.15)"><path d="${folhaPath}" fill="currentColor"/></g>` },
+  ];
+  alvos.forEach(a => {
+    const svg = a.btn?.querySelector('svg');
+    if (!svg) return;
+    svg.innerHTML = (t === 'leafeon') ? a.folha : a.lua;
+  });
 }
 // Aplica tema salvo ANTES do app inicializar (evita flash)
 (function bootTheme() {
@@ -4095,9 +4531,9 @@ function temaAtual() {
 const $themeToggle = $('#theme-toggle');
 if ($themeToggle) {
   $themeToggle.addEventListener('click', () => {
-    const next = temaAtual() === 'darkrai' ? 'cresselia' : 'darkrai';
+    const next = _proximoTema(temaAtual());
     aplicarTema(next);
-    showToast(next === 'cresselia' ? 'Cresselia desperta.' : 'Darkrai retorna.');
+    showToast(_TEMA_TOAST[next]);
     dismissThemeHint();
   });
 }
@@ -4105,9 +4541,9 @@ if ($themeToggle) {
 const $eclipseToggle = $('#eclipse-toggle');
 if ($eclipseToggle) {
   $eclipseToggle.addEventListener('click', () => {
-    const next = temaAtual() === 'darkrai' ? 'cresselia' : 'darkrai';
+    const next = _proximoTema(temaAtual());
     aplicarTema(next);
-    showToast(next === 'cresselia' ? 'Cresselia desperta.' : 'Darkrai retorna.');
+    showToast(_TEMA_TOAST[next]);
   });
 }
 // Rodada 9a — pills de tema dentro do modal de perfil (aplicação instantânea, sem precisar salvar)
@@ -4249,6 +4685,175 @@ async function submitOnboarding(e) {
 // ---------- Editar perfil ----------
 // Rodada 7 patch — Lock da coroa do 1º lugar.
 // Computa o rank na hora a partir do grupoCache e retorna true se o currentUser é o 1º.
+// ----------------------------------------------------------
+// Rodada 10 — perfil dos amigos (clique no ranking)
+// ----------------------------------------------------------
+let _friendUid = null;
+let _friendExpandida = false;
+
+// Mesmo critério de ordenação do ranking (corredores antes de observadores, metaCount > total > nome)
+function _grupoRankComparator(a, b) {
+  const aObs = (a.profile?.meta_total ?? 500) === 0;
+  const bObs = (b.profile?.meta_total ?? 500) === 0;
+  if (aObs !== bObs) return aObs ? 1 : -1;
+  return b.metaCount - a.metaCount ||
+         b.total - a.total ||
+         (a.profile?.display_name || '').localeCompare(b.profile?.display_name || '');
+}
+function _grupoLiderId() {
+  if (!grupoCache.profiles?.length) return null;
+  const rank = _grupoAgregado().sort(_grupoRankComparator);
+  const top = rank[0];
+  if (!top || (top.profile?.meta_total ?? 500) === 0) return null;
+  return top.profile?.id || null;
+}
+
+// Consolida tudo que as views de amigo precisam, com as duas regras de privacidade
+function _friendDados(uid) {
+  const u = _grupoAgregado().find(x => x.profile?.id === uid);
+  if (!u) return null;
+  const isLead = uid === _grupoLiderId();
+  const isObserver = (u.profile?.meta_total ?? 500) === 0;
+  // Coroa: o 1º não tem direito a esconder nada (espelha a regra do gasto)
+  const perfilVisivel = isLead || u.profile?.profile_visible !== false;
+  const mostraValor = !isObserver && (isLead || u.profile?.spent_visible !== false);
+  const boostersOnly = u.boosters.filter(b => b.tipo !== 'avulsa');
+  const gastoBoosters = boostersOnly.reduce((s, b) => s + (Number(b.valor_total) || 0), 0);
+  const custoMedio = u.total > 0 ? gastoBoosters / u.total : 0;
+  const compras = u.boosters.slice().sort((a, b) =>
+    (b.data_compra || '').localeCompare(a.data_compra || '') ||
+    (b.created_at || '').localeCompare(a.created_at || ''));
+  return { u, isLead, isObserver, perfilVisivel, mostraValor, custoMedio, compras };
+}
+
+function _friendHeadHTML(profile, isMe) {
+  return `${avatarHTML(profile, 'friend-head__avatar')}
+    <span class="friend-head__name">${escapeHtml(profile?.display_name || '—')}${isMe ? ' <span class="me-tag">você</span>' : ''}</span>`;
+}
+
+function _friendStatsHTML(d) {
+  return `
+    <div class="friend-stats">
+      <div class="friend-stat">
+        <div class="friend-stat__label">Total de boosters</div>
+        <div class="friend-stat__value">${d.u.total.toLocaleString('pt-BR')}</div>
+      </div>
+      <div class="friend-stat">
+        <div class="friend-stat__label">Custo médio</div>
+        <div class="friend-stat__value">${d.mostraValor ? fmtBRL(d.custoMedio) : '—'}</div>
+      </div>
+    </div>`;
+}
+
+function openFriendCard(uid) {
+  const d = _friendDados(uid);
+  if (!d) return;
+  _friendUid = uid;
+  const isMe = uid === currentUser?.id;
+  $('#friend-card-head').innerHTML = _friendHeadHTML(d.u.profile, isMe);
+  const body = $('#friend-card-body');
+  const footer = $('#friend-card-footer');
+  if (d.isObserver) {
+    body.innerHTML = `<div class="friend-empty friend-empty--eyes">👀</div>`;
+    footer.hidden = true;
+  } else if (!d.perfilVisivel) {
+    body.innerHTML = `<div class="friend-empty">Histórico privado.<br>Este usuário desativou a visualização do perfil nas configurações.</div>`;
+    footer.hidden = true;
+  } else {
+    const recentes = d.compras.slice(0, 3).map(b => {
+      const dt = fmtDataParts(b.data_compra);
+      const isAv = b.tipo === 'avulsa';
+      const direita = d.mostraValor
+        ? fmtBRL(b.valor_total)
+        : `${(Number(b.quantidade) || 0).toLocaleString('pt-BR')} ${isAv ? (Number(b.quantidade) === 1 ? 'carta' : 'cartas') : 'boosters'}`;
+      return `<div class="friend-recent__row">
+        <span class="friend-recent__dt">${dt.dm}/${dt.y}</span>
+        <span class="friend-recent__nm">${escapeHtml(b.produto)}${isAv ? '<span class="booster-card__type-badge">avulsa</span>' : ''}</span>
+        <span class="friend-recent__vl">${direita}</span>
+      </div>`;
+    }).join('');
+    body.innerHTML = `
+      ${_friendStatsHTML(d)}
+      <div class="friend-recent__label">Últimas compras</div>
+      ${recentes || '<div class="friend-empty">Nenhuma compra registrada ainda.</div>'}`;
+    footer.hidden = !d.compras.length;
+  }
+  $('#friend-card-modal').hidden = false;
+}
+function closeFriendCard() { $('#friend-card-modal').hidden = true; }
+
+// Card de compra read-only (mesmo visual do Meu diário, sem clique de edição, R$ condicional)
+function _friendCompraCardHTML(b, mostraValor) {
+  const dt = fmtDataParts(b.data_compra);
+  const isAvulsa = b.tipo === 'avulsa';
+  const foraDaMeta = !contaParaMeta(b);
+  const qtyHTML = isAvulsa
+    ? `<div class="qty">${b.quantidade}<span class="lbl">${Number(b.quantidade) === 1 ? 'carta' : 'cartas'}</span></div>`
+    : `<div class="qty">${b.quantidade}<span class="lbl">boosters</span></div>`;
+  return `
+    <li class="booster-card booster-card--ro${foraDaMeta ? ' booster-card--out' : ''}${isAvulsa ? ' booster-card--avulsa' : ''}">
+      <div class="booster-card__date">
+        <span class="dm">${dt.dm}</span>
+        <span class="y">${dt.y}</span>
+      </div>
+      <div class="booster-card__main">
+        <div class="booster-card__title">${escapeHtml(b.produto)}${isAvulsa ? '<span class="booster-card__type-badge">avulsa</span>' : ''}</div>
+        ${isAvulsa ? '' : `<div class="booster-card__sub">${escapeHtml(b.colecao)}</div>`}
+        <div class="booster-card__badges">
+          ${isAvulsa ? '' : `<span class="status-badge status-badge--${b.status}">${statusLabel(b.status)}</span>`}
+          ${(!isAvulsa && foraDaMeta) ? '<span class="out-badge" title="Aberto antes do encontro — não conta na meta">Fora da meta</span>' : ''}
+        </div>
+      </div>
+      <div class="booster-card__amount">
+        ${qtyHTML}
+        ${mostraValor ? `<div class="value">${fmtBRL(b.valor_total)}</div>` : ''}
+      </div>
+    </li>`;
+}
+
+function renderFriendProfile() {
+  const d = _friendDados(_friendUid);
+  if (!d) return;
+  const isMe = _friendUid === currentUser?.id;
+  $('#friend-profile-head').innerHTML = _friendHeadHTML(d.u.profile, isMe);
+  const total = d.compras.length;
+  const visiveis = _friendExpandida ? d.compras : d.compras.slice(0, LISTA_LIMITE);
+  const restantes = total - visiveis.length;
+  let moreBtn = '';
+  if (total > LISTA_LIMITE) {
+    moreBtn = _friendExpandida
+      ? `<div class="list-more"><button type="button" class="btn-ghost" id="friend-ver-tudo">Mostrar menos ▴</button></div>`
+      : `<div class="list-more"><button type="button" class="btn-ghost" id="friend-ver-tudo">Ver tudo (+${restantes.toLocaleString('pt-BR')}) ▾</button></div>`;
+  }
+  $('#friend-profile-body').innerHTML = `
+    ${_friendStatsHTML(d)}
+    <ul class="booster-list">${visiveis.map(b => _friendCompraCardHTML(b, d.mostraValor)).join('')}</ul>
+    ${moreBtn}`;
+}
+function openFriendProfile() {
+  const d = _friendDados(_friendUid);
+  if (!d || !d.perfilVisivel || d.isObserver) return;
+  _friendExpandida = false;
+  closeFriendCard();
+  renderFriendProfile();
+  $('#friend-profile-modal').hidden = false;
+}
+function closeFriendProfile() { $('#friend-profile-modal').hidden = true; }
+
+// Wire-up dos modais de amigo
+$('#friend-card-close')?.addEventListener('click', closeFriendCard);
+$('#friend-card-full')?.addEventListener('click', openFriendProfile);
+$('#friend-profile-close')?.addEventListener('click', closeFriendProfile);
+$('#friend-card-modal')?.addEventListener('click', (e) => { if (e.target.id === 'friend-card-modal') closeFriendCard(); });
+$('#friend-profile-modal')?.addEventListener('click', (e) => {
+  if (e.target.id === 'friend-profile-modal') { closeFriendProfile(); return; }
+  if (e.target.closest('#friend-ver-tudo')) {
+    _friendExpandida = !_friendExpandida;
+    renderFriendProfile();
+    if (!_friendExpandida) $('#friend-profile-body')?.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
+
 function _currentUserIsRankFirst() {
   if (!currentUser) return false;
   if (!grupoCache.profiles?.length) return false;
@@ -4278,6 +4883,22 @@ function showCrownLock(mode = 'attempt') {
     // Caso: usuário acabou de assumir o 1º lugar com o valor oculto
     titleEl.textContent = 'Você acaba de assumir a coroa das decepções';
     msgEl.textContent = 'Essa responsabilidade vem com o peso de mostrar a todos como podem se afundar. Seu gasto voltou a aparecer no ranking.';
+  } else if (mode === 'auto-profile' && titleEl && msgEl) {
+    // Rodada 10 — assumiu o 1º com o histórico oculto
+    titleEl.textContent = 'Você acaba de assumir a coroa das decepções';
+    msgEl.textContent = 'Essa responsabilidade vem com o peso de manter o caminho aberto. Seu histórico de compras voltou a ficar visível pro grupo.';
+  } else if (mode === 'auto-both' && titleEl && msgEl) {
+    // Rodada 10 — assumiu o 1º com gasto E histórico ocultos
+    titleEl.textContent = 'Você acaba de assumir a coroa das decepções';
+    msgEl.textContent = 'Essa responsabilidade vem com o peso da transparência total. Seu gasto e seu histórico de compras voltaram a ficar visíveis pro grupo.';
+  } else if (mode === 'attempt-profile' && titleEl && msgEl) {
+    // Rodada 10 — 1º tentou ocultar o histórico
+    titleEl.textContent = 'Você detém a coroa das decepções';
+    msgEl.textContent = 'Essa responsabilidade vem com o peso de manter seu histórico aberto a todos. Essa opção está bloqueada para você.';
+  } else if (mode === 'attempt-both' && titleEl && msgEl) {
+    // Rodada 10 — 1º tentou ocultar gasto e histórico de uma vez
+    titleEl.textContent = 'Você detém a coroa das decepções';
+    msgEl.textContent = 'Essa responsabilidade vem com o peso da transparência total: gasto e histórico ficam abertos. Essas opções estão bloqueadas para você.';
   } else if (titleEl && msgEl) {
     // Caso: usuário tentou esconder o valor enquanto está em 1º
     titleEl.textContent = 'Você detém a coroa das decepções';
@@ -4293,16 +4914,23 @@ let _autoCorrigindoCoroa = false;
 async function _autoCorrigirCoroaDoLider() {
   if (_autoCorrigindoCoroa) return;             // evita disparos paralelos
   if (!currentUser || !currentProfile) return;
-  if (currentProfile.spent_visible !== false) return;  // já visível, nada a fazer
+  // Rodada 10 — a coroa força visibilidade do gasto E do histórico
+  const fixGasto = currentProfile.spent_visible === false;
+  const fixHistorico = currentProfile.profile_visible === false;
+  if (!fixGasto && !fixHistorico) return;       // tudo visível, nada a fazer
   if (!_currentUserIsRankFirst()) return;       // só age se for o 1º
   _autoCorrigindoCoroa = true;
   try {
+    const payload = {};
+    if (fixGasto) payload.spent_visible = true;
+    if (fixHistorico) payload.profile_visible = true;
     const { error } = await sb.from('profiles')
-      .update({ spent_visible: true })
+      .update(payload)
       .eq('id', currentUser.id);
     if (error) throw error;
-    currentProfile.spent_visible = true;        // sync local
-    showCrownLock('auto');                      // notifica com texto contextual
+    if (fixGasto) currentProfile.spent_visible = true;          // sync local
+    if (fixHistorico) currentProfile.profile_visible = true;
+    showCrownLock(fixGasto && fixHistorico ? 'auto-both' : fixGasto ? 'auto' : 'auto-profile');
   } catch (e) {
     console.warn('[500md] auto-correção da coroa falhou:', e);
   } finally {
@@ -4321,6 +4949,8 @@ async function openProfileModal() {
   $('#prof-display-name').value = p.display_name || '';
   $('#prof-meta').value = p.meta_total ?? 500;
   $('#prof-spent-visible').checked = p.spent_visible !== false;  // default visível
+  // Rodada 10 — privacidade do histórico (default visível)
+  $('#prof-profile-visible').checked = p.profile_visible !== false;
   buildColorGrid($('#prof-color-grid'), p.avatar_color);
   // Rodada 9b — reseta estado de foto pendente e mostra o avatar atual no preview
   _avatarPendente = null;
@@ -4504,11 +5134,21 @@ async function submitProfile(e) {
       if (updErr) throw updErr;
     }
     let spentVisible = !!$('#prof-spent-visible').checked;
-    // Lock da coroa: 1º lugar não pode ocultar; força true mesmo se vier desligado
-    if (!spentVisible && _currentUserIsRankFirst()) {
+    let profileVisible = !!$('#prof-profile-visible').checked;
+    // Lock da coroa: 1º lugar não pode ocultar gasto NEM histórico; força true mesmo se vier desligado
+    const _souPrimeiro = _currentUserIsRankFirst();
+    const _forcouGasto = !spentVisible && _souPrimeiro;
+    const _forcouHistorico = !profileVisible && _souPrimeiro;
+    if (_forcouGasto) {
       spentVisible = true;
       $('#prof-spent-visible').checked = true;
-      showCrownLock();
+    }
+    if (_forcouHistorico) {
+      profileVisible = true;
+      $('#prof-profile-visible').checked = true;
+    }
+    if (_forcouGasto || _forcouHistorico) {
+      showCrownLock(_forcouGasto && _forcouHistorico ? 'attempt-both' : _forcouGasto ? 'attempt' : 'attempt-profile');
     }
     // Rodada 9b — sobe/remove a foto antes do update do profile
     const novoAvatarUrl = await _persistirAvatar();
@@ -4517,6 +5157,7 @@ async function submitProfile(e) {
       avatar_color: color,
       meta_total: meta,
       spent_visible: spentVisible,
+      profile_visible: profileVisible,
     };
     if (novoAvatarUrl !== undefined) updatePayload.avatar_url = novoAvatarUrl;
     const { error: profErr } = await sb.from('profiles').update(updatePayload).eq('id', currentUser.id);
@@ -4697,6 +5338,26 @@ const $boosterList     = $('#booster-list-container');
 // Rodada 9a.1 — limite de cards visíveis na lista antes do "Ver tudo"
 const LISTA_LIMITE = 10;
 let listaExpandida = false;
+// Rodada 11 — filtro ativo da lista ('tudo' | 'boosters' | 'avulsas' | 'encomendado' | 'recebido' | 'aberto')
+let listaFiltro = 'tudo';
+function _listaFiltroPredicado(b) {
+  switch (listaFiltro) {
+    case 'avulsas':     return b.tipo === 'avulsa';
+    case 'boosters':    return b.tipo !== 'avulsa';
+    case 'encomendado':
+    case 'recebido':
+    case 'aberto':      return b.tipo !== 'avulsa' && b.status === listaFiltro;
+    default:            return true;
+  }
+}
+$('#list-filter')?.addEventListener('click', (e) => {
+  const pill = e.target.closest('.list-filter__pill');
+  if (!pill) return;
+  listaFiltro = pill.dataset.filtro;
+  listaExpandida = false; // trocar de filtro recolhe a lista de novo
+  $$('#list-filter .list-filter__pill').forEach(p => p.classList.toggle('is-active', p === pill));
+  renderBoosterList();
+});
 const $modal           = $('#booster-modal');
 const $modalTitle      = $('#modal-title');
 const $form            = $('#booster-form');
@@ -4791,6 +5452,9 @@ function renderBoosterList() {
   renderMetaCounter();
   renderSpentIndicator();
   renderDashboard();
+  // Rodada 11 — barra de filtros só aparece quando há compras
+  const $filtroBar = $('#list-filter');
+  if ($filtroBar) $filtroBar.hidden = !boostersCache.length;
   if (!boostersCache.length) {
     $boosterList.innerHTML = `
       <div class="empty-state">
@@ -4810,9 +5474,15 @@ function renderBoosterList() {
     if (cta) cta.addEventListener('click', () => openModal());
     return;
   }
+  // Rodada 11 — aplica o filtro ativo antes do limite
+  const filtrados = boostersCache.filter(_listaFiltroPredicado);
+  if (!filtrados.length) {
+    $boosterList.innerHTML = `<div class="empty-state"><p>Nenhuma compra nesse filtro.</p></div>`;
+    return;
+  }
   // Rodada 9a.1 — lista limitada: acima de LISTA_LIMITE itens, o resto fica atrás de "Ver tudo"
-  const total = boostersCache.length;
-  const visiveis = listaExpandida ? boostersCache : boostersCache.slice(0, LISTA_LIMITE);
+  const total = filtrados.length;
+  const visiveis = listaExpandida ? filtrados : filtrados.slice(0, LISTA_LIMITE);
   const restantes = total - visiveis.length;
   const html = visiveis.map(boosterCardHTML).join('');
   let moreBtn = '';
@@ -5674,6 +6344,55 @@ function _hexToRgba(hex, alpha) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+// Rodada 10 — plugin custom: foto do avatar na ponta final da linha de cada pessoa.
+// Imagens são cacheadas; quando uma carrega, o gráfico redesenha uma vez (update 'none', sem animação).
+const _chartAvatarCache = new Map(); // url -> { img, ok }
+function _chartAvatarImg(url) {
+  let e = _chartAvatarCache.get(url);
+  if (e) return e;
+  const img = new Image();
+  e = { img, ok: false };
+  img.crossOrigin = 'anonymous'; // Supabase Storage manda CORS aberto; evita "sujar" o canvas
+  img.onload = () => { e.ok = true; try { if (grupoChart) grupoChart.update('none'); } catch (_) {} };
+  img.onerror = () => { e.ok = false; };
+  img.src = url;
+  _chartAvatarCache.set(url, e);
+  return e;
+}
+const _avatarPointsPlugin = {
+  id: 'avatarPoints',
+  afterDatasetsDraw(chart) {
+    const { ctx } = chart;
+    chart.data.datasets.forEach((d, i) => {
+      if (!d._avatarUrl) return;
+      const meta = chart.getDatasetMeta(i);
+      if (!meta || meta.hidden || !meta.data?.length) return;
+      const pt = meta.data[meta.data.length - 1];
+      if (!pt || pt.x == null || pt.y == null) return;
+      const e = _chartAvatarImg(d._avatarUrl);
+      if (!e.ok) return; // ainda carregando ou falhou — a linha fica como sempre foi
+      const dimmed = highlightedUserId && d._userId !== highlightedUserId;
+      const r = 9;
+      ctx.save();
+      ctx.globalAlpha = dimmed ? 0.18 : 1;
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.clip();
+      ctx.drawImage(e.img, pt.x - r, pt.y - r, r * 2, r * 2);
+      ctx.restore();
+      ctx.save();
+      ctx.globalAlpha = dimmed ? 0.18 : 1;
+      ctx.beginPath();
+      ctx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
+      ctx.strokeStyle = d._baseColor || '#9a5cc8';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.restore();
+    });
+  },
+};
+
 // Plugin custom — linhas auxiliares (meta horizontal, cutoff vertical)
 const _auxLinesPlugin = {
   id: 'auxLines',
@@ -5740,6 +6459,7 @@ function buildGrupoChart(serie) {
           data: d.data,
           _baseColor: d.cor,
           _userId: d.userId,
+          _avatarUrl: d.avatarUrl || null,
           borderColor: dimmed ? _hexToRgba(d.cor, 0.18) : d.cor,
           backgroundColor: dimmed ? _hexToRgba(d.cor, 0.18) : d.cor,
           pointRadius: dimmed ? 1 : 2,
@@ -5753,6 +6473,8 @@ function buildGrupoChart(serie) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      // Rodada 10 — folga pra foto do avatar na ponta da linha não cortar na borda
+      layout: { padding: { right: 12, top: 10 } },
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: false }, // usamos legenda customizada com avatares
@@ -5774,7 +6496,7 @@ function buildGrupoChart(serie) {
         },
       },
     },
-    plugins: [_auxLinesPlugin],
+    plugins: [_auxLinesPlugin, _avatarPointsPlugin],
   });
 }
 
@@ -5915,6 +6637,12 @@ $('#grupo-refresh')?.addEventListener('click', () => carregarGrupo());
 
 // Rodada 7b — clique nos toggles do gráfico + legenda customizada (event delegation, sobrevive ao re-render)
 document.addEventListener('click', (ev) => {
+  // Rodada 10 — clique numa linha do ranking abre o card do amigo
+  const rankRow = ev.target.closest('.rank-row');
+  if (rankRow && rankRow.dataset.uid) {
+    openFriendCard(rankRow.dataset.uid);
+    return;
+  }
   const modeBtn = ev.target.closest('[data-chart-mode]');
   if (modeBtn) {
     const v = modeBtn.dataset.chartMode;
