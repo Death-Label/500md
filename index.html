@@ -2961,6 +2961,82 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   line-height: 1.5;
 }
 /* ==========================================================
+   Rodada 11 — lightbox da foto de avatar
+   ========================================================== */
+/* Só avatares COM foto sinalizam clique (bolinha lisa não faz nada) */
+.friend-head__avatar:has(img),
+.avatar-upload__preview:has(img) {
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.friend-head__avatar:has(img):hover,
+.avatar-upload__preview:has(img):hover {
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.45);
+  transform: scale(1.04);
+}
+.avatar-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 300; /* acima de todos os modais (100) e toasts (200) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(var(--bg-overlay-rgb), 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: fade-in 0.2s ease;
+}
+.avatar-lightbox[hidden] { display: none; }
+.avatar-lightbox__photo {
+  /* foto nativa é 256px — limite evita pixelar */
+  width: min(80vw, 290px);
+  height: min(80vw, 290px);
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 0 3px var(--lb-ring, var(--accent-purple)),
+              0 0 48px rgba(0, 0, 0, 0.55);
+  animation: lb-pop 0.22s ease;
+}
+.avatar-lightbox__photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.avatar-lightbox__name {
+  position: absolute;
+  bottom: max(28px, env(safe-area-inset-bottom, 0px) + 20px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-primary);
+  max-width: 80vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.avatar-lightbox__close {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top, 0px) + 8px);
+  right: 18px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 6px 10px;
+}
+.avatar-lightbox__close:hover { color: var(--text-primary); }
+@keyframes lb-pop {
+  from { transform: scale(0.86); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+/* ==========================================================
    Rodada 3.5 — Onboarding + edição de perfil
    ========================================================== */
 
@@ -4201,6 +4277,13 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 <div class="offline-banner" id="offline-banner" hidden role="status" aria-live="polite">Você está offline</div>
 
 <!-- Toast stack -->
+<!-- Rodada 11 — lightbox da foto de avatar -->
+<div class="avatar-lightbox" id="avatar-lightbox" hidden role="dialog" aria-modal="true" aria-label="Foto ampliada">
+  <button type="button" class="avatar-lightbox__close" id="avatar-lightbox-close" aria-label="Fechar">×</button>
+  <div class="avatar-lightbox__photo" id="avatar-lightbox-photo"></div>
+  <span class="avatar-lightbox__name" id="avatar-lightbox-name"></span>
+</div>
+
 <div class="toast-stack" id="toast-stack"></div>
 
 <!-- Supabase SDK -->
@@ -4429,6 +4512,7 @@ function entrarComoDeslogado() {
   const _prof = $('#profile-modal'); if (_prof) _prof.hidden = true;
   const _fc = $('#friend-card-modal'); if (_fc) _fc.hidden = true;
   const _fpm = $('#friend-profile-modal'); if (_fpm) _fpm.hidden = true;
+  const _alb = $('#avatar-lightbox'); if (_alb) { _alb.hidden = true; const _albp = $('#avatar-lightbox-photo'); if (_albp) _albp.innerHTML = ''; }
   const _fp = $('#forgot-password-modal'); if (_fp) _fp.hidden = true;
   const _rp = $('#reset-password-modal'); if (_rp) _rp.hidden = true;
   recoveryMode = false;
@@ -4867,6 +4951,53 @@ function closeFriendProfile() { $('#friend-profile-modal').hidden = true; }
 $('#friend-card-close')?.addEventListener('click', closeFriendCard);
 $('#friend-card-full')?.addEventListener('click', openFriendProfile);
 $('#friend-profile-close')?.addEventListener('click', closeFriendProfile);
+
+// ----------------------------------------------------------
+// Rodada 11 — lightbox da foto de avatar
+// Clicar numa foto (card do amigo, perfil completo, preview do
+// Editar perfil) amplia. Bolinha sem foto: nada acontece.
+// ----------------------------------------------------------
+function openAvatarLightbox(src, cor, nome) {
+  const lb = $('#avatar-lightbox');
+  const photo = $('#avatar-lightbox-photo');
+  const nameEl = $('#avatar-lightbox-name');
+  if (!lb || !photo) return;
+  // cor vem do background inline que nós mesmos renderizamos (hex ou rgb)
+  lb.style.setProperty('--lb-ring', cor || '#9a5cc8');
+  photo.innerHTML = `<img src="${escapeHtml(src)}" alt="">`;
+  if (nameEl) nameEl.textContent = nome || '';
+  lb.hidden = false;
+}
+function closeAvatarLightbox() {
+  const lb = $('#avatar-lightbox');
+  if (!lb || lb.hidden) return;
+  lb.hidden = true;
+  const photo = $('#avatar-lightbox-photo');
+  if (photo) photo.innerHTML = ''; // libera a imagem
+}
+document.addEventListener('click', (e) => {
+  const lb = $('#avatar-lightbox');
+  // Aberto: qualquer clique fecha (×, fundo ou a própria foto)
+  if (lb && !lb.hidden) { closeAvatarLightbox(); return; }
+  // Fechado: clique num avatar com foto abre
+  const av = e.target.closest('.friend-head__avatar, #prof-avatar-preview');
+  if (!av) return;
+  const img = av.querySelector('img');
+  if (!img || !img.src) return;
+  let nome = '';
+  const head = av.closest('.friend-head');
+  if (head) {
+    const nameSpan = head.querySelector('.friend-head__name');
+    nome = nameSpan ? (nameSpan.childNodes[0]?.textContent || '').trim() : '';
+  } else {
+    nome = currentProfile?.display_name || '';
+  }
+  openAvatarLightbox(img.src, av.style.background || '', nome);
+});
+$('#avatar-lightbox-close')?.addEventListener('click', closeAvatarLightbox);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeAvatarLightbox();
+});
 $('#friend-card-modal')?.addEventListener('click', (e) => { if (e.target.id === 'friend-card-modal') closeFriendCard(); });
 $('#friend-profile-modal')?.addEventListener('click', (e) => {
   if (e.target.id === 'friend-profile-modal') { closeFriendProfile(); return; }
