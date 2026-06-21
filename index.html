@@ -2402,6 +2402,53 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   border-color: var(--border);
   background: transparent;
 }
+/* ==========================================================
+   Rodada 12 — Modo Ausente (fantasma)
+   ========================================================== */
+.rank-row--ausente { opacity: 0.5; }
+.rank-row--ausente .rank-row__pos {
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1;
+}
+.ausente-tag {
+  color: #cdbff0 !important;
+  border-color: rgba(154, 92, 200, 0.5) !important;
+  background: rgba(154, 92, 200, 0.12) !important;
+}
+/* Fantasma sobreposto ao avatar (ranking, perfil, legenda) */
+.is-ausente { position: relative; }
+.is-ausente img { filter: grayscale(0.75) brightness(0.55); }
+.av-ghost {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.av-ghost svg {
+  width: 96%;
+  height: 96%;
+  color: #ece7ff;
+  filter: drop-shadow(0 0 4px rgba(154, 92, 200, 0.95));
+  animation: ghost-bob 2.8s ease-in-out infinite;
+}
+@keyframes ghost-bob {
+  0%, 100% { transform: translateY(1%); }
+  50%      { transform: translateY(-4%); }
+}
+/* Modal de boas-vindas do ausente */
+.ausente-card__ghost {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 14px;
+  color: #ece7ff;
+  filter: drop-shadow(0 0 12px rgba(154, 92, 200, 0.85));
+  animation: ghost-bob 2.8s ease-in-out infinite;
+}
+.ausente-card__ghost svg { width: 100%; height: 100%; }
 .dash-stat__sub {
   margin-top: 6px;
   font-family: var(--font-mono);
@@ -2649,7 +2696,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--accent-purple-bright);
   border: 1px solid rgba(var(--accent-rgb), 0.4);
-  border-radius: var(--radius-pill); padding: 2px 7px; vertical-align: middle;
+  border-radius: var(--radius-pill); padding: 2px 7px; line-height: 1; vertical-align: middle;
 }
 .rank-row__nums { font-family: var(--font-mono); font-feature-settings: "tnum"; font-size: 12px; color: var(--text-secondary); text-align: right; white-space: nowrap; }
 .rank-row__nums strong { color: var(--text-primary); font-weight: 600; }
@@ -3876,7 +3923,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
       <header class="tab-toolbar">
         <div class="tab-toolbar__head">
           <h2>O grupo</h2>
-          <p>Todo mundo se afundando junto, rumo aos 500 de cada um.</p>
+          <p id="grupo-subtitle">Todo mundo se afundando junto, rumo às decepções.</p>
         </div>
         <button type="button" class="btn-ghost grupo-refresh" id="grupo-refresh" aria-label="Atualizar">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -4277,6 +4324,21 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
 <div class="offline-banner" id="offline-banner" hidden role="status" aria-live="polite">Você está offline</div>
 
 <!-- Toast stack -->
+<!-- Rodada 12 — boas-vindas do modo Ausente -->
+<div class="crown-lock" id="ausente-modal" hidden role="dialog" aria-modal="true" aria-labelledby="ausente-title">
+  <div class="crown-lock__backdrop" data-ausente-dismiss></div>
+  <div class="crown-lock__card ausente-card">
+    <div class="ausente-card__ghost" id="ausente-ghost-slot" aria-hidden="true"></div>
+    <div class="crown-lock__title" id="ausente-title">Bom te ver de volta!</div>
+    <div class="crown-lock__msg">
+      Já tínhamos perdido as esperanças — achávamos que você tinha ido ao encontro de Arceus (ou pior: ao de Giratina).<br><br>
+      Você está no <strong>modo Ausente</strong>: seus boosters e seus gastos saíram da soma do grupo enquanto você sumiu.<br><br>
+      Para voltar à ativa, é só registrar qualquer compra. 👻
+    </div>
+    <button type="button" class="crown-lock__btn" id="ausente-dismiss" data-ausente-dismiss>Entendi</button>
+  </div>
+</div>
+
 <!-- Rodada 11 — lightbox da foto de avatar -->
 <div class="avatar-lightbox" id="avatar-lightbox" hidden role="dialog" aria-modal="true" aria-label="Foto ampliada">
   <button type="button" class="avatar-lightbox__close" id="avatar-lightbox-close" aria-label="Fechar">×</button>
@@ -4513,6 +4575,7 @@ function entrarComoDeslogado() {
   const _fc = $('#friend-card-modal'); if (_fc) _fc.hidden = true;
   const _fpm = $('#friend-profile-modal'); if (_fpm) _fpm.hidden = true;
   const _alb = $('#avatar-lightbox'); if (_alb) { _alb.hidden = true; const _albp = $('#avatar-lightbox-photo'); if (_albp) _albp.innerHTML = ''; }
+  const _ausm = $('#ausente-modal'); if (_ausm) _ausm.hidden = true;
   const _fp = $('#forgot-password-modal'); if (_fp) _fp.hidden = true;
   const _rp = $('#reset-password-modal'); if (_rp) _rp.hidden = true;
   recoveryMode = false;
@@ -4998,6 +5061,41 @@ $('#avatar-lightbox-close')?.addEventListener('click', closeAvatarLightbox);
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeAvatarLightbox();
 });
+
+// ----------------------------------------------------------
+// Rodada 12 — boas-vindas do modo Ausente
+// Mostra o aviso uma vez por "episódio" de ausência (flag local).
+// Some quando o usuário volta (registra compra → deixa de estar ausente).
+// ----------------------------------------------------------
+function _mostrarModalAusente() {
+  const m = $('#ausente-modal');
+  if (!m) return;
+  // injeta o fantasma só agora (evita usar GHOST_SVG_MARKUP antes da hora no carregamento)
+  const slot = document.getElementById('ausente-ghost-slot');
+  if (slot && !slot.firstChild) slot.innerHTML = GHOST_SVG_MARKUP;
+  m.hidden = false;
+}
+function _fecharModalAusente() {
+  const m = $('#ausente-modal');
+  if (m) m.hidden = true;
+}
+function _sincronizarAvisoAusente() {
+  if (!currentUser) return;
+  const key = '500md_ausente_visto_' + currentUser.id;
+  if (_estaAusenteSelf()) {
+    let visto = false;
+    try { visto = !!localStorage.getItem(key); } catch (_) {}
+    if (!visto) {
+      _mostrarModalAusente();
+      try { localStorage.setItem(key, '1'); } catch (_) {}
+    }
+  } else {
+    // Voltou à ativa: limpa o flag pra um futuro episódio reavisar
+    try { localStorage.removeItem(key); } catch (_) {}
+  }
+}
+document.querySelectorAll('[data-ausente-dismiss]').forEach(el =>
+  el.addEventListener('click', _fecharModalAusente));
 $('#friend-card-modal')?.addEventListener('click', (e) => { if (e.target.id === 'friend-card-modal') closeFriendCard(); });
 $('#friend-profile-modal')?.addEventListener('click', (e) => {
   if (e.target.id === 'friend-profile-modal') { closeFriendProfile(); return; }
@@ -5580,6 +5678,85 @@ function contaParaMeta(b) {
   return quando >= META_CUTOFF;
 }
 
+// ==========================================================
+// Rodada 12 — Modo Ausente
+// Quem fica 21 dias sem registrar nada vira fantasma: sai das
+// somas do grupo (meta + gasto), mas continua visível no
+// ranking, perfil e gráfico, esmaecido e com o fantasminha.
+// Observadores (meta_total === 0) são imunes.
+// ==========================================================
+const AUSENTE_DIAS = 21;
+
+// Data da última atividade de um usuário agregado (YYYY-MM-DD) ou null.
+// Usa a última compra; se nunca comprou, cai na data de criação do perfil.
+function _refAtividade(u) {
+  let ref = null;
+  (u.boosters || []).forEach(b => {
+    const d = (b.data_compra || b.created_at || '').slice(0, 10);
+    if (d && (!ref || d > ref)) ref = d;
+  });
+  if (!ref) ref = (u.profile?.created_at || '').slice(0, 10) || null;
+  return ref;
+}
+function _limiteAusente() {
+  const lim = new Date();
+  lim.setDate(lim.getDate() - AUSENTE_DIAS);
+  return lim.toISOString().slice(0, 10);
+}
+function _estaAusente(u) {
+  if ((u.profile?.meta_total ?? 500) === 0) return false; // observador é imune
+  const ref = _refAtividade(u);
+  if (!ref) return false;                                  // sem referência: não fantasma
+  return ref < _limiteAusente();
+}
+// Conjunto de IDs ausentes — preenchido em _grupoAgregado, lido por avatarHTML.
+let _ausentesSet = new Set();
+function estaAusenteId(id) { return id ? _ausentesSet.has(id) : false; }
+
+// O próprio usuário logado está ausente? (usa boostersCache + currentProfile)
+function _estaAusenteSelf() {
+  if (!currentProfile) return false;
+  if ((currentProfile.meta_total ?? 500) === 0) return false;
+  let ref = null;
+  boostersCache.forEach(b => {
+    const d = (b.data_compra || b.created_at || '').slice(0, 10);
+    if (d && (!ref || d > ref)) ref = d;
+  });
+  if (!ref) ref = (currentProfile.created_at || '').slice(0, 10) || null;
+  if (!ref) return false;
+  return ref < _limiteAusente();
+}
+
+// Fantasma (novo SVG) — fonte única usada no DOM, no modal e no gráfico.
+const _GHOST_PATHS = `<path d="M4190 7979 c-727 -58 -1419 -343 -1983 -814 -635 -532 -1070 -1290 -1206 -2102 -39 -230 -45 -316 -45 -593 0 -277 6 -363 45 -593 102 -609 369 -1186 774 -1670 777 -928 1988 -1392 3190 -1221 1219 173 2259 972 2744 2107 128 298 212 618 257 972 25 195 25 615 0 810 -57 452 -175 836 -375 1220 -396 762 -1075 1366 -1876 1668 -473 179 -1021 256 -1525 216z m597 -1274 c488 -72 929 -292 1277 -640 359 -359 573 -798 647 -1325 7 -47 12 -168 12 -270 0 -102 -5 -223 -12 -270 -72 -516 -268 -926 -626 -1305 -65 -69 -75 -85 -75 -116 0 -55 47 -110 167 -197 218 -158 254 -194 235 -236 -22 -48 -175 -83 -465 -106 -429 -33 -1579 -37 -1782 -6 -624 95 -1139 401 -1510 897 -560 748 -589 1802 -71 2577 390 584 990 944 1687 1012 125 12 382 4 516 -15z"/> <path d="M3285 5232 c-161 -105 -242 -244 -252 -432 -12 -223 98 -411 298 -509 222 -108 469 -61 637 124 57 62 84 108 113 192 17 51 38 203 27 203 -3 0 -40 -9 -83 -20 -92 -24 -155 -25 -248 -5 -202 43 -368 208 -416 415 l-17 71 -59 -39z"/> <path d="M5585 5228 c-37 -217 -210 -398 -422 -443 -93 -20 -156 -19 -248 5 -43 11 -80 20 -82 20 -8 0 -1 -91 12 -153 21 -101 75 -196 156 -272 135 -127 301 -176 474 -140 354 74 535 445 378 773 -32 66 -155 194 -220 230 l-41 22 -7 -42z"/>`;
+function _ghostSvgMarkup(color, dims) {
+  const d = dims ? ` width="${dims}" height="${dims}"` : '';
+  return `<svg viewBox="0 0 894 894"${d} fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g transform="translate(0,894) scale(0.1,-0.1)" fill="${color}" stroke="none">${_GHOST_PATHS}</g></svg>`;
+}
+// DOM: currentColor controlado via CSS (overlay no avatar + modal)
+const GHOST_SVG_MARKUP = _ghostSvgMarkup('currentColor');
+const GHOST_OVERLAY_SVG = `<span class="av-ghost" aria-hidden="true">${GHOST_SVG_MARKUP}</span>`;
+
+// Canvas do gráfico: rasteriza o SVG recolorido como imagem (cacheada)
+const _ghostImg = new Image();
+let _ghostImgReady = false;
+_ghostImg.onload = () => { _ghostImgReady = true; try { grupoChart && grupoChart.update('none'); } catch (_) {} };
+_ghostImg.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(_ghostSvgMarkup('#ece7ff', 96));
+function _drawGhostPoint(ctx, x, y, r, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha == null ? 1 : alpha;
+  // disco escuro atrás, pro fantasma claro contrastar com qualquer linha
+  ctx.beginPath();
+  ctx.arc(x, y, r * 1.45, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(18,14,36,0.85)';
+  ctx.fill();
+  if (_ghostImgReady) {
+    const s = r * 2.8;
+    ctx.drawImage(_ghostImg, x - s / 2, y - s / 2, s, s);
+  }
+  ctx.restore();
+}
+
 // ---------- list & render ----------
 async function carregarBoosters() {
   if (!currentUser) return;
@@ -5600,6 +5777,7 @@ async function carregarBoosters() {
   boostersCache = data || [];
   renderBoosterList();
   refreshColecoesDatalist();
+  _sincronizarAvisoAusente();   // Rodada 12 — checa se o próprio usuário está ausente
 }
 
 function renderBoosterList() {
@@ -6125,11 +6303,13 @@ function _corSegura(c) {
 }
 // Rodada 9b — avatar com foto: gera o círculo com a cor de fallback e, se houver foto, a <img> por cima.
 // Se a imagem falhar ao carregar, ela se remove e a cor aparece (onerror inline pq o HTML é gerado por template).
-function avatarHTML(profile, cls) {
+function avatarHTML(profile, cls, opts = {}) {
   const cor = _corSegura(profile?.avatar_color);
   const url = profile?.avatar_url;
   const img = url ? `<img src="${escapeHtml(url)}" alt="" loading="lazy" onerror="this.remove()">` : '';
-  return `<span class="${cls}" style="background:${cor}">${img}</span>`;
+  const ausente = opts.ausente ?? estaAusenteId(profile?.id);
+  const ghost = ausente ? GHOST_OVERLAY_SVG : '';
+  return `<span class="${cls}${ausente ? ' is-ausente' : ''}" style="background:${cor}">${img}${ghost}</span>`;
 }
 function _grupoNomeDe(uid) {
   const p = grupoCache.profiles.find(x => x.id === uid);
@@ -6189,7 +6369,14 @@ function _grupoAgregado() {
     if (contaParaMeta(b)) u.metaCount += q;           // já filtra avulsa via contaParaMeta
     u.boosters.push(b);                               // série mensal trata avulsa via valDe()
   });
-  return Array.from(byUser.values());
+  const arr = Array.from(byUser.values());
+  // Rodada 12 — marca ausentes e atualiza o conjunto global
+  _ausentesSet = new Set();
+  arr.forEach(u => {
+    u.ausente = _estaAusente(u);
+    if (u.ausente && u.profile?.id) _ausentesSet.add(u.profile.id);
+  });
+  return arr;
 }
 
 function _grupoComparativos(agg) {
@@ -6274,6 +6461,7 @@ function _serieGrupo(agg, opts = {}) {
       cor: _corSegura(u.profile?.avatar_color),
       avatarUrl: u.profile?.avatar_url || null,
       userId: u.profile?.id,
+      away: !!u.ausente,
       data,
     };
   });
@@ -6302,23 +6490,38 @@ function renderGrupo(flashUserId) {
   // Separa quem corre da meta dos que só observam (meta=0)
   const racers     = parts.filter(u => (u.profile?.meta_total ?? 500) > 0);
   const observers  = parts.length - racers.length;
-  const somaMeta   = racers.reduce((s, u) => s + u.metaCount, 0);
-  const somaAlvo   = racers.reduce((s, u) => s + (u.profile?.meta_total ?? 500), 0);
+  // Rodada 12 — ausentes saem das somas (meta, alvo e gasto), mas seguem visíveis
+  const ativos     = racers.filter(u => !u.ausente);
+  const ausentesN  = racers.length - ativos.length;
+  const somaMeta   = ativos.reduce((s, u) => s + u.metaCount, 0);
+  const somaAlvo   = ativos.reduce((s, u) => s + (u.profile?.meta_total ?? 500), 0);
   const pctGrupo   = somaAlvo > 0 ? (somaMeta / somaAlvo) * 100 : 0;
 
-  // Ranking: observadores vão pra trás
+  // Rodada 12 — subtexto dinâmico: N = total de boosters almejados pelos ativos
+  const _sub = document.getElementById('grupo-subtitle');
+  if (_sub) {
+    _sub.textContent = somaAlvo > 0
+      ? `Todo mundo se afundando junto, rumo às ${somaAlvo.toLocaleString('pt-BR')} decepções.`
+      : 'Todo mundo se afundando junto.';
+  }
+
+  // Ranking: ordem = ativos correndo → ausentes (fantasmas) → observadores
+  const _peso = (u) => {
+    if ((u.profile?.meta_total ?? 500) === 0) return 2; // observador por último
+    if (u.ausente) return 1;                            // ausente no meio
+    return 0;                                           // ativo na frente
+  };
   const rank = parts.slice().sort((a, b) => {
-    const aObs = (a.profile?.meta_total ?? 500) === 0;
-    const bObs = (b.profile?.meta_total ?? 500) === 0;
-    if (aObs !== bObs) return aObs ? 1 : -1;
+    const pa = _peso(a), pb = _peso(b);
+    if (pa !== pb) return pa - pb;
     return b.metaCount - a.metaCount ||
            b.total - a.total ||
            (a.profile?.display_name || '').localeCompare(b.profile?.display_name || '');
   });
 
   const comp  = _grupoComparativos(agg);
-  // Líder do ranking (1º corredor) — usado pra liberar o R$ dele no gráfico, mesmo se opt-out
-  const leaderId = rank.find(u => (u.profile?.meta_total ?? 500) > 0)?.profile?.id || null;
+  // Líder do ranking (1º corredor ATIVO) — usado pra liberar o R$ dele no gráfico, mesmo se opt-out
+  const leaderId = rank.find(u => (u.profile?.meta_total ?? 500) > 0 && !u.ausente)?.profile?.id || null;
   const serie = _serieGrupo(agg, { mode: chartMode, aggregation: chartAgg, leaderId });
   // Se o user destacado não está mais visível no gráfico atual, descarta destaque
   if (highlightedUserId && !serie.datasets.some(d => d.userId === highlightedUserId)) {
@@ -6330,9 +6533,10 @@ function renderGrupo(flashUserId) {
   if (racers.length === 0) {
     subText = `${observers} ${observers === 1 ? 'observador' : 'observadores'}, sem ninguém correndo`;
   } else {
-    const rcText = `${racers.length} ${racers.length === 1 ? 'pessoa' : 'pessoas'} rumo aos 500 de cada`;
+    const rcText = `${ativos.length} ${ativos.length === 1 ? 'pessoa' : 'pessoas'} rumo aos 500 de cada`;
+    const auText = ausentesN > 0 ? ` · ${ausentesN} ${ausentesN === 1 ? 'ausente' : 'ausentes'}` : '';
     const obText = observers > 0 ? ` · ${observers} ${observers === 1 ? 'observador' : 'observadores'}` : '';
-    subText = rcText + obText;
+    subText = rcText + auText + obText;
   }
 
   const totalHTML = `
@@ -6348,8 +6552,8 @@ function renderGrupo(flashUserId) {
 
   // SVG da coroa (3 picos + base) — usado em top 3 racers
   const CROWN_SVG = `<svg class="crown" viewBox="0 80 640 416" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M528 448H112c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm64-320c-26.5 0-48 21.5-48 48 0 7.1 1.6 13.7 4.4 19.8L476 239.2c-15.4 9.2-35.3 4-44.2-11.6L350.3 85C361 76.2 368 63 368 48c0-26.5-21.5-48-48-48s-48 21.5-48 48c0 15 7 28.2 17.7 37l-81.5 142.6c-8.9 15.6-28.9 20.8-44.2 11.6l-72.3-43.4c2.7-6 4.4-12.7 4.4-19.8 0-26.5-21.5-48-48-48S0 149.5 0 176s21.5 48 48 48c2.6 0 5.2-.4 7.7-.8L128 416h384l72.3-192.8c2.5.4 5.1.8 7.7.8 26.5 0 48-21.5 48-48s-21.5-48-48-48z"/></svg>`;
-  function rankIndicator(idx, isObserver) {
-    if (isObserver)  return `<div class="rank-row__pos">·</div>`;
+  function rankIndicator(idx, isObserver, isAway) {
+    if (isObserver || isAway) return `<div class="rank-row__pos">·</div>`;
     if (idx === 0)   return `<div class="rank-row__pos">${CROWN_SVG.replace('class="crown"', 'class="crown crown--gold"')}</div>`;
     if (idx === 1)   return `<div class="rank-row__pos">${CROWN_SVG.replace('class="crown"', 'class="crown crown--silver"')}</div>`;
     if (idx === 2)   return `<div class="rank-row__pos">${CROWN_SVG.replace('class="crown"', 'class="crown crown--bronze"')}</div>`;
@@ -6359,20 +6563,22 @@ function renderGrupo(flashUserId) {
   const rankRows = rank.map((u, i) => {
     const meta = u.profile?.meta_total ?? 500;
     const isObserver = meta === 0;
+    const isAway = !!u.ausente;
     const pct  = !isObserver ? (u.metaCount / meta) * 100 : 0;
     const isMe = u.profile?.id && u.profile.id === currentUser?.id;
-    const isLead = i === 0 && !isObserver;
+    const isLead = i === 0 && !isObserver && !isAway;
     // Mostra valor gasto se: não-observador E (é o 1º OU perfil deixa visível).
     // 1º lugar sempre mostra: a coroa pesa. Auto-correção do DB acontece em paralelo via _autoCorrigirCoroaDoLider.
     const mostraValor = !isObserver && (isLead || u.profile?.spent_visible !== false);
     const moneyHTML = mostraValor ? `<div class="rank-row__money">${fmtBRL(u.gasto)}</div>` : '';
+    const tags = `${isMe ? ' <span class="me-tag">você</span>' : ''}${isObserver ? ' <span class="me-tag observer-tag">observador</span>' : ''}${isAway ? ' <span class="me-tag ausente-tag">ausente</span>' : ''}`;
     return `
-      <div class="rank-row${isLead ? ' rank-row--lead' : ''}${isMe ? ' rank-row--me' : ''}${isObserver ? ' rank-row--observer' : ''}" data-uid="${u.profile?.id || ''}">
-        ${rankIndicator(i, isObserver)}
+      <div class="rank-row${isLead ? ' rank-row--lead' : ''}${isMe ? ' rank-row--me' : ''}${isObserver ? ' rank-row--observer' : ''}${isAway ? ' rank-row--ausente' : ''}" data-uid="${u.profile?.id || ''}">
+        ${rankIndicator(i, isObserver, isAway)}
         ${avatarHTML(u.profile, 'rank-row__avatar')}
         <div class="rank-row__center">
           <div class="rank-row__nameline">
-            <div class="rank-row__name">${escapeHtml(u.profile?.display_name || '—')}${isMe ? ' <span class="me-tag">você</span>' : ''}${isObserver ? ' <span class="me-tag observer-tag">observador</span>' : ''}</div>
+            <div class="rank-row__name">${escapeHtml(u.profile?.display_name || '—')}${tags}</div>
             ${moneyHTML}
           </div>
           ${isObserver ? '' : `<div class="dash-bar rank-row__bar"><div class="dash-bar__fill" style="width:${Math.min(100, pct).toFixed(1)}%"></div></div>`}
@@ -6386,7 +6592,8 @@ function renderGrupo(flashUserId) {
   const rankHTML = `<div class="dash-panel"><div class="dash-label">Ranking</div><div class="rank-list">${rankRows}</div></div>`;
 
   // Tile "Total gasto pelo grupo" substitui "Maior gastador" (agregado, anônimo, não vaza opt-out)
-  const totalGastoGrupo = parts.reduce((s, u) => s + (u.gasto || 0), 0);
+  // Rodada 12 — ausentes não entram na soma de gasto do grupo
+  const totalGastoGrupo = parts.reduce((s, u) => s + (u.ausente ? 0 : (u.gasto || 0)), 0);
   const compHTML = `
     <div class="dash-stats">
       <div class="dash-stat">
@@ -6518,15 +6725,20 @@ const _avatarPointsPlugin = {
   afterDatasetsDraw(chart) {
     const { ctx } = chart;
     chart.data.datasets.forEach((d, i) => {
-      if (!d._avatarUrl) return;
       const meta = chart.getDatasetMeta(i);
       if (!meta || meta.hidden || !meta.data?.length) return;
       const pt = meta.data[meta.data.length - 1];
       if (!pt || pt.x == null || pt.y == null) return;
-      const e = _chartAvatarImg(d._avatarUrl);
-      if (!e.ok) return; // ainda carregando ou falhou — a linha fica como sempre foi
       const dimmed = highlightedUserId && d._userId !== highlightedUserId;
       const r = 9;
+      // Rodada 12 — ausente: fantasma no lugar do avatar (independe de ter foto)
+      if (d._away) {
+        _drawGhostPoint(ctx, pt.x, pt.y, r, dimmed ? 0.22 : 1);
+        return;
+      }
+      if (!d._avatarUrl) return;
+      const e = _chartAvatarImg(d._avatarUrl);
+      if (!e.ok) return; // ainda carregando ou falhou — a linha fica como sempre foi
       ctx.save();
       ctx.globalAlpha = dimmed ? 0.18 : 1;
       ctx.beginPath();
@@ -6614,6 +6826,7 @@ function buildGrupoChart(serie) {
           _baseColor: d.cor,
           _userId: d.userId,
           _avatarUrl: d.avatarUrl || null,
+          _away: !!d.away,
           borderColor: dimmed ? _hexToRgba(d.cor, 0.18) : d.cor,
           backgroundColor: dimmed ? _hexToRgba(d.cor, 0.18) : d.cor,
           pointRadius: dimmed ? 1 : 2,
