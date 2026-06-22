@@ -4382,9 +4382,13 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 const $  = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-function _dataISO(date = new Date()) {
-  const d = date instanceof Date ? date : new Date(date);
-  return d.toISOString().slice(0, 10);
+function _dataISO(date) {
+  if (typeof date === 'string') return date.slice(0, 10); // já é uma data 'YYYY-MM-DD', devolve como veio
+  const d = date instanceof Date ? date : new Date();     // sem argumento = agora, no fuso LOCAL do aparelho
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${dd}`;
 }
 
 function showToast(msg) {
@@ -5701,7 +5705,7 @@ function _refAtividade(u) {
 function _limiteAusente() {
   const lim = new Date();
   lim.setDate(lim.getDate() - AUSENTE_DIAS);
-  return lim.toISOString().slice(0, 10);
+  return _dataISO(lim); // data local, consistente com data_compra
 }
 function _estaAusente(u) {
   if ((u.profile?.meta_total ?? 500) === 0) return false; // observador é imune
