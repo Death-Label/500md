@@ -4332,7 +4332,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
     <div class="crown-lock__title" id="ausente-title">Bom te ver de volta!</div>
     <div class="crown-lock__msg">
       Já tínhamos perdido as esperanças — achávamos que você tinha ido ao encontro de Arceus (ou pior: ao de Giratina).<br><br>
-      Você está no <strong>modo Ausente</strong>: seus boosters e seus gastos saíram da soma do grupo enquanto você sumiu.<br><br>
+      Você está no <strong>modo Desaparecido</strong>: seus boosters e seus gastos saíram da soma do grupo enquanto você sumiu.<br><br>
       Para voltar à ativa, é só registrar qualquer compra. 👻
     </div>
     <button type="button" class="crown-lock__btn" id="ausente-dismiss" data-ausente-dismiss>Entendi</button>
@@ -6534,7 +6534,7 @@ function renderGrupo(flashUserId) {
     subText = `${observers} ${observers === 1 ? 'observador' : 'observadores'}, sem ninguém correndo`;
   } else {
     const rcText = `${ativos.length} ${ativos.length === 1 ? 'pessoa' : 'pessoas'} rumo aos 500 de cada`;
-    const auText = ausentesN > 0 ? ` · ${ausentesN} ${ausentesN === 1 ? 'ausente' : 'ausentes'}` : '';
+    const auText = ausentesN > 0 ? ` · ${ausentesN} ${ausentesN === 1 ? 'desaparecido' : 'desaparecidos'}` : '';
     const obText = observers > 0 ? ` · ${observers} ${observers === 1 ? 'observador' : 'observadores'}` : '';
     subText = rcText + auText + obText;
   }
@@ -6571,7 +6571,7 @@ function renderGrupo(flashUserId) {
     // 1º lugar sempre mostra: a coroa pesa. Auto-correção do DB acontece em paralelo via _autoCorrigirCoroaDoLider.
     const mostraValor = !isObserver && (isLead || u.profile?.spent_visible !== false);
     const moneyHTML = mostraValor ? `<div class="rank-row__money">${fmtBRL(u.gasto)}</div>` : '';
-    const tags = `${isMe ? ' <span class="me-tag">você</span>' : ''}${isObserver ? ' <span class="me-tag observer-tag">observador</span>' : ''}${isAway ? ' <span class="me-tag ausente-tag">ausente</span>' : ''}`;
+    const tags = `${isMe ? ' <span class="me-tag">você</span>' : ''}${isObserver ? ' <span class="me-tag observer-tag">observador</span>' : ''}${isAway ? ' <span class="me-tag ausente-tag">desaparecido</span>' : ''}`;
     return `
       <div class="rank-row${isLead ? ' rank-row--lead' : ''}${isMe ? ' rank-row--me' : ''}${isObserver ? ' rank-row--observer' : ''}${isAway ? ' rank-row--ausente' : ''}" data-uid="${u.profile?.id || ''}">
         ${rankIndicator(i, isObserver, isAway)}
