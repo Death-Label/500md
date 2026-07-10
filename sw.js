@@ -4,7 +4,7 @@
 //   - Assets estáticos (ícones, manifest, fontes, CDN): stale-while-revalidate (rápido, atualiza no fundo)
 //   - Supabase (API, Auth, Realtime): nunca interceptado — sempre direto pro servidor
 
-const VERSION = 'v2';
+const VERSION = 'v3';
 const CACHE = '500md-' + VERSION;
 const APP_SHELL = [
   './',

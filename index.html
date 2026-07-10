@@ -1659,6 +1659,62 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   background: rgba(var(--accent-rgb), 0.16);
   color: var(--accent-purple-bright);
 }
+/* Rodada Busca — barrinha de busca no mesmo DNA das pills */
+.list-filter__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 180px;
+  min-width: 160px;
+  margin-left: auto;
+}
+.list-filter__search .lf-lupa {
+  position: absolute;
+  left: 11px;
+  width: 12px;
+  height: 12px;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+.list-filter__search input {
+  appearance: none;
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  padding: 5px 30px 5px 30px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-primary);
+  transition: var(--transition-fast);
+}
+.list-filter__search input::placeholder { color: var(--text-secondary); text-transform: uppercase; }
+.list-filter__search input::-webkit-search-cancel-button { -webkit-appearance: none; }
+.list-filter__search input:hover { border-color: var(--border-hover); }
+.list-filter__search input:focus {
+  outline: none;
+  border-color: rgba(var(--accent-rgb), 0.55);
+  background: rgba(var(--accent-rgb), 0.10);
+}
+.list-filter__search-clear {
+  position: absolute;
+  right: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.list-filter__search-clear:hover { color: var(--text-primary); background: rgba(var(--accent-rgb), 0.14); }
+.list-filter__search-clear svg { width: 10px; height: 10px; }
 /* Rodada 9a.1 — botão "Ver tudo" abaixo da lista limitada */
 .list-more {
   display: flex;
@@ -3970,6 +4026,16 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
         <button type="button" class="list-filter__pill" data-filtro="encomendado">Encomendados</button>
         <button type="button" class="list-filter__pill" data-filtro="recebido">Recebidos</button>
         <button type="button" class="list-filter__pill" data-filtro="aberto">Abertos</button>
+        <div class="list-filter__search">
+          <svg class="lf-lupa" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+            <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input type="search" id="list-search" placeholder="Buscar produto…" autocomplete="off" spellcheck="false" aria-label="Buscar por produto ou coleção">
+          <button type="button" class="list-filter__search-clear" id="list-search-clear" hidden aria-label="Limpar busca">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
       </div>
       <div id="booster-list-container" aria-live="polite"></div>
     </section>
@@ -5713,15 +5779,29 @@ const LISTA_LIMITE = 10;
 let listaExpandida = false;
 // Rodada 11 — filtro ativo da lista ('tudo' | 'boosters' | 'avulsas' | 'encomendado' | 'recebido' | 'aberto')
 let listaFiltro = 'tudo';
-function _listaFiltroPredicado(b) {
-  switch (listaFiltro) {
+// Rodada Busca — termo digitado na barrinha (combina com o chip: E, não OU)
+let listaBusca = '';
+function _listaFiltroPredicado(b, filtro) {
+  switch (filtro) {
     case 'avulsas':     return b.tipo === 'avulsa';
     case 'boosters':    return b.tipo !== 'avulsa';
     case 'encomendado':
     case 'recebido':
-    case 'aberto':      return b.tipo !== 'avulsa' && b.status === listaFiltro;
+    case 'aberto':      return b.tipo !== 'avulsa' && b.status === filtro;
     default:            return true;
   }
+}
+// Ignora acentos e caixa: "equilibrio" acha "Equilíbrio Perfeito" (puro/testável)
+function _normBusca(s) {
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+// Chip ativo E termo da busca, sobre produto + coleção (puro/testável)
+function _listaAplicarFiltros(lista, filtro, busca) {
+  const q = _normBusca(busca).trim();
+  return (lista || []).filter((b) =>
+    _listaFiltroPredicado(b, filtro) &&
+    (!q || _normBusca(b.produto + ' ' + (b.colecao || '')).includes(q))
+  );
 }
 $('#list-filter')?.addEventListener('click', (e) => {
   const pill = e.target.closest('.list-filter__pill');
@@ -5729,7 +5809,27 @@ $('#list-filter')?.addEventListener('click', (e) => {
   listaFiltro = pill.dataset.filtro;
   listaExpandida = false; // trocar de filtro recolhe a lista de novo
   $$('#list-filter .list-filter__pill').forEach(p => p.classList.toggle('is-active', p === pill));
+  renderBoosterList(); // a busca digitada continua valendo (chip E texto)
+});
+// Rodada Busca — digitou, filtrou; ✕ ou Esc limpam sem tirar o foco
+const $listSearch = $('#list-search');
+const $listSearchClear = $('#list-search-clear');
+$listSearch?.addEventListener('input', () => {
+  listaBusca = $listSearch.value;
+  if ($listSearchClear) $listSearchClear.hidden = !listaBusca;
   renderBoosterList();
+});
+$listSearch?.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && $listSearch.value) {
+    e.stopPropagation(); // não deixa o Esc vazar pros modais
+    $listSearch.value = '';
+    $listSearch.dispatchEvent(new Event('input'));
+  }
+});
+$listSearchClear?.addEventListener('click', () => {
+  $listSearch.value = '';
+  $listSearch.dispatchEvent(new Event('input'));
+  $listSearch.focus();
 });
 const $modal           = $('#booster-modal');
 const $modalTitle      = $('#modal-title');
@@ -5927,19 +6027,23 @@ function renderBoosterList() {
     if (cta) cta.addEventListener('click', () => openModal());
     return;
   }
-  // Rodada 11 — aplica o filtro ativo antes do limite
-  const filtrados = boostersCache.filter(_listaFiltroPredicado);
+  // Rodada 11 + Rodada Busca — chip ativo E termo digitado, antes do limite
+  const buscando = _normBusca(listaBusca).trim().length > 0;
+  const filtrados = _listaAplicarFiltros(boostersCache, listaFiltro, listaBusca);
   if (!filtrados.length) {
-    $boosterList.innerHTML = `<div class="empty-state"><p>Nenhuma compra nesse filtro.</p></div>`;
+    $boosterList.innerHTML = buscando
+      ? `<div class="empty-state"><p>Nada encontrado pra “${escapeHtml(listaBusca.trim())}”.</p></div>`
+      : `<div class="empty-state"><p>Nenhuma compra nesse filtro.</p></div>`;
     return;
   }
-  // Rodada 9a.1 — lista limitada: acima de LISTA_LIMITE itens, o resto fica atrás de "Ver tudo"
+  // Rodada 9a.1 — lista limitada: acima de LISTA_LIMITE itens, o resto fica atrás
+  // de "Ver tudo". Buscando, o limite não se aplica: quem busca quer TODOS os achados.
   const total = filtrados.length;
-  const visiveis = listaExpandida ? filtrados : filtrados.slice(0, LISTA_LIMITE);
+  const visiveis = (listaExpandida || buscando) ? filtrados : filtrados.slice(0, LISTA_LIMITE);
   const restantes = total - visiveis.length;
   const html = visiveis.map(boosterCardHTML).join('');
   let moreBtn = '';
-  if (total > LISTA_LIMITE) {
+  if (total > LISTA_LIMITE && !buscando) {
     moreBtn = listaExpandida
       ? `<div class="list-more"><button type="button" class="btn-ghost" id="lista-ver-tudo">Mostrar menos ▴</button></div>`
       : `<div class="list-more"><button type="button" class="btn-ghost" id="lista-ver-tudo">Ver tudo (+${restantes.toLocaleString('pt-BR')}) ▾</button></div>`;
