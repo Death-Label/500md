@@ -4457,6 +4457,56 @@ function showToast(msg) {
   setTimeout(() => el.remove(), 3200);
 }
 
+// ============================================================
+// OverlayNav — botão voltar do Android fecha o overlay em vez
+// de fechar o PWA (History API, mesmo padrão do Fletch PWA).
+// Cada overlay aberto empurra uma entrada no histórico; apertar
+// voltar fecha o overlay do topo da pilha. Fechamentos pela UI
+// (botão, backdrop, Esc) consomem a entrada correspondente em
+// silêncio, sem fechar nada — imune a transições rápidas como
+// friend-card → friend-profile.
+// Fluxos OBRIGATÓRIOS (onboarding, redefinir senha) ficam de
+// fora de propósito: voltar não pode engolir uma etapa exigida.
+// ============================================================
+const OverlayNav = (() => {
+  const stack = [];        // overlays abertos ({ name, close }) — topo fecha primeiro
+  let pushed = 0;          // entradas nossas vivas no histórico
+  let pendingBack = 0;     // back() emitidos pela UI (consumir sem fechar nada)
+  let suppressed = false;  // fechamento em andamento vindo do popstate
+
+  try { history.replaceState({ md500: 'base' }, ''); } catch (_) { /* iframe/preview */ }
+
+  function opened(name, closeFn) {
+    if (stack.some((o) => o.name === name)) return; // reaberto sem ter fechado
+    stack.push({ name, close: closeFn });
+    try { history.pushState({ md500: name }, ''); pushed++; } catch (_) {}
+  }
+
+  function requestClose(name) {
+    if (suppressed) return; // o popstate é quem está fechando — nada a consumir
+    const i = stack.findIndex((o) => o.name === name);
+    if (i === -1) return;   // não estava na pilha
+    stack.splice(i, 1);
+    if (pushed > 0) {
+      pendingBack++; pushed--;
+      try { history.back(); } catch (_) { pendingBack--; }
+    }
+  }
+
+  window.addEventListener('popstate', () => {
+    if (pendingBack > 0) { pendingBack--; return; } // entrada consumida por fechamento da UI
+    if (pushed > 0) pushed--;
+    const top = stack.pop();
+    if (!top) return; // pilha vazia: navegação normal (na base, o próximo voltar sai do app)
+    suppressed = true;
+    try { top.close(); } finally { suppressed = false; }
+  });
+
+  function clear() { stack.length = 0; }
+
+  return { opened, requestClose, clear };
+})();
+
 function showScreen(name) {
   $$('.screen').forEach((s) => s.classList.remove('active'));
   const target = $('#' + name + '-screen');
@@ -4638,6 +4688,7 @@ function entrarComoDeslogado() {
   const _ausm = $('#ausente-modal'); if (_ausm) _ausm.hidden = true;
   const _fp = $('#forgot-password-modal'); if (_fp) _fp.hidden = true;
   const _rp = $('#reset-password-modal'); if (_rp) _rp.hidden = true;
+  OverlayNav.clear(); // pilha zerada junto com os overlays
   recoveryMode = false;
   dismissInstallHint();
   showScreen('login');
@@ -5009,8 +5060,9 @@ function openFriendCard(uid) {
     footer.hidden = !d.compras.length;
   }
   $('#friend-card-modal').hidden = false;
+  OverlayNav.opened('friend-card', closeFriendCard);
 }
-function closeFriendCard() { $('#friend-card-modal').hidden = true; }
+function closeFriendCard() { OverlayNav.requestClose('friend-card'); $('#friend-card-modal').hidden = true; }
 
 // Card de compra read-only (mesmo visual do Meu diário, sem clique de edição, R$ condicional)
 function _friendCompraCardHTML(b, mostraValor) {
@@ -5067,8 +5119,9 @@ function openFriendProfile() {
   closeFriendCard();
   renderFriendProfile();
   $('#friend-profile-modal').hidden = false;
+  OverlayNav.opened('friend-profile', closeFriendProfile);
 }
-function closeFriendProfile() { $('#friend-profile-modal').hidden = true; }
+function closeFriendProfile() { OverlayNav.requestClose('friend-profile'); $('#friend-profile-modal').hidden = true; }
 
 // Wire-up dos modais de amigo
 $('#friend-card-close')?.addEventListener('click', closeFriendCard);
@@ -5090,10 +5143,12 @@ function openAvatarLightbox(src, cor, nome) {
   photo.innerHTML = `<img src="${escapeHtml(src)}" alt="">`;
   if (nameEl) nameEl.textContent = nome || '';
   lb.hidden = false;
+  OverlayNav.opened('avatar-lightbox', closeAvatarLightbox);
 }
 function closeAvatarLightbox() {
   const lb = $('#avatar-lightbox');
   if (!lb || lb.hidden) return;
+  OverlayNav.requestClose('avatar-lightbox');
   lb.hidden = true;
   const photo = $('#avatar-lightbox-photo');
   if (photo) photo.innerHTML = ''; // libera a imagem
@@ -5134,8 +5189,10 @@ function _mostrarModalAusente() {
   const slot = document.getElementById('ausente-ghost-slot');
   if (slot && !slot.firstChild) slot.innerHTML = GHOST_SVG_MARKUP;
   m.hidden = false;
+  OverlayNav.opened('ausente', _fecharModalAusente);
 }
 function _fecharModalAusente() {
+  OverlayNav.requestClose('ausente');
   const m = $('#ausente-modal');
   if (m) m.hidden = true;
 }
@@ -5217,8 +5274,9 @@ function showCrownLock(mode = 'attempt') {
     msgEl.textContent = 'Essa responsabilidade vem com o peso de mostrar como os outros podem se afundar. Essa opção está bloqueada para você.';
   }
   m.hidden = false;
+  OverlayNav.opened('crown-lock', hideCrownLock);
 }
-function hideCrownLock() { $('#crown-lock-modal').hidden = true; }
+function hideCrownLock() { OverlayNav.requestClose('crown-lock'); $('#crown-lock-modal').hidden = true; }
 
 // Auto-correção: se o user logado é o 1º E está com valor oculto, força visível no banco.
 // Roda toda vez que o grupoCache atualiza (carregarGrupo termina). Idempotente.
@@ -5278,9 +5336,10 @@ async function openProfileModal() {
   $('#prof-pwd-toggle').setAttribute('aria-expanded', 'false');
   $('#profile-error').textContent = '';
   m.hidden = false;
+  OverlayNav.opened('profile', closeProfileModal);
 }
 
-function closeProfileModal() { $('#profile-modal').hidden = true; }
+function closeProfileModal() { OverlayNav.requestClose('profile'); $('#profile-modal').hidden = true; }
 
 // ----------------------------------------------------------
 // Rodada 9b — foto de avatar (Supabase Storage, bucket "avatars")
@@ -5531,10 +5590,12 @@ function openForgotPasswordModal() {
   $('#fp-submit').hidden = false;
   $('#fp-cancel').textContent = 'Cancelar';
   m.hidden = false;
+  OverlayNav.opened('forgot-password', closeForgotPasswordModal);
   setTimeout(() => $('#fp-email')?.focus(), 100);
 }
 
 function closeForgotPasswordModal() {
+  OverlayNav.requestClose('forgot-password');
   const m = $('#forgot-password-modal');
   if (m) m.hidden = true;
 }
@@ -6196,6 +6257,7 @@ function openModal(booster = null) {
   }
 
   $modal.hidden = false;
+  OverlayNav.opened('booster', closeModal);
   document.body.style.overflow = 'hidden';
   setTimeout(() => {
     const first = $form.elements.produto;
@@ -6204,6 +6266,7 @@ function openModal(booster = null) {
 }
 
 function closeModal() {
+  OverlayNav.requestClose('booster');
   $modal.hidden = true;
   document.body.style.overflow = '';
   editingId = null;
