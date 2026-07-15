@@ -3153,6 +3153,109 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   to   { transform: scale(1);    opacity: 1; }
 }
 /* ==========================================================
+   Rodada 14 — ajuste de enquadramento do avatar
+   ========================================================== */
+.avatar-crop {
+  position: fixed;
+  inset: 0;
+  z-index: 300; /* mesma camada do lightbox (nunca abrem juntos) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(var(--bg-overlay-rgb), 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: fade-in 0.2s ease;
+}
+.avatar-crop[hidden] { display: none; }
+.avatar-crop__card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  width: min(92vw, 340px);
+  animation: lb-pop 0.22s ease;
+}
+.avatar-crop__title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 4px;
+}
+.avatar-crop__sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+.avatar-crop__viewport {
+  width: min(70vw, 250px);
+  height: min(70vw, 250px);
+  margin: 0 auto;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  background: var(--bg-input);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.45);
+  cursor: grab;
+  touch-action: none; /* dedo arrasta a foto, não a página */
+}
+.avatar-crop__viewport.is-dragging { cursor: grabbing; }
+.avatar-crop__viewport canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  display: block;
+}
+.avatar-crop__zoom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 2px 2px;
+}
+.avatar-crop__zoom svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+.avatar-crop__zoom input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  outline: none;
+}
+.avatar-crop__zoom input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-purple);
+  border: none;
+  cursor: pointer;
+}
+.avatar-crop__zoom input[type="range"]::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent-purple);
+  border: none;
+  cursor: pointer;
+}
+.avatar-crop__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+/* ==========================================================
    Rodada 3.5 — Onboarding + edição de perfil
    ========================================================== */
 
@@ -4262,7 +4365,7 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
             <input type="file" id="prof-avatar-file" accept="image/*" hidden />
           </div>
         </div>
-        <span class="avatar-upload__hint">A foto é recortada em quadrado e comprimida antes de subir. Sem foto, a cor abaixo identifica você.</span>
+        <span class="avatar-upload__hint">Depois de escolher a foto, você ajusta qual parte dela vira o avatar. Sem foto, a cor abaixo identifica você.</span>
       </div>
 
       <div class="field-group">
@@ -4466,6 +4569,24 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   <button type="button" class="avatar-lightbox__close" id="avatar-lightbox-close" aria-label="Fechar">×</button>
   <div class="avatar-lightbox__photo" id="avatar-lightbox-photo"></div>
   <span class="avatar-lightbox__name" id="avatar-lightbox-name"></span>
+</div>
+
+<!-- Rodada 14 — ajuste de enquadramento do avatar -->
+<div class="avatar-crop" id="avatar-crop" hidden role="dialog" aria-modal="true" aria-label="Ajustar foto">
+  <div class="avatar-crop__card">
+    <p class="avatar-crop__title">Ajustar foto</p>
+    <p class="avatar-crop__sub">Arraste para posicionar e use o zoom para enquadrar a parte que vira seu avatar.</p>
+    <div class="avatar-crop__viewport" id="avatar-crop-viewport"></div>
+    <div class="avatar-crop__zoom">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="range" id="avatar-crop-zoom" min="1" max="4" step="0.02" value="1" aria-label="Zoom da foto" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></svg>
+    </div>
+    <div class="avatar-crop__actions">
+      <button type="button" class="btn-secondary" id="avatar-crop-cancel">Cancelar</button>
+      <button type="button" class="btn-primary" id="avatar-crop-apply"><span class="btn-label">Aplicar</span></button>
+    </div>
+  </div>
 </div>
 
 <div class="toast-stack" id="toast-stack"></div>
@@ -5440,13 +5561,33 @@ async function _decodificarImagem(file) {
   });
 }
 
-// Recorta no centro (cover), redimensiona pra AVATAR_SIZE e comprime em JPEG
-async function _comprimirAvatar(file) {
-  const src = await _decodificarImagem(file);
-  const w = src.width, h = src.height;
-  if (!w || !h) throw new Error('decode');
-  const lado = Math.min(w, h);
-  const sx = (w - lado) / 2, sy = (h - lado) / 2;
+// ----------------------------------------------------------
+// Rodada 14 — ajuste de enquadramento do avatar
+// O usuário escolhe a parte da foto (arrastar + zoom) antes do
+// recorte final. Matemática pura separada pra teste.
+// st = { k: escala fonte→tela, x/y: deslocamento em px de tela }
+// ----------------------------------------------------------
+const _CropMath = {
+  // escala mínima pra foto cobrir o círculo inteiro
+  fitScale(vp, w, h) { return vp / Math.min(w, h); },
+  // trava a foto cobrindo o viewport (sem frestas nas bordas)
+  clamp(st, vp, w, h) {
+    const minX = vp - w * st.k, minY = vp - h * st.k;
+    return { k: st.k, x: Math.min(0, Math.max(minX, st.x)), y: Math.min(0, Math.max(minY, st.y)) };
+  },
+  // re-escala mantendo o ponto (px,py) do viewport fixo na foto
+  zoomAt(st, px, py, novoK, vp, w, h) {
+    const fx = (px - st.x) / st.k, fy = (py - st.y) / st.k;
+    return this.clamp({ k: novoK, x: px - fx * novoK, y: py - fy * novoK }, vp, w, h);
+  },
+  // região da fonte (em px da fonte) visível dentro do círculo
+  cropRect(st, vp) {
+    return { sx: -st.x / st.k, sy: -st.y / st.k, lado: vp / st.k };
+  }
+};
+
+// Recorta a região escolhida, redimensiona pra AVATAR_SIZE e comprime em JPEG
+async function _recortarAvatar(fonte, sx, sy, lado) {
   const canvas = document.createElement('canvas');
   canvas.width = AVATAR_SIZE; canvas.height = AVATAR_SIZE;
   const ctx = canvas.getContext('2d');
@@ -5455,12 +5596,189 @@ async function _comprimirAvatar(file) {
   // Fundo branco por trás de PNGs transparentes (JPEG não tem alpha)
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, AVATAR_SIZE, AVATAR_SIZE);
-  ctx.drawImage(src, sx, sy, lado, lado, 0, 0, AVATAR_SIZE, AVATAR_SIZE);
-  if (src.close) try { src.close(); } catch (_) {}
+  ctx.drawImage(fonte, sx, sy, lado, lado, 0, 0, AVATAR_SIZE, AVATAR_SIZE);
   return new Promise((resolve, reject) => {
     canvas.toBlob(b => b ? resolve(b) : reject(new Error('blob')), 'image/jpeg', AVATAR_QUALITY);
   });
 }
+
+const _AvatarCrop = (() => {
+  const MAX_LADO_TRABALHO = 1280; // teto da fonte de trabalho (memória no celular)
+  const ZOOM_MAX = 4;
+  let fonte = null, onAplicar = null;
+  let st = { k: 1, x: 0, y: 0 };
+  let vp = 0, fit = 1;
+  const pointers = new Map();
+  let pinchBase = null, arrasto = null;
+
+  const _el = () => $('#avatar-crop');
+  const _vpEl = () => $('#avatar-crop-viewport');
+  const _slider = () => $('#avatar-crop-zoom');
+
+  function _canvasTrabalho(src) {
+    const f = Math.min(1, MAX_LADO_TRABALHO / Math.max(src.width, src.height));
+    const c = document.createElement('canvas');
+    c.width = Math.max(1, Math.round(src.width * f));
+    c.height = Math.max(1, Math.round(src.height * f));
+    const ctx = c.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.fillStyle = '#ffffff'; // preview fiel ao JPEG final (PNG transparente)
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(src, 0, 0, c.width, c.height);
+    if (src.close) try { src.close(); } catch (_) {}
+    return c;
+  }
+
+  function _aplicaTransform() {
+    if (fonte) fonte.style.transform = `translate(${st.x}px, ${st.y}px) scale(${st.k})`;
+  }
+
+  function _sincronizaSlider() {
+    const s = _slider();
+    if (s) s.value = String(Math.min(ZOOM_MAX, Math.max(1, st.k / fit)).toFixed(2));
+  }
+
+  function _defineZoom(novoZoom, px, py) {
+    const z = Math.min(ZOOM_MAX, Math.max(1, novoZoom));
+    st = _CropMath.zoomAt(st, px, py, fit * z, vp, fonte.width, fonte.height);
+    _aplicaTransform();
+  }
+
+  function _local(cx, cy) {
+    const r = _vpEl().getBoundingClientRect();
+    return { x: cx - r.left, y: cy - r.top };
+  }
+
+  function _pinchInfo() {
+    const p = [...pointers.values()];
+    return {
+      dist: Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) || 1,
+      mx: (p[0].x + p[1].x) / 2,
+      my: (p[0].y + p[1].y) / 2
+    };
+  }
+
+  function abrir(src, cb) {
+    const overlay = _el(), vpEl = _vpEl();
+    if (!overlay || !vpEl) return;
+    fonte = _canvasTrabalho(src);
+    onAplicar = cb;
+    vpEl.innerHTML = '';
+    vpEl.appendChild(fonte);
+    overlay.hidden = false;
+    vp = vpEl.clientWidth || 250;
+    fit = _CropMath.fitScale(vp, fonte.width, fonte.height);
+    // começa coberto e centralizado, zoom mínimo
+    st = _CropMath.clamp(
+      { k: fit, x: (vp - fonte.width * fit) / 2, y: (vp - fonte.height * fit) / 2 },
+      vp, fonte.width, fonte.height
+    );
+    const s = _slider();
+    if (s) s.value = '1';
+    _aplicaTransform();
+    OverlayNav.opened('avatar-crop', _cancelar);
+  }
+
+  function _fechar() {
+    const overlay = _el(), vpEl = _vpEl();
+    OverlayNav.requestClose('avatar-crop');
+    if (overlay) overlay.hidden = true;
+    if (vpEl) { vpEl.innerHTML = ''; vpEl.classList.remove('is-dragging'); }
+    fonte = null; onAplicar = null;
+    pointers.clear(); pinchBase = null; arrasto = null;
+  }
+
+  function _cancelar() {
+    const overlay = _el();
+    if (!overlay || overlay.hidden) return;
+    _fechar();
+  }
+
+  async function _aplicar() {
+    if (!fonte || !onAplicar) { _cancelar(); return; }
+    const r = _CropMath.cropRect(st, vp);
+    const btn = $('#avatar-crop-apply');
+    if (btn) btn.disabled = true;
+    try {
+      const blob = await _recortarAvatar(fonte, r.sx, r.sy, r.lado);
+      const cb = onAplicar;
+      _fechar();
+      cb(blob);
+    } catch (_) {
+      _fechar();
+      const err = $('#profile-error');
+      if (err) err.textContent = 'Não consegui recortar essa imagem. Tenta de novo.';
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  function _liga() {
+    const vpEl = _vpEl();
+    if (!vpEl) return;
+    vpEl.addEventListener('pointerdown', (e) => {
+      vpEl.setPointerCapture(e.pointerId);
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pointers.size === 2) {
+        const p = _pinchInfo();
+        pinchBase = { dist: p.dist, zoom: st.k / fit };
+        arrasto = null;
+      } else if (pointers.size === 1) {
+        arrasto = { x: e.clientX, y: e.clientY };
+        vpEl.classList.add('is-dragging');
+      }
+    });
+    vpEl.addEventListener('pointermove', (e) => {
+      if (!pointers.has(e.pointerId) || !fonte) return;
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pointers.size === 2 && pinchBase) {
+        const p = _pinchInfo();
+        const m = _local(p.mx, p.my);
+        _defineZoom(pinchBase.zoom * (p.dist / pinchBase.dist), m.x, m.y);
+        _sincronizaSlider();
+      } else if (pointers.size === 1 && arrasto) {
+        st.x += e.clientX - arrasto.x;
+        st.y += e.clientY - arrasto.y;
+        st = _CropMath.clamp(st, vp, fonte.width, fonte.height);
+        arrasto = { x: e.clientX, y: e.clientY };
+        _aplicaTransform();
+      }
+    });
+    const solta = (e) => {
+      pointers.delete(e.pointerId);
+      if (pointers.size < 2) pinchBase = null;
+      if (pointers.size === 1) {
+        const resto = [...pointers.values()][0];
+        arrasto = { x: resto.x, y: resto.y };
+      } else if (pointers.size === 0) {
+        arrasto = null;
+        vpEl.classList.remove('is-dragging');
+      }
+    };
+    vpEl.addEventListener('pointerup', solta);
+    vpEl.addEventListener('pointercancel', solta);
+    vpEl.addEventListener('wheel', (e) => {
+      if (!fonte) return;
+      e.preventDefault();
+      const m = _local(e.clientX, e.clientY);
+      _defineZoom((st.k / fit) * (e.deltaY < 0 ? 1.1 : 0.9), m.x, m.y);
+      _sincronizaSlider();
+    }, { passive: false });
+    _slider()?.addEventListener('input', (e) => {
+      if (!fonte) return;
+      _defineZoom(parseFloat(e.target.value) || 1, vp / 2, vp / 2);
+    });
+    $('#avatar-crop-cancel')?.addEventListener('click', _cancelar);
+    $('#avatar-crop-apply')?.addEventListener('click', _aplicar);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') _cancelar();
+    });
+  }
+  _liga();
+
+  return { abrir };
+})();
 
 async function _escolherAvatar(file) {
   const err = $('#profile-error');
@@ -5471,10 +5789,13 @@ async function _escolherAvatar(file) {
     return;
   }
   try {
-    const blob = await _comprimirAvatar(file);
-    _avatarPendente = blob;
-    _avatarRemover = false;
-    _renderAvatarPreview(URL.createObjectURL(blob));
+    const src = await _decodificarImagem(file);
+    if (!src.width || !src.height) throw new Error('decode');
+    _AvatarCrop.abrir(src, (blob) => {
+      _avatarPendente = blob;
+      _avatarRemover = false;
+      _renderAvatarPreview(URL.createObjectURL(blob));
+    });
   } catch (_) {
     if (err) err.textContent = 'Não consegui ler essa imagem. Tenta um arquivo JPG ou PNG.';
   }
