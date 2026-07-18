@@ -3256,6 +3256,51 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
   margin-top: 18px;
 }
 /* ==========================================================
+   Rodada 15 — compra com mais de uma coleção (caixas mistas)
+   ========================================================== */
+/* .field-group tem display:flex, que atropela o atributo hidden — força aqui */
+#multi-box[hidden],
+#colecao-box[hidden] { display: none; }
+.multi-link {
+  background: none;
+  border: none;
+  padding: 6px 0 0;
+  font-size: 12.5px;
+  color: var(--accent-purple);
+  cursor: pointer;
+  font-family: inherit;
+}
+.multi-link:hover { color: var(--accent-purple-bright); }
+.multi-link--dim { color: var(--text-muted); }
+.multi-link--dim:hover { color: var(--text-secondary); }
+.multi-linha {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px 28px;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.multi-linha input[name="multi_qtd"] { text-align: center; }
+.multi-linha .multi-remover {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 17px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+.multi-linha .multi-remover:hover { color: var(--accent-red); }
+.multi-acoes {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#booster-form input[name="quantidade"][readonly] {
+  color: var(--text-secondary);
+  opacity: 0.85;
+}
+/* ==========================================================
    Rodada 3.5 — Onboarding + edição de perfil
    ========================================================== */
 
@@ -4220,11 +4265,21 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 700; letter-spac
                autocomplete="off" />
       </div>
 
-      <div class="field-group only-booster">
+      <div class="field-group only-booster" id="colecao-box">
         <label for="f-colecao">Coleção</label>
         <input id="f-colecao" name="colecao" type="text" maxlength="80"
                placeholder="Paradox Rift" autocomplete="off" list="colecoes-list" />
         <datalist id="colecoes-list"></datalist>
+        <button type="button" class="multi-link" id="multi-toggle">+ mais de uma coleção nesta compra</button>
+      </div>
+
+      <div class="field-group only-booster" id="multi-box" hidden>
+        <label>Coleções desta compra</label>
+        <div id="multi-linhas"></div>
+        <div class="multi-acoes">
+          <button type="button" class="multi-link" id="multi-add">+ adicionar coleção</button>
+          <button type="button" class="multi-link multi-link--dim" id="multi-voltar">usar coleção única</button>
+        </div>
       </div>
 
       <div class="form-grid">
@@ -5267,7 +5322,7 @@ function _friendCompraCardHTML(b, mostraValor) {
       </div>
       <div class="booster-card__main">
         <div class="booster-card__title">${escapeHtml(b.produto)}${isAvulsa ? '<span class="booster-card__type-badge">avulsa</span>' : ''}</div>
-        ${isAvulsa ? '' : `<div class="booster-card__sub">${escapeHtml(b.colecao)}</div>`}
+        ${isAvulsa ? '' : `<div class="booster-card__sub">${_subColecaoHtml(b)}</div>`}
         <div class="booster-card__badges">
           ${isAvulsa ? '' : `<span class="status-badge status-badge--${b.status}">${statusLabel(b.status)}</span>`}
           ${(!isAvulsa && foraDaMeta) ? '<span class="out-badge" title="Aberto antes do encontro — não conta na meta">Fora da meta</span>' : ''}
@@ -6384,7 +6439,7 @@ function boosterCardHTML(b) {
       </div>
       <div class="booster-card__main">
         <div class="booster-card__title">${escapeHtml(b.produto)}${isAvulsa ? '<span class="booster-card__type-badge">avulsa</span>' : ''}</div>
-        ${isAvulsa ? '' : `<div class="booster-card__sub">${escapeHtml(b.colecao)}</div>`}
+        ${isAvulsa ? '' : `<div class="booster-card__sub">${_subColecaoHtml(b)}</div>`}
         <div class="booster-card__badges">
           ${isAvulsa ? '' : `<span class="status-badge status-badge--${b.status}">${statusLabel(b.status)}</span>`}
           ${(!isAvulsa && foraDaMeta) ? '<span class="out-badge" title="Aberto antes do encontro — não conta na meta">Fora da meta</span>' : ''}
@@ -6400,7 +6455,14 @@ function boosterCardHTML(b) {
 }
 
 function refreshColecoesDatalist() {
-  const set = new Set(boostersCache.map(b => b.colecao).filter(Boolean));
+  const set = new Set();
+  boostersCache.forEach(b => {
+    if (Array.isArray(b.colecoes) && b.colecoes.length) {
+      b.colecoes.forEach(l => l.colecao && set.add(l.colecao));
+    } else if (b.colecao) {
+      set.add(b.colecao);
+    }
+  });
   $colecoesList.innerHTML = Array.from(set).sort()
     .map(c => `<option value="${escapeHtml(c)}"></option>`).join('');
 }
@@ -6520,12 +6582,18 @@ function renderDashboard() {
 
   // por coleção — avulsas fora (cada avulsa tem `colecao` = descrição da carta, não é coleção real)
   const colMap = new Map();
+  const somaCol = (k, qtd, gasto) => {
+    const chave = (k || '—').trim() || '—';
+    const cur = colMap.get(chave) || { qtd: 0, gasto: 0 };
+    cur.qtd += qtd; cur.gasto += gasto;
+    colMap.set(chave, cur);
+  };
   boostersOnly.forEach(b => {
-    const k = (b.colecao || '—').trim() || '—';
-    const cur = colMap.get(k) || { qtd: 0, gasto: 0 };
-    cur.qtd += (Number(b.quantidade) || 0);
-    cur.gasto += (Number(b.valor_total) || 0);
-    colMap.set(k, cur);
+    const comp = Array.isArray(b.colecoes) && b.colecoes.length ? b.colecoes : null;
+    if (!comp) { somaCol(b.colecao, Number(b.quantidade) || 0, Number(b.valor_total) || 0); return; }
+    // Caixa mista: quantidades reais por coleção; gasto rateado só pra exibir
+    const cents = _ratearValor(Math.round((Number(b.valor_total) || 0) * 100), comp.map(l => Number(l.qtd) || 0));
+    comp.forEach((l, i) => somaCol(l.colecao, Number(l.qtd) || 0, cents[i] / 100));
   });
   const cols = Array.from(colMap, ([nome, v]) => ({ nome, qtd: v.qtd, gasto: v.gasto }))
     .sort((a, b) => b.qtd - a.qtd);
@@ -6656,6 +6724,9 @@ function openModal(booster = null) {
   setFormError('');
 
   $form.reset();
+  setMulti(false);
+  const multiToggle = $('#multi-toggle');
+  if (multiToggle) multiToggle.hidden = false;
   if (booster) {
     const tipo = booster.tipo === 'avulsa' ? 'avulsa' : 'booster';
     const tipoRadio = $form.querySelector(`input[name="tipo"][value="${tipo}"]`);
@@ -6672,6 +6743,9 @@ function openModal(booster = null) {
     const radio = $form.querySelector(`input[name="status"][value="${booster.status}"]`);
     if (radio) radio.checked = true;
     $form.elements.notas.value = booster.notas || '';
+    if (Array.isArray(booster.colecoes) && booster.colecoes.length) {
+      setMulti(true, { linhas: booster.colecoes, semFoco: true });
+    }
   } else {
     const tipoRadio = $form.querySelector(`input[name="tipo"][value="booster"]`);
     if (tipoRadio) tipoRadio.checked = true;
@@ -6725,6 +6799,7 @@ function readFormValues() {
     produto,
     // Avulsa: reusa produto como colecao pra satisfazer NOT NULL e simplificar render.
     colecao:          isAvulsa ? produto : $form.elements.colecao.value.trim(),
+    colecoes:         null, // composição (caixas mistas) — preenchida só pelo modo multi
     quantidade:       parseInt($form.elements.quantidade.value, 10),
     valor_total:      parseBRLValue($form.elements.valor_total.value),
     data_compra:      $form.elements.data_compra.value,
@@ -6755,22 +6830,168 @@ function validateForm(v) {
   return null;
 }
 
+// ---------- Rodadas 15/16 — compra com mais de uma coleção ----------
+// A compra é SEMPRE um lançamento só; a composição vive em `colecoes`.
+// O rateio abaixo é usado apenas como conta de exibição (painel Por
+// coleção) — nunca é gravado. Sobra na última linha: soma sempre exata.
+function _ratearValor(totalCent, quantidades) {
+  const totalQtd = quantidades.reduce((a, q) => a + q, 0);
+  if (!totalQtd) return quantidades.map(() => 0);
+  let acumulado = 0;
+  return quantidades.map((q, i) => {
+    if (i === quantidades.length - 1) return totalCent - acumulado;
+    const v = Math.round(totalCent * q / totalQtd);
+    acumulado += v;
+    return v;
+  });
+}
+
+let multiOn = false;
+let multiLinhas = [];
+
+function _multiAtivo() {
+  return multiOn &&
+    ($form.querySelector('input[name="tipo"]:checked')?.value !== 'avulsa');
+}
+
+function renderMultiLinhas() {
+  const box = $('#multi-linhas');
+  if (!box) return;
+  box.innerHTML = '';
+  multiLinhas.forEach((linha, i) => {
+    const row = document.createElement('div');
+    row.className = 'multi-linha';
+    const ic = document.createElement('input');
+    ic.type = 'text'; ic.name = 'multi_colecao'; ic.maxLength = 80;
+    ic.placeholder = 'Coleção'; ic.autocomplete = 'off';
+    ic.setAttribute('list', 'colecoes-list');
+    ic.value = linha.colecao;
+    ic.addEventListener('input', () => { linha.colecao = ic.value; });
+    const iq = document.createElement('input');
+    iq.type = 'number'; iq.name = 'multi_qtd'; iq.min = '1'; iq.step = '1';
+    iq.inputMode = 'numeric'; iq.placeholder = '0';
+    iq.value = linha.qtd || '';
+    iq.addEventListener('input', () => { linha.qtd = parseInt(iq.value, 10) || 0; syncQtdTotal(); });
+    const bx = document.createElement('button');
+    bx.type = 'button'; bx.className = 'multi-remover';
+    bx.setAttribute('aria-label', 'Remover coleção');
+    bx.textContent = '×';
+    bx.addEventListener('click', () => {
+      if (multiLinhas.length <= 1) return;
+      multiLinhas.splice(i, 1);
+      renderMultiLinhas();
+    });
+    row.appendChild(ic); row.appendChild(iq); row.appendChild(bx);
+    box.appendChild(row);
+  });
+  const add = $('#multi-add');
+  if (add) add.hidden = multiLinhas.length >= 6;
+  syncQtdTotal();
+}
+
+function syncQtdTotal() {
+  if (!multiOn) return;
+  const total = multiLinhas.reduce((a, l) => a + (l.qtd || 0), 0);
+  $form.elements.quantidade.value = total || '';
+}
+
+function setMulti(on, opts = {}) {
+  multiOn = !!on;
+  const colecaoBox = $('#colecao-box'), multiBox = $('#multi-box');
+  const qtd = $form.elements.quantidade;
+  if (multiOn) {
+    if (Array.isArray(opts.linhas) && opts.linhas.length) {
+      multiLinhas = opts.linhas.map(l => ({ colecao: l.colecao || '', qtd: Number(l.qtd) || 0 }));
+    } else {
+      const unica = $form.elements.colecao.value.trim();
+      const qtdAtual = parseInt(qtd.value, 10) || 0;
+      multiLinhas = unica
+        ? [{ colecao: unica, qtd: qtdAtual }, { colecao: '', qtd: 0 }]
+        : [{ colecao: '', qtd: 0 }, { colecao: '', qtd: 0 }];
+    }
+    if (colecaoBox) colecaoBox.hidden = true;
+    if (multiBox) multiBox.hidden = false;
+    qtd.readOnly = true;
+    renderMultiLinhas();
+    const primeiro = $('#multi-linhas input[name="multi_colecao"]');
+    if (primeiro && !primeiro.value && !opts.semFoco) primeiro.focus();
+  } else {
+    if (opts.copiarLinha && multiLinhas.length && multiLinhas[0].colecao) {
+      $form.elements.colecao.value = multiLinhas[0].colecao;
+    }
+    multiLinhas = [];
+    if (colecaoBox) colecaoBox.hidden = false;
+    if (multiBox) multiBox.hidden = true;
+    qtd.readOnly = false;
+    const box = $('#multi-linhas');
+    if (box) box.innerHTML = '';
+  }
+}
+
+// Valida as linhas e monta os registros já rateados (1 linha = 1 compra).
+function validarMulti(v) {
+  const linhas = multiLinhas.filter(l => (l.colecao || '').trim() || l.qtd);
+  if (!linhas.length) return { erro: 'Preencha as coleções da compra.' };
+  for (let i = 0; i < linhas.length; i++) {
+    if (!(linhas[i].colecao || '').trim()) return { erro: `Coleção da linha ${i + 1} é obrigatória.` };
+    if (!Number.isFinite(linhas[i].qtd) || linhas[i].qtd < 1) return { erro: `Quantidade da linha ${i + 1} deve ser maior que zero.` };
+  }
+  const totalQtd = linhas.reduce((a, l) => a + l.qtd, 0);
+  const vBase = { ...v, colecao: linhas[0].colecao.trim(), quantidade: totalQtd };
+  const erro = validateForm(vBase);
+  if (erro) return { erro };
+  return {
+    row: {
+      ...v,
+      colecao: linhas.map(l => l.colecao.trim()).join(' + '),
+      quantidade: totalQtd,
+      colecoes: linhas.map(l => ({ colecao: l.colecao.trim(), qtd: l.qtd })),
+    },
+  };
+}
+
+// Subtítulo do card: composição quando for caixa mista, coleção única no resto
+function _subColecaoHtml(b) {
+  if (Array.isArray(b.colecoes) && b.colecoes.length) {
+    return escapeHtml(b.colecoes.map(l => `${Number(l.qtd) || 0}× ${l.colecao}`).join(' · '));
+  }
+  return escapeHtml(b.colecao);
+}
+
+$('#multi-toggle')?.addEventListener('click', () => setMulti(true));
+$('#multi-voltar')?.addEventListener('click', () => setMulti(false, { copiarLinha: true }));
+$('#multi-add')?.addEventListener('click', () => {
+  if (multiLinhas.length >= 6) return;
+  multiLinhas.push({ colecao: '', qtd: 0 });
+  renderMultiLinhas();
+});
+$$('#booster-form input[name="tipo"]').forEach(r => {
+  r.addEventListener('change', () => { if (r.value === 'avulsa' && multiOn) setMulti(false); });
+});
+
 // ---------- save / delete ----------
 async function saveBooster() {
   if (saving) return;
   const v = readFormValues();
-  const err = validateForm(v);
-  if (err) { setFormError(err); return; }
+  let payload = v;
+  if (_multiAtivo()) {
+    const r = validarMulti(v);
+    if (r.erro) { setFormError(r.erro); return; }
+    payload = r.row;
+  } else {
+    const err = validateForm(v);
+    if (err) { setFormError(err); return; }
+  }
 
   saving = true;
   setSaving(true);
   try {
     if (editingId) {
-      const { error } = await sb.from('boosters').update(v).eq('id', editingId);
+      const { error } = await sb.from('boosters').update(payload).eq('id', editingId);
       if (error) throw error;
       showToast('Compra atualizada.');
     } else {
-      const { error } = await sb.from('boosters').insert({ ...v, user_id: currentUser.id });
+      const { error } = await sb.from('boosters').insert({ ...payload, user_id: currentUser.id });
       if (error) throw error;
       showToast('Compra registrada.');
     }
